@@ -55,7 +55,7 @@ const Register: FC = () => {
 
   usePageTitle(t('account.title.register'))
 
-  const onRegister = async (event: React.FormEvent) => {
+  const onRegister = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     if (pwd !== retypedPwd) {

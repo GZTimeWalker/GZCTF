@@ -1,7 +1,7 @@
 import { Button, Center, Group, ScrollArea, Select, Stack, Text, Title } from '@mantine/core'
 import { mdiFolderDownloadOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState, useMemo } from 'react'
+import { FC, useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { PDFViewer } from '@Components/admin/PDFViewer'
@@ -13,7 +13,7 @@ import api, { WriteupInfo } from '@Api'
 const GameWriteups: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
-  const [selected, setSelected] = useState<WriteupInfo>()
+  const [pickedWriteup, setPickedWriteup] = useState<WriteupInfo>()
   const [selectedDivision, setSelectedDivision] = useState<string>('')
 
   const { data } = api.admin.useAdminWriteups(numId, OnceSWRConfig)
@@ -36,11 +36,9 @@ const GameWriteups: FC = () => {
     return selectedDivision ? writeups.filter((w) => w.divisionId === div) : writeups
   }, [selectedDivision, writeups])
 
-  useEffect(() => {
-    if (filteredWriteups?.length && (!selected || !filteredWriteups.some((w) => w.id === selected.id))) {
-      setSelected(filteredWriteups[0])
-    }
-  }, [filteredWriteups, selected])
+  // keep the explicit pick while it is part of the filtered list, fall back to the first entry
+  const selected =
+    pickedWriteup && filteredWriteups.some((w) => w.id === pickedWriteup.id) ? pickedWriteup : filteredWriteups[0]
 
   return (
     <WithGameEditTab
@@ -83,7 +81,7 @@ const GameWriteups: FC = () => {
                   key={writeup.id}
                   writeup={writeup}
                   selected={selected?.id === writeup.id}
-                  onClick={() => setSelected(writeup)}
+                  onClick={() => setPickedWriteup(writeup)}
                   divisionName={writeup.divisionId ? divisions[writeup.divisionId] : undefined}
                 />
               ))}

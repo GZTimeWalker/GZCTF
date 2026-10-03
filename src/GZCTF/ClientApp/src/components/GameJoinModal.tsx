@@ -2,13 +2,22 @@ import { Button, Modal, ModalProps, Select, Stack, TextInput } from '@mantine/co
 import { showNotification } from '@mantine/notifications'
 import { mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { OnceSWRConfig } from '@Hooks/useConfig'
 import { useGame } from '@Hooks/useGame'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { useTeams } from '@Hooks/useUser'
-import api, { GameJoinModel } from '@Api'
+import api, { GameJoinModel, DetailedGameInfoModel } from '@Api'
+
+const defaultTeam = (teams?: { id?: number | null }[]) => (teams && teams.length >= 1 ? teams[0].id!.toString() : null)
+
+const defaultDivisionId = (game?: DetailedGameInfoModel) => {
+  if (typeof game?.division === 'number') return game.division.toString()
+  if (game?.divisions && game.divisions.length >= 1 && !!game.divisions[0].id) return game.divisions[0].id.toString()
+  return ''
+}
 
 interface GameJoinModalProps extends ModalProps {
   onSubmitJoin: (info: GameJoinModel) => Promise<void>
@@ -25,27 +34,19 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
   const { data: checkInfo } = api.game.useGameGetGameJoinCheckInfo(numId, OnceSWRConfig, props.opened && numId > 0)
 
   const [inviteCode, setInviteCode] = useState('')
-  const [divisionId, setDivisionId] = useState('')
-  const [team, setTeam] = useState<string | null>(null)
+  const [divisionId, setDivisionId] = useState(() => defaultDivisionId(game))
+  const [team, setTeam] = useState<string | null>(() => defaultTeam(teams))
   const [disabled, setDisabled] = useState(false)
 
   const { t } = useTranslation()
 
-  useEffect(() => {
-    if (!team && teams && teams.length >= 1) {
-      setTeam(teams[0].id!.toString())
-    }
-  }, [team, teams])
+  useSyncOnChange([team, teams], () => {
+    if (!team) setTeam(defaultTeam(teams))
+  })
 
-  useEffect(() => {
-    if (divisionId) return
-
-    if (typeof game?.division === 'number') {
-      setDivisionId(game.division.toString())
-    } else if (game?.divisions && game.divisions.length >= 1 && !!game.divisions[0].id) {
-      setDivisionId(game.divisions[0].id.toString())
-    }
-  }, [divisionId, game])
+  useSyncOnChange([divisionId, game], () => {
+    if (!divisionId) setDivisionId(defaultDivisionId(game))
+  })
 
   const divisionOptions = useMemo(
     () =>
@@ -84,11 +85,11 @@ export const GameJoinModal: FC<GameJoinModalProps> = (props) => {
     ? Boolean(selectedDivision?.inviteCodeRequired)
     : Boolean(game?.inviteCodeRequired)
 
-  useEffect(() => {
+  useSyncOnChange([shouldRequireInviteCode], () => {
     if (!shouldRequireInviteCode) {
       setInviteCode('')
     }
-  }, [shouldRequireInviteCode])
+  })
 
   const onJoinGame = async () => {
     setDisabled(true)

@@ -1,4 +1,4 @@
-using GZCTF.AppHost.MinIO;
+using GZCTF.AppHost.RustFS;
 using Microsoft.Extensions.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
@@ -14,7 +14,7 @@ var database = postgres.AddDatabase("database");
 
 var redis = builder.AddRedis("redis").WithDataVolume();
 
-var storage = builder.AddMinIO("minio");
+var storage = builder.AddRustFS("rustfs");
 
 var web = builder.AddProject<Projects.GZCTF>("gzctf")
     .WithReference(database)

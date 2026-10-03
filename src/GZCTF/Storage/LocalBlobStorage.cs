@@ -118,11 +118,14 @@ public sealed class LocalBlobStorage : IBlobStorage
         await content.CopyToAsync(fileStream, cancellationToken);
     }
 
-    public async Task WriteFileAsync(string path, string localFilePath, CancellationToken cancellationToken = default)
+    public async Task WriteFileAsync(string path, string localFilePath,
+        CompressionFormat format = CompressionFormat.None,
+        CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(localFilePath);
 
-        var fullPath = ResolvePhysicalPath(path, ensureDirectory: true);
+        var storagePath = CompressionHelper.AppendExtension(path, format);
+        var fullPath = ResolvePhysicalPath(storagePath, ensureDirectory: true);
 
         const FileOptions copyOptions = FileOptions.Asynchronous | FileOptions.SequentialScan;
 
@@ -130,7 +133,9 @@ public sealed class LocalBlobStorage : IBlobStorage
             WriteBufferSize, copyOptions);
         await using var destination = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None,
             WriteBufferSize, copyOptions);
-        await source.CopyToAsync(destination, cancellationToken);
+
+        await using var compressor = CompressionHelper.CreateCompressionStream(destination, format);
+        await source.CopyToAsync(compressor, cancellationToken);
     }
 
     public async Task WriteTextAsync(string path, string contents, CancellationToken cancellationToken = default)

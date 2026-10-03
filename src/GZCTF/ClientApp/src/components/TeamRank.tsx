@@ -16,7 +16,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiExclamationThick, mdiKey } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
-import { FC, useEffect, useMemo } from 'react'
+import { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router'
 import { ErrorCodes } from '@Utils/Shared'
@@ -37,14 +37,11 @@ export const TeamRank: FC<CardProps> = (props) => {
 
   const solved = (teamInfo?.rank?.solvedCount ?? 0) / (teamInfo?.challengeCount ?? 1)
 
-  const division = useMemo(() => {
-    if (teamInfo?.rank?.divisionId && game?.divisions) {
-      const division = game.divisions.find((d) => d.id === teamInfo.rank!.divisionId)
-      return division?.name ?? ''
-    }
-
-    return null
-  }, [teamInfo?.rank?.divisionId, game?.divisions])
+  // plain derivation: the result is a primitive, so memoizing it brings nothing
+  const division =
+    teamInfo?.rank?.divisionId && game?.divisions
+      ? (game.divisions.find((d) => d.id === teamInfo.rank!.divisionId)?.name ?? '')
+      : null
 
   useEffect(() => {
     if (error?.status === ErrorCodes.GameEnded) {

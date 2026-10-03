@@ -60,7 +60,6 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivi
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const [activePage, setPage] = useState(1)
-  const [bloodBonus, setBloodBonus] = useState(BloodBonus.default)
 
   const { scoreboard } = useGameScoreboard(numId)
 
@@ -96,11 +95,11 @@ export const MobileScoreboardTable: FC<ScoreboardProps> = ({ divisionId, setDivi
 
   const { t } = useTranslation()
 
-  useEffect(() => {
-    if (scoreboard) {
-      setBloodBonus(new BloodBonus(scoreboard.bloodBonus))
-    }
-  }, [scoreboard])
+  // purely derived from the fetched scoreboard
+  const bloodBonus = useMemo(
+    () => (scoreboard ? new BloodBonus(scoreboard.bloodBonus) : BloodBonus.default),
+    [scoreboard]
+  )
 
   const divisionMap = useMemo(() => {
     const map = new Map<number, string>()

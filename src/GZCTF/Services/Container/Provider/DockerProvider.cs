@@ -11,7 +11,7 @@ public class DockerMetadata : ContainerProviderMetadata
     /// <summary>
     /// Docker Configuration
     /// </summary>
-    public DockerConfig Config { get; set; } = new();
+    public GZCTF.Models.Internal.DockerConfig Config { get; set; } = new();
 
     /// <summary>
     /// Docker Registry Authentication Configurations
@@ -56,17 +56,17 @@ public class DockerProvider : IContainerProvider<DockerClient, DockerMetadata>
                         m => $"{networkPrefix}-{m.ToString().ToLowerInvariant()}"),
             PublicEntry = options.Value.PublicEntry
         };
-
-        Credentials? credentials = null;
-
+        
+        var builder = new DockerClientBuilder();
+        
+        if (!string.IsNullOrEmpty(_dockerMeta.Config.Uri))
+            builder = builder.WithEndpoint(new Uri(_dockerMeta.Config.Uri));
+        
         if (!string.IsNullOrEmpty(_dockerMeta.Config.UserName) && !string.IsNullOrEmpty(_dockerMeta.Config.Password))
-            credentials = new BasicAuthCredentials(_dockerMeta.Config.UserName, _dockerMeta.Config.Password);
-
-        DockerClientConfiguration cfg = string.IsNullOrEmpty(_dockerMeta.Config.Uri)
-            ? new(credentials)
-            : new(new Uri(_dockerMeta.Config.Uri), credentials);
-
-        _dockerClient = cfg.CreateClient();
+            builder = builder.WithAuthProvider(new BasicAuthCredentials(_dockerMeta.Config.UserName,
+                _dockerMeta.Config.Password));
+        
+        _dockerClient = builder.Build();
 
         var registries = registriesOptions.Value;
 

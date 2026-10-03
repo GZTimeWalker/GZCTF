@@ -32,6 +32,7 @@ public class AdminController(
     UserManager<UserInfo> userManager,
     ILogger<AdminController> logger,
     IBlobStorage storage,
+    CacheHelper cacheHelper,
     IBlobRepository blobService,
     ILogRepository logRepository,
     IConfigService configService,
@@ -576,6 +577,7 @@ public class AdminController(
         await participationRepository.UpdateParticipation(participation, model, token);
 
         await transaction.CommitAsync(token);
+        await cacheHelper.FlushScoreboardCache(participation.GameId, token);
 
         return Ok();
     }

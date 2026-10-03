@@ -4,7 +4,7 @@ import { Icon } from '@mdi/react'
 import * as signalR from '@microsoft/signalr'
 import dayjs from 'dayjs'
 import { TFunction } from 'i18next'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { Empty } from '@Components/Empty'
@@ -84,8 +84,10 @@ export const GameNoticePanel: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
 
-  const [, update] = useState(new Date())
-  const newNotices = useRef<GameNotice[]>([])
+  // realtime notices buffered on top of the fetched list, kept in state so it is
+  // not read from a mutable ref during render; the buffer is tagged with the fetched
+  // list it was built on so it is dropped as soon as that list is replaced
+  const [buffer, setBuffer] = useState<{ base?: GameNotice[]; items: GameNotice[] }>({ items: [] })
   const [filter, setFilter] = useState<NoticeFilter>(NoticeFilter.All)
   const iconMap = NoticTypeIconMap(0.8)
 
@@ -94,10 +96,6 @@ export const GameNoticePanel: FC = () => {
   const theme = useMantineTheme()
 
   const { data: notices } = api.game.useGameNotices(numId, {}, OnceSWRConfig)
-
-  useEffect(() => {
-    newNotices.current = []
-  }, [notices])
 
   useEffect(() => {
     if (id) {
@@ -111,7 +109,7 @@ export const GameNoticePanel: FC = () => {
       connection.serverTimeoutInMilliseconds = 60 * 1000 * 60 * 2
 
       connection.on('ReceivedGameNotice', (message: GameNotice) => {
-        newNotices.current = [message, ...newNotices.current]
+        setBuffer((prev) => ({ base: notices, items: [message, ...(prev.base === notices ? prev.items : [])] }))
 
         if (message.type === NoticeType.NewChallenge || message.type === NoticeType.NewHint) {
           showNotification({
@@ -128,8 +126,6 @@ export const GameNoticePanel: FC = () => {
             autoClose: 5000,
           })
         }
-
-        update(new Date(message.time))
       })
 
       connection.start().catch((error) => {
@@ -144,7 +140,8 @@ export const GameNoticePanel: FC = () => {
     }
   })
 
-  const allNotices = [...newNotices.current, ...(notices ?? [])]
+  const newNotices = buffer.base === notices ? buffer.items : []
+  const allNotices = [...newNotices, ...(notices ?? [])]
   const filteredNotices = ApplyFilter(allNotices, filter)
 
   filteredNotices.sort((a, b) =>

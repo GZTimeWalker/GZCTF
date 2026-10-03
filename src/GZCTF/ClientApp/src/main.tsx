@@ -13,7 +13,7 @@ i18n
   .use(initReactI18next)
   .use(
     // implement by custom vite plugin, see plugins/vite-i18n-virtual-manifest.ts
-    resourcesToBackend(async (lang: string, _: string) => {
+    resourcesToBackend(async (lang: string) => {
       const file = manifest[lang.toLowerCase()]
       if (!file) return {}
       const response = await fetch(`/static/${file}`)

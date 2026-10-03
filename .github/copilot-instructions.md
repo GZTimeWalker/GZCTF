@@ -1,6 +1,6 @@
 # GZ::CTF — AI Coding Agent Guide
 
-GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 9 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
+GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 10 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
 
 ## Development principles
 
@@ -71,10 +71,10 @@ Design notes (flexibility vs performance)
 - Use SignalR endpoints `/hub/user`, `/hub/monitor`, `/hub/admin`; Vite dev proxy forwards `/hub` as WebSocket.
 - Permissions: Use `[RequireUser]`, `[RequireMonitor]`, `[RequireAdmin]`, `[RequireAdminOrToken]` attributes. New permissions: `RequireReview` (submission review) and `AffectDynamicScore` (dynamic scoring).
 - Captcha pluggable via `CaptchaConfig.Provider`: `HashPow` (default) or `CloudflareTurnstile` (`Extensions/CaptchaExtension.cs`).
-- Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `minio.s3://`, `azure.blobs://`. Self-maintenance storage ensures blob cleanup and consistency.
+- Storage connection string prefixes: `disk://` (forced default), `aws.s3://`, `s3://`. Set `forcePathStyle=true` for RustFS. Self-maintenance storage ensures blob cleanup and consistency.
 - Environment configuration prefix: `GZCTF_` (env vars override config).
 - Role hierarchy: `Admin` (3) > `Monitor` (1) > `User` (0) > `Banned` (-1). Frontend `WithRole` component uses `RoleMap` for access control.
-- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/MinIO integration. Use `IContainerManager` interface for consistency.
+- Container management: Docker Swarm (`SwarmManager`) and Kubernetes (`KubernetesManager`) support with K3s/RustFS test integration. Use `IContainerManager` interface for consistency.
 - Task Status: Enum includes `Success`, `Failed`, `Pending`, `Running`, `Unhealthy`, `Degraded` statuses for container/service health.
 - Divisions API: Endpoints for game-scoped division management with challenge configs. Division affects challenge visibility, scoring, and deadline enforcement.
 - FirstSolves tracking: Separate table for first-blood metadata (team, user, timestamp); used for bonus scoring and statistics.
@@ -85,7 +85,7 @@ Design notes (flexibility vs performance)
 
 ## Dev workflows
 
-- Prereqs: .NET 9 SDK, Node 24+, `pnpm`.
+- Prereqs: .NET 10 SDK, Node 24+, `pnpm`.
 - Single-command dev (SpaProxy auto-starts Vite):
   - `dotnet run --project src/GZCTF/GZCTF.csproj`
   - Launch profile sets `ASPNETCORE_ENVIRONMENT=Development` and enables `Microsoft.AspNetCore.SpaProxy` (see `Properties/launchSettings.json`); Vite dev runs on `63000` and proxies to backend.
@@ -97,10 +97,10 @@ Design notes (flexibility vs performance)
   - Run: `dotnet ./publish/GZCTF.dll`
 - Tests (xUnit + coverlet):
   - `dotnet test src/GZCTF.Test/GZCTF.Test.csproj -v minimal /p:CollectCoverage=true`
-  - `dotnet test src/GZCTF.Integration.Test/GZCTF.Integration.Test.csproj -v minimal /p:CollectCoverage=true` (requires Docker; uses Testcontainers for K3s, MinIO, PostgreSQL)
+  - `dotnet test src/GZCTF.Integration.Test/GZCTF.Integration.Test.csproj -v minimal /p:CollectCoverage=true` (requires Docker; cloud mode uses Testcontainers for K3s, RustFS, PostgreSQL)
 - Testing framework:
   - Unit tests: xUnit with `IRepository<T>` and service mocking; examples in `GZCTF.Test/UnitTests/`.
-  - Integration tests: Testcontainers for Docker Swarm/Kubernetes, MinIO S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation.
+  - Integration tests: Testcontainers for Docker Swarm/Kubernetes, RustFS S3, PostgreSQL, Redis; examples in `GZCTF.Integration.Test/Tests/`. Covers dynamic container challenges, flag retrieval, storage operations, and repository data validation. Set `GZCTF_INTEGRATION_TEST_MODE=rustfs` to test S3 without K3s.
 - EF Core migrations (PostgreSQL):
   - `dotnet ef migrations add <Name> --project src/GZCTF/GZCTF.csproj --startup-project src/GZCTF/GZCTF.csproj`
   - `dotnet ef database update`

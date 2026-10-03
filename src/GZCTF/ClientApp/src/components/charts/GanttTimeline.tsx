@@ -5,6 +5,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { useLanguage } from '@Utils/I18n'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import classes from '@Styles/GanttTimeline.module.css'
 
 interface GanttTimeLineProps {
@@ -82,7 +83,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
     if (!viewport.current) return
 
     viewport.current.scrollTo({ left: viewport.current.scrollWidth / 3 })
-  }, [viewport.current])
+  }, [])
 
   const { t } = useTranslation()
   const { locale } = useLanguage()
@@ -134,7 +135,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
 
   const [currentMonth, setCurrentMonth] = useState(dayjs().locale(locale).format('SMY'))
 
-  useEffect(() => {
+  useSyncOnChange([scrollPosition, locale, dateData.monthMap], () => {
     const map = dateData.monthMap
 
     for (let i = 0; i < map.length; i++) {
@@ -145,7 +146,7 @@ export const GanttTimeLine: FC<GanttTimeLineProps> = ({ items }) => {
         break
       }
     }
-  }, [scrollPosition, locale, dateData.monthMap])
+  })
 
   const nowOffset = (dateData.now.diff(dateData.start, 's') / dateData.duration) * VIEW_WIDTH + STICKY_WIDTH
   const scrollPos = scrollPosition.x + EDGE_PADDING

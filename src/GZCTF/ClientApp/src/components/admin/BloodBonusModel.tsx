@@ -1,9 +1,10 @@
 import { Button, Group, Modal, ModalProps, NumberInput, Stack, Text } from '@mantine/core'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { BloodBonus } from '@Utils/Shared'
 import { OnceSWRConfig } from '@Hooks/useConfig'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { SubmissionType } from '@Api'
 
 const toNumber = (value: string | number) => {
@@ -19,20 +20,24 @@ export const BloodBonusModel: FC<ModalProps> = (props) => {
   const numId = parseInt(id ?? '-1')
   const { data: gameSource, mutate } = api.edit.useEditGetGame(numId, OnceSWRConfig)
   const [disabled, setDisabled] = useState(false)
-  const [firstBloodBonus, setFirstBloodBonus] = useState(0)
-  const [secondBloodBonus, setSecondBloodBonus] = useState(0)
-  const [thirdBloodBonus, setThirdBloodBonus] = useState(0)
+  // seeded from an already cached `gameSource`, kept in sync below
+  const initialBonus = (type: SubmissionType) =>
+    gameSource ? new BloodBonus(gameSource.bloodBonus).getBonusNum(type) : 0
+
+  const [firstBloodBonus, setFirstBloodBonus] = useState(() => initialBonus(SubmissionType.FirstBlood))
+  const [secondBloodBonus, setSecondBloodBonus] = useState(() => initialBonus(SubmissionType.SecondBlood))
+  const [thirdBloodBonus, setThirdBloodBonus] = useState(() => initialBonus(SubmissionType.ThirdBlood))
 
   const { t } = useTranslation()
 
-  useEffect(() => {
+  useSyncOnChange([gameSource], () => {
     if (gameSource) {
       const bonus = new BloodBonus(gameSource.bloodBonus)
       setFirstBloodBonus(bonus.getBonusNum(SubmissionType.FirstBlood))
       setSecondBloodBonus(bonus.getBonusNum(SubmissionType.SecondBlood))
       setThirdBloodBonus(bonus.getBonusNum(SubmissionType.ThirdBlood))
     }
-  }, [gameSource])
+  })
 
   const onUpdate = async () => {
     if (!gameSource?.title) return

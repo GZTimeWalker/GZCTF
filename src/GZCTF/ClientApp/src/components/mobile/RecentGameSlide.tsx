@@ -27,7 +27,6 @@ export const RecentGameSlide: FC<RecentGameProps> = ({ game, ...others }) => {
       to={`/games/${game.id}`}
       shadow="md"
       p="md"
-      radius="md"
       __vars={{
         '--slide-image': `url(${poster})`,
         '--slide-title-color': titleColor,

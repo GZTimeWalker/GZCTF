@@ -28,6 +28,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { TeamInfoModel, TeamUserInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import styles from '@Styles/TeamEditModal.module.css'
@@ -120,9 +121,7 @@ export const TeamEditModal: FC<TeamEditModalProps> = (props) => {
 
   const { t } = useTranslation()
 
-  useEffect(() => {
-    setTeamInfo(team)
-  }, [team])
+  useSyncOnChange([team], () => setTeamInfo(team))
 
   useEffect(() => {
     const fetchCode = async () => {

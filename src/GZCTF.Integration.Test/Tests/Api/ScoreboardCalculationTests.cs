@@ -348,6 +348,69 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     }
 
     /// <summary>
+    /// Test that ineligible solves do not affect ranking timestamps
+    /// Verifies LastSubmissionTime only updates for score-eligible submissions
+    /// </summary>
+    [Fact]
+    public async Task Scoreboard_ShouldIgnore_IneligibleSubmissionsForRanking()
+    {
+        var game = await CreateGameWithBloodBonus("Ranking Eligibility Test", packBloods(1.0f, 1.0f, 1.0f));
+        var challenge1 = await CreateChallenge(game.Id, "Rank Challenge", "flag{rank}", 1000);
+        var challenge2 = await CreateChallenge(game.Id, "NoScore Challenge", "flag{noscore}", 1000);
+
+        var divisionA = await CreateDivision(game.Id, new DivisionCreateModel
+        {
+            Name = "Division A",
+            InviteCode = "RANK_A",
+            DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
+        });
+
+        var divisionB = await CreateDivision(game.Id, new DivisionCreateModel
+        {
+            Name = "Division B",
+            InviteCode = "RANK_B",
+            DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview,
+            ChallengeConfigs =
+            [
+                new()
+                {
+                    ChallengeId = challenge2.Id,
+                    Permissions = GamePermission.ViewChallenge | GamePermission.SubmitFlags
+                }
+            ]
+        });
+
+        var teamA = await CreateTeamInDivision("RankTeamA", game.Id, divisionA.Id, "RANK_A");
+        var teamB = await CreateTeamInDivision("RankTeamB", game.Id, divisionB.Id, "RANK_B");
+
+        await SubmitFlag(teamB.client, game.Id, challenge1.Id, "flag{rank}"); // +1000, rank 1
+        await Task.Delay(150);
+        await SubmitFlag(teamA.client, game.Id, challenge1.Id, "flag{rank}"); // +1000, rank 2
+        await Task.Delay(150);
+        await SubmitFlag(teamB.client, game.Id, challenge2.Id, "flag{noscore}"); // still rank 1, not rank 2
+
+        await FlushScoreboardCache(game.Id);
+
+        var scoreboard = await GetScoreboard(
+            teamA.client,
+            game.Id,
+            expectedTeamIds: [teamA.team.Id, teamB.team.Id],
+            readiness: s => s.GetTeam(teamB.team.Id).SolvedChallenges.Count >= 2);
+
+        var itemA = scoreboard.GetTeam(teamA.team.Id);
+        var itemB = scoreboard.GetTeam(teamB.team.Id);
+
+        Assert.Equal(1000, itemB.Score);
+        Assert.Equal(1000, itemA.Score);
+
+        Assert.Equal(1, itemB.Rank);
+        Assert.Equal(2, itemA.Rank);
+
+        Assert.True(itemB.LastSubmissionTime <= itemA.LastSubmissionTime,
+            "Ineligible submissions should not push LastSubmissionTime forward for ranking.");
+    }
+
+    /// <summary>
     /// Test dynamic scoring calculation
     /// Verifies that challenge scores decrease as more teams solve them
     /// </summary>

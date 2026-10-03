@@ -61,13 +61,7 @@ public class KubernetesManager : IContainerManager
         // Modification without a valid authorization may be treated as misuse.
         //
         // References: NOTICE, LICENSE_ADDENDUM.txt, licenses/LicenseRef-GZCTF-Restricted.txt
-        IList<V1EnvVar> envs = config.Flag is null
-            ? [new V1EnvVar { Name = "GZCTF_TEAM_ID", Value = config.TeamId }]
-            :
-            [
-                new V1EnvVar { Name = "GZCTF_FLAG", Value = config.Flag },
-                new V1EnvVar { Name = "GZCTF_TEAM_ID", Value = config.TeamId }
-            ];
+        var envs = BuildContainerEnv(config);
 
         var pod = new V1Pod
         {
@@ -252,5 +246,23 @@ public class KubernetesManager : IContainerManager
         }
 
         container.Status = ContainerStatus.Destroyed;
+    }
+
+    private static IList<V1EnvVar> BuildContainerEnv(ContainerConfig config)
+    {
+        var envs = new List<V1EnvVar>(5)
+        {
+            new() { Name = "GZCTF_TEAM_ID", Value = config.TeamId },
+            new() { Name = "GZCTF_USER_ID", Value = config.UserId.ToString() },
+            new() { Name = "GZCTF_CHALLENGE_ID", Value = config.ChallengeId.ToString() }
+        };
+
+        if (config.GameId is int gameId)
+            envs.Add(new V1EnvVar { Name = "GZCTF_GAME_ID", Value = gameId.ToString() });
+
+        if (!string.IsNullOrWhiteSpace(config.Flag))
+            envs.Add(new V1EnvVar { Name = "GZCTF_FLAG", Value = config.Flag });
+
+        return envs;
     }
 }

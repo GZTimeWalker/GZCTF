@@ -10,6 +10,7 @@ import { encryptApiData } from '@Utils/Crypto'
 import { showErrorMsg } from '@Utils/Shared'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { AnswerResult, ChallengeType, SubmissionType } from '@Api'
 
 interface GameChallengeModalProps extends ModalProps {
@@ -99,6 +100,47 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
       })
     } catch (e) {
       showErrorMsg(e, t)
+    }
+  }
+
+  const checkDataFlag = async (id: number, data: string) => {
+    if (data === AnswerResult.Accepted) {
+      setSolvedChallengeId(challengeId)
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'teal',
+        title: t('challenge.notification.flag.accepted.title'),
+        message: gameEnded
+          ? t('challenge.notification.flag.accepted.ended')
+          : t('challenge.notification.flag.accepted.message'),
+        icon: <Icon path={mdiCheck} size={1} />,
+        autoClose: 8000,
+        loading: false,
+      })
+      if (isDynamic && challenge.context?.instanceEntry) await requestDestroy()
+      props.onClose()
+    } else if (data === AnswerResult.WrongAnswer) {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'red',
+        title: t('challenge.notification.flag.wrong'),
+        message: wrongFlagHints[Math.floor(Math.random() * wrongFlagHints.length)],
+        icon: <Icon path={mdiClose} size={1} />,
+        autoClose: 8000,
+        loading: false,
+      })
+    } else {
+      updateNotification({
+        id: 'flag-submitted',
+        color: 'yellow',
+        title: t('challenge.notification.flag.unknown.title'),
+        message: t('challenge.notification.flag.unknown.message', {
+          id,
+        }),
+        icon: <Icon path={mdiLoading} size={1} />,
+        autoClose: false,
+        withCloseButton: true,
+      })
     }
   }
 
@@ -196,55 +238,14 @@ export const GameChallengeModal: FC<GameChallengeModalProps> = (props) => {
     return () => clearInterval(polling)
   }, [submitId])
 
-  useEffect(() => {
+  useSyncOnChange([status, challengeId, challenge], () => {
     if (challengeId !== solvedChallengeId) return
 
     if (status !== SubmissionType.Unaccepted && status !== undefined) {
       // status has been updated, reset solved challenge id
       setSolvedChallengeId(null)
     }
-  }, [status, challengeId, challenge])
-
-  const checkDataFlag = async (id: number, data: string) => {
-    if (data === AnswerResult.Accepted) {
-      setSolvedChallengeId(challengeId)
-      updateNotification({
-        id: 'flag-submitted',
-        color: 'teal',
-        title: t('challenge.notification.flag.accepted.title'),
-        message: gameEnded
-          ? t('challenge.notification.flag.accepted.ended')
-          : t('challenge.notification.flag.accepted.message'),
-        icon: <Icon path={mdiCheck} size={1} />,
-        autoClose: 8000,
-        loading: false,
-      })
-      if (isDynamic && challenge.context?.instanceEntry) await requestDestroy()
-      props.onClose()
-    } else if (data === AnswerResult.WrongAnswer) {
-      updateNotification({
-        id: 'flag-submitted',
-        color: 'red',
-        title: t('challenge.notification.flag.wrong'),
-        message: wrongFlagHints[Math.floor(Math.random() * wrongFlagHints.length)],
-        icon: <Icon path={mdiClose} size={1} />,
-        autoClose: 8000,
-        loading: false,
-      })
-    } else {
-      updateNotification({
-        id: 'flag-submitted',
-        color: 'yellow',
-        title: t('challenge.notification.flag.unknown.title'),
-        message: t('challenge.notification.flag.unknown.message', {
-          id,
-        }),
-        icon: <Icon path={mdiLoading} size={1} />,
-        autoClose: false,
-        withCloseButton: true,
-      })
-    }
-  }
+  })
 
   return (
     <ChallengeModal

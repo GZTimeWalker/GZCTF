@@ -40,6 +40,7 @@ import { downloadBlob } from '@Utils/ApiHelper'
 import { getInputNumber, randomInviteCode, showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useAdminGame } from '@Hooks/useGame'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { GameInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 
@@ -49,13 +50,17 @@ const GameInfoEdit: FC = () => {
   const { id } = useParams()
   const numId = parseInt(id ?? '-1')
   const { game: gameSource, mutate } = useAdminGame(numId)
-  const [game, setGame] = useState<GameInfoModel>()
   const navigate = useNavigate()
 
+  // seeded from an already cached `gameSource`, kept in sync below
+  const [game, setGame] = useState<GameInfoModel | undefined>(gameSource)
   const [disabled, setDisabled] = useState(false)
-  const [start, setStart] = useInputState(dayjs())
-  const [end, setEnd] = useInputState(dayjs())
-  const [wpddl, setWpddl] = useInputState(3)
+  // `useInputState` has no lazy initializer, so these are plain expressions
+  const [start, setStart] = useInputState(gameSource ? dayjs(gameSource.start) : dayjs())
+  const [end, setEnd] = useInputState(gameSource ? dayjs(gameSource.end) : dayjs())
+  const [wpddl, setWpddl] = useInputState(
+    gameSource ? Math.max(dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h'), 0) : 3
+  )
 
   const modals = useModals()
   const clipboard = useClipboard()
@@ -70,8 +75,11 @@ const GameInfoEdit: FC = () => {
         icon: <Icon path={mdiClose} size={1} />,
       })
       navigate('/admin/games')
-      return
     }
+  }, [id, gameSource])
+
+  useSyncOnChange([id, gameSource], () => {
+    if (numId < 0) return
 
     if (gameSource) {
       setGame(gameSource)
@@ -81,7 +89,7 @@ const GameInfoEdit: FC = () => {
       const wpddl = dayjs(gameSource.writeupDeadline).diff(gameSource.end, 'h')
       setWpddl(wpddl < 0 ? 0 : wpddl)
     }
-  }, [id, gameSource])
+  })
 
   const onUpdatePoster = async (file: File | undefined) => {
     if (!game || !file) return
@@ -129,7 +137,7 @@ const GameInfoEdit: FC = () => {
     try {
       await api.edit.editUpdateGame(game.id!, {
         ...game,
-        inviteCode: (game.inviteCode?.length ?? 0 > 6) ? game.inviteCode : null,
+        inviteCode: (game.inviteCode?.length ?? 0) > 6 ? game.inviteCode : null,
         start: start.valueOf(),
         end: end.valueOf(),
         writeupDeadline: end.add(wpddl, 'h').valueOf(),

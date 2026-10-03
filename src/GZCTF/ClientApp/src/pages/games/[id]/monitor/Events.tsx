@@ -140,8 +140,9 @@ const Events: FC = () => {
 
   const [activePage, setPage] = useState(1)
 
-  const [, update] = useState(new Date())
-  const newEvents = useRef<GameEvent[]>([])
+  // realtime events buffered on top of the fetched page, kept in state so it is
+  // not read from a mutable ref during render
+  const [newEvents, setNewEvents] = useState<GameEvent[]>([])
   const [events, setEvents] = useState<GameEvent[]>()
 
   const { game } = useGame(numId)
@@ -157,6 +158,9 @@ const Events: FC = () => {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      // the freshly fetched first page already contains the buffered events
+      if (activePage === 1) setNewEvents((prev) => (prev.length ? [] : prev))
+
       try {
         const res = await api.game.gameEvents(numId, {
           hideContainer: hideContainerEvents,
@@ -175,10 +179,6 @@ const Events: FC = () => {
     }
 
     fetchEvents()
-
-    if (activePage === 1) {
-      newEvents.current = []
-    }
   }, [activePage, hideContainerEvents, numId, t])
 
   useEffect(() => {
@@ -194,8 +194,7 @@ const Events: FC = () => {
 
       connection.on('ReceivedGameEvent', (message: GameEvent) => {
         console.log(message)
-        newEvents.current = [message, ...newEvents.current]
-        update(new Date(message.time!))
+        setNewEvents((prev) => [message, ...prev])
       })
 
       const startConnection = async () => {
@@ -221,7 +220,7 @@ const Events: FC = () => {
     }
   }, [game, numId, t])
 
-  const filteredEvents = newEvents.current.filter(
+  const filteredEvents = newEvents.filter(
     (e) => !hideContainerEvents || (e.type !== EventType.ContainerStart && e.type !== EventType.ContainerDestroy)
   )
 
@@ -257,7 +256,6 @@ const Events: FC = () => {
           {[...(activePage === 1 ? filteredEvents : []), ...(events ?? [])]?.map((event, i) => (
             <Card
               shadow="sm"
-              radius="sm"
               p="xs"
               key={`${event.time}@${i}`}
               className={cx({ [tableClasses.fade]: i === 0 && activePage === 1 && filteredEvents.length > 0 })}

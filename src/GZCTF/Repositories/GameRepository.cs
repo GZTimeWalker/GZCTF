@@ -437,7 +437,7 @@ public class GameRepository(
                 bloodEligible));
         }
 
-        foreach (var (challengeId, info) in challenges)
+        foreach ((int challengeId, ChallengeInfo info) in challenges)
         {
             var meta = challengeMetas[challengeId];
             var solvedCount = challengeAcceptedCounts.GetValueOrDefault(challengeId);
@@ -521,6 +521,13 @@ public class GameRepository(
 
             // 5.3. update scoreboard item
             scoreboardItem.SolvedChallenges.Add(item);
+
+            if (!solve.ScoreEligible)
+                continue;
+
+            // only update last submission time for eligible solves,
+            // to prevent incorrectly ranking teams with ineligible
+            // late submissions above teams with eligible early submissions
             scoreboardItem.Score += item.Score;
             scoreboardItem.LastSubmissionTime = item.SubmitTimeUtc;
         }

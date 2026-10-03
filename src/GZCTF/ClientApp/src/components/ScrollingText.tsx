@@ -1,6 +1,7 @@
 import { Box, BoxProps, Text, type MantineSize } from '@mantine/core'
 import cx from 'clsx'
 import { FC, useRef, useState, useCallback } from 'react'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import classes from '@Styles/ScrollingText.module.css'
 
 interface ScrollingTextProps extends BoxProps {
@@ -16,6 +17,11 @@ export const ScrollingText: FC<ScrollingTextProps> = ({ text, onClick, size, spe
   const [overflow, setOverflow] = useState(false)
   const [measured, setMeasured] = useState(false)
   const [duration, setDuration] = useState(4)
+
+  useSyncOnChange([text], () => {
+    setMeasured(false)
+    setOverflow(false)
+  })
 
   const handleMeasure = useCallback(() => {
     if (measured) return

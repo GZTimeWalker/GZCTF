@@ -2,10 +2,11 @@ import { Button, Group, Modal, ModalProps, Stack, Text, Textarea } from '@mantin
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { showErrorMsg } from '@Utils/Shared'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { GameNotice } from '@Api'
 
 interface GameNoticeEditModalProps extends ModalProps {
@@ -22,9 +23,7 @@ export const GameNoticeEditModal: FC<GameNoticeEditModalProps> = (props) => {
   const [disabled, setDisabled] = useState(false)
   const { t } = useTranslation()
 
-  useEffect(() => {
-    setContent(gameNotice?.values.at(-1) || '')
-  }, [gameNotice])
+  useSyncOnChange([gameNotice], () => setContent(gameNotice?.values.at(-1) || ''))
 
   const onConfirm = async () => {
     if (!content) {

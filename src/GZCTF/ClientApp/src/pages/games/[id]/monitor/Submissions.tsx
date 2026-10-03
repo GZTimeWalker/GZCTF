@@ -70,8 +70,9 @@ const Submissions: FC = () => {
 
   const [activePage, setPage] = useState(1)
 
-  const [, update] = useState(new Date())
-  const newSubmissions = useRef<Submission[]>([])
+  // realtime submissions buffered on top of the fetched page, kept in state so it is
+  // not read from a mutable ref during render
+  const [newSubmissions, setNewSubmissions] = useState<Submission[]>([])
   const [submissions, setSubmissions] = useState<Submission[]>()
   const [type, setType] = useState<AnswerResult | 'All'>('All')
   const [disabled, setDisabled] = useState(false)
@@ -92,6 +93,9 @@ const Submissions: FC = () => {
 
   useEffect(() => {
     const fetchSubmissions = async () => {
+      // the freshly fetched first page already contains the buffered submissions
+      if (activePage === 1) setNewSubmissions((prev) => (prev.length ? [] : prev))
+
       try {
         const res = await api.game.gameSubmissions(numId, {
           type: type === 'All' ? undefined : type,
@@ -110,10 +114,6 @@ const Submissions: FC = () => {
     }
 
     fetchSubmissions()
-
-    if (activePage === 1) {
-      newSubmissions.current = []
-    }
   }, [activePage, type, numId, t])
 
   useEffect(() => {
@@ -129,8 +129,7 @@ const Submissions: FC = () => {
 
       connection.on('ReceivedSubmissions', (message: Submission) => {
         console.log(message)
-        newSubmissions.current = [message, ...newSubmissions.current]
-        update(new Date(message.time!))
+        setNewSubmissions((prev) => [message, ...prev])
       })
 
       const startConnection = async () => {
@@ -156,7 +155,7 @@ const Submissions: FC = () => {
     }
   }, [game, numId, t])
 
-  const filteredSubs = newSubmissions.current.filter((item) => type === 'All' || item.status === type)
+  const filteredSubs = newSubmissions.filter((item) => type === 'All' || item.status === type)
 
   const rows = [...(activePage === 1 ? filteredSubs : []), ...(submissions ?? [])].map((item, i) => (
     <Table.Tr

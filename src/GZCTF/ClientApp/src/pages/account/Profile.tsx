@@ -20,7 +20,7 @@ import { Dropzone } from '@mantine/dropzone'
 import { notifications, showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { PasswordChangeModal } from '@Components/PasswordChangeModal'
 import { WithNavBar } from '@Components/WithNavbar'
@@ -28,6 +28,7 @@ import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
 import { IMAGE_MIME_TYPES } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
 import { usePageTitle } from '@Hooks/usePageTitle'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { useUser } from '@Hooks/useUser'
 import api, { ProfileUpdateModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
@@ -58,7 +59,7 @@ const Profile: FC = () => {
 
   usePageTitle(t('account.title.profile'))
 
-  useEffect(() => {
+  useSyncOnChange([user], () => {
     setProfile({
       userName: user?.userName,
       bio: user?.bio,
@@ -66,7 +67,7 @@ const Profile: FC = () => {
       phone: user?.phone,
       realName: user?.realName,
     })
-  }, [user])
+  })
 
   const onChangeAvatar = async () => {
     if (!avatarFile) return

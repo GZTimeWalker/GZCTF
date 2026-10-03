@@ -2,13 +2,11 @@
 using GZCTF.Models.Request.Game;
 using GZCTF.Models.Request.Info;
 using GZCTF.Repositories.Interface;
-using GZCTF.Services.Cache;
 using Microsoft.EntityFrameworkCore;
 
 namespace GZCTF.Repositories;
 
 public class ParticipationRepository(
-    CacheHelper cacheHelper,
     IBlobRepository blobRepository,
     IDivisionRepository divisionRepository,
     AppDbContext context) : RepositoryBase(context), IParticipationRepository
@@ -121,8 +119,6 @@ public class ParticipationRepository(
         }
 
         await SaveAsync(token);
-        // always flush scoreboard, it's inexpensive
-        await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
     private async Task UpdateDivision(Participation part, int? divisionId, CancellationToken token = default)
@@ -146,7 +142,6 @@ public class ParticipationRepository(
         }
 
         await SaveAsync(token);
-        await cacheHelper.FlushScoreboardCache(part.GameId, token);
     }
 
     public Task<Participation[]> GetParticipationsByIds(IEnumerable<int> ids, CancellationToken token = default) =>

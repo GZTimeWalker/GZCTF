@@ -3,6 +3,73 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.8.7](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.6..v1.8.7) - 2026-07-05
+
+### ⛰️ Features
+
+- **(mail)** configuring SMTP server for no-authentication access (#586) - ([424893](https://github.com/GZTimeWalker/GZCTF/commit/424893)) by **Copilot**
+
+---
+## [1.8.6](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.5..v1.8.6) - 2026-06-06
+
+### 🐛 Bug Fixes
+
+- **(web)** prevent table cell text wrapping with Mantine 9 - ([4bba99](https://github.com/GZTimeWalker/GZCTF/commit/4bba99)) by **GZTime**
+
+---
+## [1.8.5](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.4..v1.8.5) - 2026-05-01
+
+### ⛰️ Features
+
+- **(storage)** stream compression directly to S3 without intermediate buffering - ([7a2bca](https://github.com/GZTimeWalker/GZCTF/commit/7a2bca)) by **GZTime**
+- **(storage)** add compression support for file uploads - ([674a52](https://github.com/GZTimeWalker/GZCTF/commit/674a52)) by **GZTime**
+
+### 🐛 Bug Fixes
+
+- **(scoreboard)** reset scrolling text measurement when text prop changes - ([c42701](https://github.com/GZTimeWalker/GZCTF/commit/c42701)) by **GZTime**
+- **(team)** pass correct user to RemoveUserParticipations when kicking member - ([3bc125](https://github.com/GZTimeWalker/GZCTF/commit/3bc125)) by **GZTime**
+- **(traffic)** archive traffic records before container destruction - ([393884](https://github.com/GZTimeWalker/GZCTF/commit/393884)) by **GZTime**
+- **(traffic)** resolve race conditions and fire-and-forget in traffic recording - ([18beb2](https://github.com/GZTimeWalker/GZCTF/commit/18beb2)) by **GZTime**
+
+### 🔨 Refactor
+
+- Traffic capture for platform proxy (#574) - ([d20bd9](https://github.com/GZTimeWalker/GZCTF/commit/d20bd9)) by **GZTime**
+
+---
+## [1.8.4](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.3..v1.8.4) - 2026-04-25
+
+### 🐛 Bug Fixes
+
+- **(captcha)** reset Turnstile token after form submission to prevent reuse - ([e53141](https://github.com/GZTimeWalker/GZCTF/commit/e53141)) by **GZTime**
+- **(division)** ensure inviteCode is always set in model - ([850ef3](https://github.com/GZTimeWalker/GZCTF/commit/850ef3)) by **GZTime**
+- **(style)** radar chart not centered - ([92832e](https://github.com/GZTimeWalker/GZCTF/commit/92832e)) by **GZTime**
+
+### 🎨 Styling
+
+- **(badge)** temporary fix Badge styles in mantine v9 - ([a807ee](https://github.com/GZTimeWalker/GZCTF/commit/a807ee)) by **GZTime**
+- **(recent_game)** use Text instead of Badge - ([009430](https://github.com/GZTimeWalker/GZCTF/commit/009430)) by **GZTime**
+- **(traffic)** improve layout of Traffic & Challenge items - ([25a44f](https://github.com/GZTimeWalker/GZCTF/commit/25a44f)) by **GZTime**
+
+### 🔨 Refactor
+
+- **(deps)** upgrade mantine to v9 - ([e2bcd1](https://github.com/GZTimeWalker/GZCTF/commit/e2bcd1)) by **GZTime**
+
+---
+## [1.8.3](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.2..v1.8.3) - 2026-03-15
+
+### 🔨 Refactor
+
+- **(deps)** upgrade to vite 8 - ([a98027](https://github.com/GZTimeWalker/GZCTF/commit/a98027)) by **GZTime**
+
+---
+## [1.8.2](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.1..v1.8.2) - 2026-02-26
+
+### 🐛 Bug Fixes
+
+- **(game)** flush cache after transaction committed - ([9d92b8](https://github.com/GZTimeWalker/GZCTF/commit/9d92b8)) by **GZTime**
+- **(game)** prevent incorrectly team ranking with ineligible submissions - ([05d04a](https://github.com/GZTimeWalker/GZCTF/commit/05d04a)) by **GZTime**
+
+---
 ## [1.8.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.0..v1.8.1) - 2026-01-05
 
 ### ⛰️ Features
@@ -93,8 +160,8 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 - **(api)** Implement Division Management in Game Controller - ([96dc27](https://github.com/GZTimeWalker/GZCTF/commit/96dc27)) by **GZTime**
 - **(aspire)** auto create bucket - ([8e3450](https://github.com/GZTimeWalker/GZCTF/commit/8e3450)) by **Steven He**
-- **(aspire)** configure minio service discovery and default bucket - ([92c5b3](https://github.com/GZTimeWalker/GZCTF/commit/92c5b3)) by **Steven He**
-- **(aspire)** add minio support - ([de0c11](https://github.com/GZTimeWalker/GZCTF/commit/de0c11)) by **Steven He**
+- **(aspire)** configure S3-compatible storage service discovery and default bucket - ([92c5b3](https://github.com/GZTimeWalker/GZCTF/commit/92c5b3)) by **Steven He**
+- **(aspire)** add S3-compatible storage support - ([de0c11](https://github.com/GZTimeWalker/GZCTF/commit/de0c11)) by **Steven He**
 - **(challenge)** add deadline feature to challenges modal - ([dbbb98](https://github.com/GZTimeWalker/GZCTF/commit/dbbb98)) by **GZTime**
 - **(countdown)** improve timeout handling in Countdown component - ([e19679](https://github.com/GZTimeWalker/GZCTF/commit/e19679)) by **GZTime**
 - **(deadline)** add logic for challenge deadline - ([c13a91](https://github.com/GZTimeWalker/GZCTF/commit/c13a91)) by **GZTime**
@@ -106,7 +173,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - **(frontend)** add division management functionality - ([836e49](https://github.com/GZTimeWalker/GZCTF/commit/836e49)) by **GZTime**
 - **(game)** flush scoreboard cache - ([192c9c](https://github.com/GZTimeWalker/GZCTF/commit/192c9c)) by **GZTime**
 - **(game)** add game join check info model and API endpoint - ([3388ce](https://github.com/GZTimeWalker/GZCTF/commit/3388ce)) by **GZTime**
-- **(integration)** enhance logging and initialization for K3s and MinIO containers - ([ec4e1b](https://github.com/GZTimeWalker/GZCTF/commit/ec4e1b)) by **GZTime**
+- **(integration)** enhance logging and initialization for K3s and object-storage containers - ([ec4e1b](https://github.com/GZTimeWalker/GZCTF/commit/ec4e1b)) by **GZTime**
 - **(migrations)** migrate divisions from JSON to new Divisions table - ([c2597c](https://github.com/GZTimeWalker/GZCTF/commit/c2597c)) by **GZTime**
 - **(model)** update model and division card design - ([bc843a](https://github.com/GZTimeWalker/GZCTF/commit/bc843a)) by **GZTime**
 - **(model)** Enhance division permissions and challenge visibility in game logic - ([039c7c](https://github.com/GZTimeWalker/GZCTF/commit/039c7c)) by **GZTime**
@@ -123,7 +190,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 - **(test)** add [ExcludeFromCodeCoverage] attributes to some classes - ([33cde7](https://github.com/GZTimeWalker/GZCTF/commit/33cde7)) by **GZTime**
 - **(tests)** add tests for admin download of writeups and submission sheet validation - ([045523](https://github.com/GZTimeWalker/GZCTF/commit/045523)) by **GZTime**
 - **(tests)** add dynamic container challenge test with flag retrieval - ([37af4d](https://github.com/GZTimeWalker/GZCTF/commit/37af4d)) by **GZTime**
-- **(tests)** enhance integration tests with K3s and MinIO support - ([a581ac](https://github.com/GZTimeWalker/GZCTF/commit/a581ac)) by **GZTime**
+- **(tests)** enhance integration tests with K3s and S3-compatible storage - ([a581ac](https://github.com/GZTimeWalker/GZCTF/commit/a581ac)) by **GZTime**
 - **(tests)** update EditControllerTests to include TCP flag retrieval - ([488431](https://github.com/GZTimeWalker/GZCTF/commit/488431)) by **GZTime**
 - **(tests)** add comprehensive CI integration and unit tests with Testcontainers (#501) - ([a5d52e](https://github.com/GZTimeWalker/GZCTF/commit/a5d52e)) by **Copilot**
 - add pingfall settings - ([8d0cff](https://github.com/GZTimeWalker/GZCTF/commit/8d0cff)) by **Reverier-Xu**
@@ -138,7 +205,7 @@ All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will b
 
 - **(aspire)** workaround localhost service discovery - ([095fd5](https://github.com/GZTimeWalker/GZCTF/commit/095fd5)) by **Steven He**
 - **(aspire)** set default bucket - ([960c3a](https://github.com/GZTimeWalker/GZCTF/commit/960c3a)) by **Steven He**
-- **(aspire)** correct minio connection string - ([50b5be](https://github.com/GZTimeWalker/GZCTF/commit/50b5be)) by **Steven He**
+- **(aspire)** correct S3-compatible storage connection string - ([50b5be](https://github.com/GZTimeWalker/GZCTF/commit/50b5be)) by **Steven He**
 - **(aspire)** ensure initialization order - ([bd5ce2](https://github.com/GZTimeWalker/GZCTF/commit/bd5ce2)) by **Steven He**
 - **(cache)** type mismatch for recent games - ([3c959c](https://github.com/GZTimeWalker/GZCTF/commit/3c959c)) by **GZTime**
 - **(challenge)** update isEnabled will change deadline - ([0f789e](https://github.com/GZTimeWalker/GZCTF/commit/0f789e)) by **GZTime**

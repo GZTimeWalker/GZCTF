@@ -60,12 +60,12 @@ export const MobileScoreboardItemModal: FC<ScoreboardItemModalProps> = React.mem
       const cateScore = solvedChallenges.reduce((sum, chal) => sum + chal.score!, 0)
       return Math.min(cateScore / ind.scoreSum, 1)
     })
-  }, [indicator, item?.solvedChallenges, challengeIdMap])
+  }, [indicator, item, challengeIdMap])
 
   const sortedSolvedChallenges = useMemo(() => {
     if (!item?.solvedChallenges) return []
     return item.solvedChallenges.sort((a, b) => dayjs(b.time).diff(dayjs(a.time)))
-  }, [item?.solvedChallenges])
+  }, [item])
 
   return (
     <Modal

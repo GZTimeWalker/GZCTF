@@ -236,7 +236,7 @@ _Pvt_Extensions
 .fake/
 
 # Docs
-**/.next
+docs
 
 **/appsettings.json
 **/appsettings.*.json
@@ -255,6 +255,7 @@ _Pvt_Extensions
 **/log/**
 **/files/**
 **/uploads/**
+**/sixlabors.lic
 **/.DS_Store
 
 # Node package lock files (npm)

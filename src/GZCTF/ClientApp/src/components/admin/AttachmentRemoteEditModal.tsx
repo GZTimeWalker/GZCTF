@@ -2,7 +2,7 @@ import { Button, Modal, ModalProps, Stack, Text, Textarea } from '@mantine/core'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { showErrorMsg } from '@Utils/Shared'
@@ -19,11 +19,11 @@ export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
   const { mutate } = useEditChallenge(numId, numCId)
 
   const [text, setText] = useState('')
-  const [flags, setFlags] = useState<FlagCreateModel[]>([])
 
   const { t } = useTranslation()
 
-  useEffect(() => {
+  // purely derived from the textarea content
+  const flags = useMemo(() => {
     const list: FlagCreateModel[] = []
     text.split('\n').forEach((line) => {
       let part = line.split(' ')
@@ -37,7 +37,7 @@ export const AttachmentRemoteEditModal: FC<ModalProps> = (props) => {
         remoteUrl: part[1],
       })
     })
-    setFlags(list)
+    return list
   }, [text])
 
   const onUpload = async () => {

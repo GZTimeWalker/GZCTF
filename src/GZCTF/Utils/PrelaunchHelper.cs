@@ -54,7 +54,7 @@ public static class PrelaunchHelper
                     admin = new UserInfo
                     {
                         UserName = "Admin",
-                        Email = "admin@gzti.me",
+                        Email = "admin@example.invalid",
                         Role = Role.Admin,
                         EmailConfirmed = true,
                         RegisterTimeUtc = DateTimeOffset.UtcNow

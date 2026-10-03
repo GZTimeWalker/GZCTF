@@ -20,7 +20,7 @@ import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiKeyAlert, mdiTarget } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { WithGameMonitor } from '@Components/WithGameMonitor'
@@ -32,6 +32,7 @@ import { showErrorMsg } from '@Utils/Shared'
 import { useParticipationStatusMap } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { OnceSWRConfig } from '@Hooks/useConfig'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { useUserRole } from '@Hooks/useUser'
 import api, { CheatInfoModel, ParticipationEditModel, ParticipationStatus, Role } from '@Api'
 import classes from '@Styles/Accordion.module.css'
@@ -366,7 +367,9 @@ const CheatInfo: FC = () => {
   const { data: cheatInfo } = api.game.useGameCheatInfo(numId, OnceSWRConfig)
 
   const [disabled, setDisabled] = useState(false)
-  const [cheatTeamInfo, setCheatTeamInfo] = useState<Map<number, CheatTeamInfo>>()
+  const [cheatTeamInfo, setCheatTeamInfo] = useState<Map<number, CheatTeamInfo> | undefined>(() =>
+    cheatInfo ? ToCheatTeamInfo(cheatInfo) : undefined
+  )
   const [teamView, setTeamView] = useLocalStorage({
     key: 'cheat-info-team-view',
     defaultValue: true,
@@ -375,11 +378,11 @@ const CheatInfo: FC = () => {
 
   const { t } = useTranslation()
 
-  useEffect(() => {
+  useSyncOnChange([cheatInfo], () => {
     if (!cheatInfo) return
 
     setCheatTeamInfo(ToCheatTeamInfo(cheatInfo))
-  }, [cheatInfo])
+  })
 
   const setParticipation = async (id: number, model: ParticipationEditModel) => {
     setDisabled(true)

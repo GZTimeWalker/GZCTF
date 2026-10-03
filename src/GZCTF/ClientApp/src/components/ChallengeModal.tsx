@@ -22,11 +22,14 @@ import { InstanceEntry } from '@Components/InstanceEntry'
 import { ContentPlaceholder, InlineMarkdown, Markdown } from '@Components/MarkdownRenderer'
 import { useLanguage } from '@Utils/I18n'
 import { ChallengeCategoryItemProps } from '@Utils/Shared'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { ChallengeDetailModel, ChallengeType } from '@Api'
 import classes from '@Styles/ChallengeModal.module.css'
 import misc from '@Styles/Misc.module.css'
 
 dayjs.extend(duration)
+
+const pickPlaceholder = (placeholders: string[]) => placeholders[Math.floor(Math.random() * placeholders.length)]
 
 interface ChallengeDeadlineNoticeProps {
   deadline: dayjs.Dayjs
@@ -38,8 +41,9 @@ const ChallengeDeadlineNotice: FC<ChallengeDeadlineNoticeProps> = ({ deadline, o
   const [now, setNow] = useState(dayjs())
   const { locale } = useLanguage()
 
+  useSyncOnChange([deadline], () => setNow(dayjs()))
+
   useEffect(() => {
-    setNow(dayjs())
     const timer = setInterval(() => setNow(dayjs()), 1000)
     return () => clearInterval(timer)
   }, [deadline])
@@ -119,17 +123,13 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     returnObjects: true,
   }) as string[]
 
-  const [placeholder, setPlaceholder] = useState('')
-  useEffect(() => {
-    setPlaceholder(placeholders[Math.floor(Math.random() * placeholders.length)])
-  }, [challenge])
+  const [placeholder, setPlaceholder] = useState(pickPlaceholder(placeholders))
+  useSyncOnChange([challenge], () => setPlaceholder(pickPlaceholder(placeholders)))
 
-  const deadlineTime = useMemo(() => (challenge?.deadline ? dayjs(challenge.deadline) : null), [challenge?.deadline])
+  const deadlineTime = useMemo(() => (challenge?.deadline ? dayjs(challenge.deadline) : null), [challenge])
   const [isDeadlinePassed, setIsDeadlinePassed] = useState(() => (deadlineTime ? dayjs().isAfter(deadlineTime) : false))
 
-  useEffect(() => {
-    setIsDeadlinePassed(deadlineTime ? dayjs().isAfter(deadlineTime) : false)
-  }, [deadlineTime])
+  useSyncOnChange([deadlineTime], () => setIsDeadlinePassed(deadlineTime ? dayjs().isAfter(deadlineTime) : false))
 
   const isLimitReached = (challenge?.limit && (challenge.attempts ?? 0) >= challenge.limit) || false
 
@@ -245,7 +245,7 @@ export const ChallengeModal: FC<ChallengeModalProps> = (props) => {
     }
 
     return <Input.Label>{content}</Input.Label>
-  }, [challenge?.attempts, challenge?.limit, solved, deadlineTime, locale, isDeadlinePassed, t])
+  }, [challenge, solved, deadlineTime, locale, isDeadlinePassed, t])
 
   const inputValue = solved
     ? t('challenge.content.already_solved')

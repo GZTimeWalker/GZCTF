@@ -1,6 +1,7 @@
 import { ModalProps, Modal, Stack, Select, Button } from '@mantine/core'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { Division, ParticipationEditModel } from '@Api'
 
 interface ParticipationDivisionEditModalProps extends ModalProps {
@@ -19,10 +20,10 @@ export const ParticipationDivisionEditModal: FC<ParticipationDivisionEditModalPr
 
   const options = useMemo(() => divisions.map((div) => ({ value: div.id.toString(), label: div.name })), [divisions])
 
-  useEffect(() => {
+  useSyncOnChange([currentDivisionId, modalProps.opened], () => {
     setDivisionId(currentDivisionId ? currentDivisionId.toString() : '')
     setDisabled(false)
-  }, [currentDivisionId, modalProps.opened])
+  })
 
   const onConfirm = async () => {
     const nextDivisionId = divisionId ? parseInt(divisionId, 10) : null

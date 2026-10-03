@@ -1,3 +1,5 @@
+using GZCTF.Utils;
+
 namespace GZCTF.Storage.Interface;
 
 /// <summary>
@@ -44,7 +46,9 @@ public interface IBlobStorage
     /// <summary>
     /// Copies the specified local file into the storage backend at the provided path.
     /// </summary>
-    Task WriteFileAsync(string path, string localFilePath, CancellationToken cancellationToken = default);
+    Task WriteFileAsync(string path, string localFilePath,
+        CompressionFormat format = CompressionFormat.None,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Writes textual content to the specified path.

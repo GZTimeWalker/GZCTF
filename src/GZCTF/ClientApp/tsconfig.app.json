@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "allowJs": false,
-    "baseUrl": ".",
     "incremental": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
@@ -10,14 +9,14 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "@Api": ["src/Api.ts"],
-      "@App": ["src/App"],
-      "@Components/*": ["src/components/*"],
-      "@Hooks/*": ["src/hooks/*"],
-      "@Pages/*": ["src/pages/*"],
-      "@Resources/*": ["src/resources/*"],
-      "@Styles/*": ["src/styles/components/*", "src/styles/shared/*", "src/styles/pages/*"],
-      "@Utils/*": ["src/utils/*"]
+      "@Api": ["./src/Api.ts"],
+      "@App": ["./src/App"],
+      "@Components/*": ["./src/components/*"],
+      "@Hooks/*": ["./src/hooks/*"],
+      "@Pages/*": ["./src/pages/*"],
+      "@Resources/*": ["./src/resources/*"],
+      "@Styles/*": ["./src/styles/components/*", "./src/styles/shared/*", "./src/styles/pages/*"],
+      "@Utils/*": ["./src/utils/*"]
     },
     "skipLibCheck": true,
     "strict": true,

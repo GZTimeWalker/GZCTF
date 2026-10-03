@@ -17,7 +17,7 @@ import { useLocalStorage } from '@mantine/hooks'
 import { mdiFileUploadOutline, mdiFlagOutline, mdiPuzzle } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import dayjs from 'dayjs'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useParams } from 'react-router'
 import { ChallengeCard } from '@Components/ChallengeCard'
@@ -26,6 +26,7 @@ import { GameChallengeModal } from '@Components/GameChallengeModal'
 import { WriteupSubmitModal } from '@Components/WriteupSubmitModal'
 import { useChallengeCategoryLabelMap, SubmissionTypeIconMap } from '@Utils/Shared'
 import { useGame, useGameTeamInfo } from '@Hooks/useGame'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import { ChallengeInfo, ChallengeCategory, SubmissionType } from '@Api'
 import classes from '@Styles/ChallengePanel.module.css'
 
@@ -56,27 +57,24 @@ export const ChallengePanel: FC = () => {
         !hideSolved || (teamInfo && teamInfo.rank?.solvedChallenges?.find((c) => c.id === chal.id)) === undefined
     )
 
-  const [challenge, setChallenge] = useState<ChallengeInfo | null>(null)
-  const [detailOpened, setDetailOpened] = useState(false)
+  // challenge referenced by the current location hash, e.g. `#42-title`
+  const hashChallengeId = parseInt(hash.slice(1).split('-')[0])
+  const hashChallenge =
+    isNaN(hashChallengeId) || hashChallengeId < 0 ? undefined : allChallenges.find((c) => c.id === hashChallengeId)
+
+  const [challenge, setChallenge] = useState<ChallengeInfo | null>(hashChallenge ?? null)
+  const [detailOpened, setDetailOpened] = useState(!!hashChallenge)
   const { iconMap, colorMap } = SubmissionTypeIconMap(0.8)
   const [writeupSubmitOpened, setWriteupSubmitOpened] = useState(false)
   const challengeCategoryLabelMap = useChallengeCategoryLabelMap()
   const { t } = useTranslation()
 
-  useEffect(() => {
-    const challId = hash.slice(1).split('-')[0]
-    if (challId && allChallenges) {
-      const id = parseInt(challId)
-      if (isNaN(id) || id < 0) return
-      if (challenge?.id === id) return
+  useSyncOnChange([hash, challenge, challenges], () => {
+    if (!hashChallenge || challenge?.id === hashChallenge.id) return
 
-      const chal = allChallenges.find((c) => c.id === id)
-      if (chal) {
-        setChallenge(chal)
-        setDetailOpened(true)
-      }
-    }
-  }, [hash, challenge, allChallenges])
+    setChallenge(hashChallenge)
+    setDetailOpened(true)
+  })
 
   // skeleton for loading
   if (!challenges) {
@@ -103,7 +101,7 @@ export const ChallengePanel: FC = () => {
           {Array(13)
             .fill(null)
             .map((_v, i) => (
-              <Card key={i} radius="md" shadow="sm">
+              <Card key={i} shadow="sm">
                 <Stack gap="sm" pos="relative" style={{ zIndex: 99 }}>
                   <Skeleton height="1.5rem" width="70%" mt={4} />
                   <Divider />
@@ -246,7 +244,7 @@ export const ChallengePanel: FC = () => {
                   onClick={() => {
                     setChallenge(chal)
                     setDetailOpened(true)
-                    // update hash after modal opened, so don't trigger useEffect
+                    // update hash after modal opened, so don't trigger the hash sync
                     window.location.hash = `#${chal.id}-${encodeURIComponent(chal.title?.replace(/ /g, '-') ?? '')}`
                   }}
                   solved={solved}
@@ -287,9 +285,9 @@ export const ChallengePanel: FC = () => {
           gameEnded={dayjs(game?.end) < dayjs()}
           practiceMode={game?.practiceMode}
           status={teamInfo?.rank?.solvedChallenges?.find((c) => c.id === challenge?.id)?.type}
-          cateData={
-            challengeCategoryLabelMap.get((challenge?.category as ChallengeCategory) ?? ChallengeCategory.Misc)!
-          }
+          cateData={challengeCategoryLabelMap.get(
+            (challenge?.category as ChallengeCategory) ?? ChallengeCategory.Misc
+          )!}
           title={challenge?.title ?? ''}
           score={challenge?.score ?? 0}
           challengeId={challenge.id}

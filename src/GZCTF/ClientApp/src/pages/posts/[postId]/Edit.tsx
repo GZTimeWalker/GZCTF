@@ -23,6 +23,7 @@ import { WithNavBar } from '@Components/WithNavbar'
 import { WithRole } from '@Components/WithRole'
 import { showErrorMsg } from '@Utils/Shared'
 import { useIsMobile } from '@Utils/ThemeOverride'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { PostEditModel, Role } from '@Api'
 
 const PostEdit: FC = () => {
@@ -53,12 +54,12 @@ const PostEdit: FC = () => {
     title: curPost?.title ?? '',
     content: curPost?.content ?? '',
     summary: curPost?.summary ?? '',
+    isPinned: curPost?.isPinned,
     tags: curPost?.tags ?? [],
   })
 
-  const [tags, setTags] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>(curPost?.tags ?? [])
   const [disabled, setDisabled] = useState(false)
-  const [hasChanged, setHasChanged] = useState(false)
 
   const modals = useModals()
 
@@ -78,7 +79,6 @@ const PostEdit: FC = () => {
           message: t('post.notification.created'),
           icon: <Icon path={mdiCheck} size={24} />,
         })
-        setHasChanged(false)
         navigate(`/posts/${res.data}/edit`)
       } catch (e) {
         showErrorMsg(e, t)
@@ -102,7 +102,6 @@ const PostEdit: FC = () => {
           message: t('post.notification.saved'),
           icon: <Icon path={mdiCheck} size={24} />,
         })
-        setHasChanged(false)
       } catch (e) {
         showErrorMsg(e, t)
       } finally {
@@ -127,7 +126,7 @@ const PostEdit: FC = () => {
     }
   }
 
-  useEffect(() => {
+  useSyncOnChange([curPost], () => {
     if (!curPost) return
 
     setPost({
@@ -138,18 +137,16 @@ const PostEdit: FC = () => {
       tags: curPost.tags ?? [],
     })
     setTags(curPost.tags ?? [])
-  }, [curPost])
+  })
 
-  useEffect(() => {
-    if (!curPost) return
-    setHasChanged(
-      post.title !== curPost.title ||
-        post.content !== curPost.content ||
-        post.summary !== curPost.summary ||
-        post.isPinned !== curPost.isPinned ||
-        (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false)
-    )
-  }, [post, curPost])
+  // purely derived: the local draft differs from the persisted post
+  const hasChanged =
+    !!curPost &&
+    (post.title !== curPost.title ||
+      post.content !== curPost.content ||
+      post.summary !== curPost.summary ||
+      post.isPinned !== curPost.isPinned ||
+      (post.tags?.some((tag) => !curPost?.tags?.includes(tag)) ?? false))
 
   const titlePart = (
     <>

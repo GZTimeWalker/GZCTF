@@ -296,10 +296,6 @@ const GameTeamReview: FC = () => {
   }
 
   useEffect(() => {
-    setPage(1)
-  }, [selectedStatus, selectedDivisionId, search])
-
-  useEffect(() => {
     if (numId < 0) {
       showNotification({
         color: 'red',
@@ -349,7 +345,11 @@ const GameTeamReview: FC = () => {
             w="20rem"
             placeholder={t('admin.placeholder.teams.search')}
             value={search}
-            onChange={setSearch}
+            onChange={(e) => {
+              setSearch(e)
+              // reset to the first page whenever a filter changes
+              setPage(1)
+            }}
             rightSection={<Icon path={mdiAccountGroupOutline} size={1} />}
           />
           <Group justify="right" wrap="nowrap">
@@ -359,7 +359,10 @@ const GameTeamReview: FC = () => {
                 clearable
                 data={divisionSelectOptions}
                 value={selectedDivisionId}
-                onChange={(value) => setSelectedDivisionId(value)}
+                onChange={(value) => {
+                  setSelectedDivisionId(value)
+                  setPage(1)
+                }}
               />
             )}
             <Select
@@ -367,7 +370,10 @@ const GameTeamReview: FC = () => {
               clearable
               data={Array.from(participationStatusMap, (v) => ({ value: v[0], label: v[1].title }))}
               value={selectedStatus}
-              onChange={(value) => setSelectedStatus(value as ParticipationStatus | null)}
+              onChange={(value) => {
+                setSelectedStatus(value as ParticipationStatus | null)
+                setPage(1)
+              }}
             />
           </Group>
         </Group>

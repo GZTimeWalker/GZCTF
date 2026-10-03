@@ -23,7 +23,7 @@ import { useModals } from '@mantine/modals'
 import { showNotification } from '@mantine/notifications'
 import { mdiCheck, mdiPuzzleEditOutline } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import { FC, useEffect, useState } from 'react'
+import { FC, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { AttachmentRemoteEditModal } from '@Components/admin/AttachmentRemoteEditModal'
@@ -34,6 +34,7 @@ import { WithChallengeEdit } from '@Components/admin/WithChallengeEdit'
 import { showErrorMsg } from '@Utils/Shared'
 import { useDisplayInputStyles } from '@Utils/ThemeOverride'
 import { useEditChallenge } from '@Hooks/useEdit'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import api, { ChallengeType, FileType, FlagInfoModel } from '@Api'
 import misc from '@Styles/Misc.module.css'
 import uploadClasses from '@Styles/Upload.module.css'
@@ -58,13 +59,13 @@ const OneAttachmentWithFlags: FC<FlagEditProps> = ({ onDelete }) => {
   const { colorScheme } = useMantineColorScheme()
   const { t } = useTranslation()
 
-  useEffect(() => {
+  useSyncOnChange([challenge], () => {
     if (challenge) {
       setType(challenge.attachment?.type ?? FileType.None)
       setRemoteUrl(challenge.attachment?.url ?? '')
       setFlagTemplate(challenge.flagTemplate ?? '')
     }
-  }, [challenge])
+  })
 
   const onConfirmClear = async () => {
     setDisabled(true)

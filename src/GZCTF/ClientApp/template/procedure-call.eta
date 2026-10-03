@@ -6,7 +6,6 @@ const { _, getInlineParseContent, getParseContent, parseSchema, getComponentByRe
 const { parameters, path, method, payload, query, formData, security, requestParams } = route.request;
 const { type, errorType, contentTypes } = route.response;
 const { HTTP_CLIENT, RESERVED_REQ_PARAMS_ARG_NAMES } = config.constants;
-const routeDocs = includeFile("@base/route-docs", { config, route, utils });
 const queryName = (query && query.name) || "query";
 const pathParams = _.values(parameters);
 const pathParamsNames = _.map(pathParams, "name");
@@ -71,26 +70,10 @@ const enableSWR = _.upperCase(method) === "GET" && type !== "void";
 %>
 
 <% if (enableSWR) { %>
-/**
-<%~ routeDocs.description %>
-
- * <% /* Here you can add some other JSDoc tags */ %>
-
-<%~ routeDocs.lines %>
-
- */
   use<%~ route.routeName.usage.charAt(0).toUpperCase() %><%~ route.routeName.usage.slice(1) %><%~ route.namespace ? ': ' : ' = ' %>(<%~ wrapperArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
     useSWR<<%~ type %>, <%~  errorType %>>(doFetch ?
         <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %> : null, options),
 
-/**
-<%~ routeDocs.description %>
-
- * <% /* Here you can add some other JSDoc tags */ %>
-
-<%~ routeDocs.lines %>
-
- */
   mutate<%~ route.routeName.usage.charAt(0).toUpperCase() %><%~ route.routeName.usage.slice(1) %><%~ route.namespace ? ': ' : ' = ' %>(<%~ mutateArgs %>)<%~ config.toJS ? `: ${describeReturnType()}` : "" %> =>
     mutate<<%~ type %>>(
         <% if (!queryTmpl) { %>`<%~ path %>`<% } else { %>[`<%~ path %>`, <%~ queryTmpl %>]<% } %>, data, options),

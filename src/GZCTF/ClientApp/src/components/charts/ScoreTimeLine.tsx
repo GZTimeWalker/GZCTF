@@ -50,7 +50,7 @@ export const ScoreTimeLine: FC<TimeLineProps> = ({ divisionId }) => {
     })
 
     return map
-  }, [scoreboard?.timelines])
+  }, [scoreboard])
 
   const selectedDivisionId = useMemo(() => (divisionId === null ? 0 : divisionId), [divisionId])
 

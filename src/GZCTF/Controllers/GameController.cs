@@ -10,6 +10,7 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Cache;
 using GZCTF.Services.Config;
 using GZCTF.Storage.Interface;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +35,7 @@ public class GameController(
     ILogger<GameController> logger,
     UserManager<UserInfo> userManager,
     ChannelWriter<Submission> channelWriter,
+    CacheHelper cacheHelper,
     IBlobStorage storage,
     IConfigService configService,
     IBlobRepository blobService,
@@ -270,6 +272,7 @@ public class GameController(
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
         await transaction.CommitAsync(token);
+        await cacheHelper.FlushScoreboardCache(part.GameId, token);
 
         logger.Log(StaticLocalizer[nameof(Resources.Program.Game_JoinSucceeded), team.Name, game.Title], user,
             TaskStatus.Success);

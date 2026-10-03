@@ -21,7 +21,7 @@ const Confirm: FC = () => {
 
   usePageTitle(t('account.title.confirm'))
 
-  const verify = async (event: React.FormEvent) => {
+  const verify = async (event: React.SyntheticEvent) => {
     event.preventDefault()
 
     if (!token || !email) {

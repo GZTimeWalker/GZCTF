@@ -779,6 +779,7 @@ public class EditController(
                 TeamId = "admin",
                 UserId = user!.Id,
                 ChallengeId = challenge.Id,
+                GameId = challenge.GameId,
                 Flag = challenge.Type.IsDynamic() ? challenge.GenerateTestFlag() : null,
                 Image = challenge.ContainerImage,
                 CPUCount = challenge.CPUCount ?? 1,
