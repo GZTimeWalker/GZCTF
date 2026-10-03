@@ -65,6 +65,7 @@ namespace GZCTF.Utils;
 [JsonSerializable(typeof(ApiToken))]
 [JsonSerializable(typeof(ApiTokenResponse))]
 [JsonSerializable(typeof(ApiToken[]))]
+[JsonSerializable(typeof(MetadataStore))]
 internal sealed partial class AppJsonSerializerContext : JsonSerializerContext;
 
 public class DateTimeOffsetJsonConverter : JsonConverter<DateTimeOffset>
@@ -105,6 +106,25 @@ public class OpenApiDateTimeOffsetToUIntMapper : ITypeMapper
     public bool UseReference => false;
 }
 
+public class OpenApiMetadataStoreToObjectMapper : ITypeMapper
+{
+    // This maps MetadataStore to `Record<string, any>` in OpenAPI schema
+    public void GenerateSchema(JsonSchema schema, TypeMapperContext context)
+    {
+        // A map from string to any JSON value
+        schema.Type = JsonObjectType.Object;
+        schema.AdditionalPropertiesSchema = new JsonSchema
+        {
+            Type = JsonObjectType.None // Allow any type
+        };
+    }
+
+
+    public Type MappedType => typeof(MetadataStore);
+
+    public bool UseReference => false;
+}
+
 public class OpenApiIPAddressToStringMapper : ITypeMapper
 {
     public void GenerateSchema(JsonSchema schema, TypeMapperContext context) =>
@@ -121,7 +141,7 @@ internal class GenericsSystemTextJsonReflectionService : SystemTextJsonReflectio
     private static bool HasStringEnumConverter(ContextualType contextualType)
     {
         dynamic? jsonConverterAttribute = contextualType
-            .GetContextOrTypeAttributes(true)?
+            .GetContextOrTypeAttributes(true)
             .FirstOrDefault(a => a.GetType().Name == "JsonConverterAttribute");
 
         if (jsonConverterAttribute == null ||

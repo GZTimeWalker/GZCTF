@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Request.Account;
 
@@ -31,16 +32,8 @@ public class ProfileUpdateModel
     public string? Phone { get; set; }
 
     /// <summary>
-    /// Real name
+    /// User metadata (custom fields)
     /// </summary>
-    [MaxLength(Limits.MaxUserDataLength, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? RealName { get; set; }
-
-    /// <summary>
-    /// Student ID
-    /// </summary>
-    [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? StdNumber { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public MetadataStore? Metadata { get; set; }
 }

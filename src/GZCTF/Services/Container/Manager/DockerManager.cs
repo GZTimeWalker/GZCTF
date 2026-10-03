@@ -267,8 +267,8 @@ public class DockerManager : IContainerManager
                 TaskStatus.Failed,
                 LogLevel.Warning);
 
-        if (!string.IsNullOrEmpty(_meta.PublicEntry))
-            container.PublicIP = _meta.PublicEntry;
+        if (_meta.PublicEntry is { } entry)
+            container.PublicHost = entry;
 
         return container;
     }

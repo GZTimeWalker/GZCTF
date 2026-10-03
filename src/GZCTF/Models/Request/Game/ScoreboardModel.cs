@@ -11,8 +11,6 @@ namespace GZCTF.Models.Request.Game;
 [MemoryPackable]
 public partial class ScoreboardModel
 {
-    private Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> _challenges = null!;
-
     /// <summary>
     /// Update time
     /// </summary>
@@ -74,15 +72,16 @@ public partial class ScoreboardModel
     [Required]
     public Dictionary<ChallengeCategory, IEnumerable<ChallengeInfo>> Challenges
     {
-        get => _challenges;
+        get;
         set
         {
-            _challenges = value;
+            field = value;
+
             ChallengeMap = value.Values.SelectMany(x => x)
                 .ToDictionary(x => x.Id, x => x);
             ChallengeCount = ChallengeMap.Count;
         }
-    }
+    } = null!;
 
     /// <summary>
     /// The map of challenge ID to challenge information

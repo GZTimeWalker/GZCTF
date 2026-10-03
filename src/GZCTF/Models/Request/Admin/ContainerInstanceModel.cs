@@ -41,9 +41,9 @@ public class ContainerInstanceModel
     public DateTimeOffset ExpectStopAt { get; set; } = DateTimeOffset.UtcNow + TimeSpan.FromHours(2);
 
     /// <summary>
-    /// Access IP
+    /// Access host
     /// </summary>
-    public string IP { get; set; } = string.Empty;
+    public string Host { get; set; } = string.Empty;
 
     /// <summary>
     /// Access port
@@ -63,7 +63,7 @@ public class ContainerInstanceModel
             StartedAt = container.StartedAt,
             ExpectStopAt = container.ExpectStopAt,
             // fallback to host if public is null
-            IP = container.PublicIP ?? container.IP,
+            Host = container.PublicHost ?? container.IP,
             Port = container.PublicPort ?? container.Port
         };
 
