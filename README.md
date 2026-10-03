@@ -27,7 +27,7 @@ GZ::CTF is an open source CTF platform based on ASP.NET Core.
 >
 > **Upgrade and migration considerations:**
 >
-> 1. To upgrade the platform, simply pull the latest image and restart, and the database migration will be performed automatically.
+> 1. To upgrade the platform, simply pull the latest image and restart, and the database migration will be performed automatically. Images are published only to Docker Hub (`gztime/gzctf`) and GitHub Container Registry (`ghcr.io/gztimewalker/gzctf/gzctf`).
 > 2. In general, **downgrade** operations are not supported. Upgrading versions with a large time span may result in data incompatibility, so **please make sure to back up your data**.
 > 3. After the upgrade, there may be new configuration items and changes in file structure. It is recommended to consult the official documentation or the community.
 > 4. If you are migrating to another branch project, please pay attention to whether the database structure has changed. **The database after the change does not support rollback to the original version**.
