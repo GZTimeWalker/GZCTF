@@ -3,6 +3,27 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.9.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.7..v1.9.0) - 2026-10-03
+
+### ⛰️ Features
+
+- **(deps)** upgrading toolchain to TypeScript 7.0 focusing on frontend (#587) - ([2de8cf](https://github.com/GZTimeWalker/GZCTF/commit/2de8cf)) by **Copilot**
+
+### 🐛 Bug Fixes
+
+- **(about)** accept develop branch builds as official - ([04f860](https://github.com/GZTimeWalker/GZCTF/commit/04f860)) by **GZTime**
+
+### 🎨 Styling
+
+- **(about)** update about page - ([230168](https://github.com/GZTimeWalker/GZCTF/commit/230168)) by **GZTime**
+
+### 📦 Other Changes
+
+- remove Aliyun image mirror - ([4fffb1](https://github.com/GZTimeWalker/GZCTF/commit/4fffb1)) by **GZTime**
+- split Aliyun image mirror into self-hosted runner job - ([cbc7dd](https://github.com/GZTimeWalker/GZCTF/commit/cbc7dd)) by **GZTime**
+- push aliyun image without provenance attestations - ([82eb4a](https://github.com/GZTimeWalker/GZCTF/commit/82eb4a)) by **GZTime**
+
+---
 ## [1.8.7](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.6..v1.8.7) - 2026-07-05
 
 ### ⛰️ Features
