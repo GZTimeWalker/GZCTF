@@ -16,7 +16,7 @@ RUN apk add --update --no-cache wget libpcap icu-data-full icu-libs \
 
 RUN ARCH=$(echo ${TARGETPLATFORM} | cut -d'/' -f2) && \
     if [ "$ARCH" = "amd64" ]; then ARCH="x64"; fi && \
-    wget https://github.com/hez2010/Satori/releases/download/20261004.1-net10.0/linux_musl_${ARCH}.zip && \
+    wget https://github.com/hez2010/Satori/releases/download/20261010.1-net10.0/linux_musl_${ARCH}.zip && \
     unzip linux_musl_${ARCH}.zip -d satori && \
     chmod +x satori/* && \
     mv satori/*.so satori/*.dll /usr/share/dotnet/shared/Microsoft.NETCore.App/$(ls /usr/share/dotnet/shared/Microsoft.NETCore.App)/ && \
