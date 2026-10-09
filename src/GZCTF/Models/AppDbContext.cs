@@ -22,6 +22,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<Team> Teams { get; set; } = null!;
     public DbSet<Config> Configs { get; set; } = null!;
     public DbSet<LogModel> Logs { get; set; } = null!;
+    public DbSet<ApiToken> ApiTokens { get; set; } = null!;
     public DbSet<Division> Divisions { get; set; } = null!;
     public DbSet<LocalFile> Files { get; set; } = null!;
     public DbSet<CheatInfo> CheatInfo { get; set; } = null!;
@@ -35,34 +36,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     public DbSet<GameInstance> GameInstances { get; set; } = null!;
     public DbSet<GameChallenge> GameChallenges { get; set; } = null!;
     public DbSet<FirstSolve> FirstSolves { get; set; } = null!;
+    public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
+    public DbSet<UserMetadataField> UserMetadataFields { get; set; } = null!;
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
+
+    // Exercise related DbSets - not implemented
     public DbSet<ExerciseInstance> ExerciseInstances { get; set; } = null!;
     public DbSet<ExerciseChallenge> ExerciseChallenges { get; set; } = null!;
-    public DbSet<UserParticipation> UserParticipations { get; set; } = null!;
     public DbSet<ExerciseDependency> ExerciseDependencies { get; set; } = null!;
-    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; } = null!;
-    public DbSet<ApiToken> ApiTokens { get; set; } = null!;
-
-    private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
-        new(
-            v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
-            v => JsonSerializer.Deserialize<T>(v, JsonOptions)
-        );
-
-    private static ValueComparer<TList> GetEnumerableComparer<TList, T>()
-        where T : notnull
-        where TList : IEnumerable<T>, new() =>
-        new(
-            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
-            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-
-        // var setConverter = GetJsonConverter<HashSet<string>>();
-        // var setComparer = GetEnumerableComparer<HashSet<string>, string>();
-        var listConverter = GetJsonConverter<List<string>>();
-        var listComparer = GetEnumerableComparer<List<string>, string>();
 
         builder.Entity<UserInfo>(entity =>
         {
@@ -75,10 +60,28 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             entity.Property(e => e.ExerciseVisible)
                 .HasDefaultValue(true);
 
+            entity.Property(e => e.Metadata)
+                .HasColumnType("jsonb")
+                .HasConversion(MetadataConverter)
+                .Metadata.SetValueComparer(MetadataComparer);
+
             entity.HasMany(e => e.Submissions)
                 .WithOne(e => e.User)
                 .HasForeignKey(e => e.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        builder.Entity<UserMetadataField>(entity =>
+        {
+            entity.Property(e => e.Options)
+                .HasColumnType("jsonb")
+                .HasConversion(SortedSetConverter)
+                .Metadata
+                .SetValueComparer(SortedSetComparer);
+
+            entity.Property(e => e.Type)
+                .HasConversion<byte>()
+                .HasDefaultValue(UserMetadataFieldType.Text);
         });
 
         builder.Entity<Game>(entity =>
@@ -123,9 +126,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(e => e.Tags)
-                .HasConversion(listConverter)
+                .HasColumnType("jsonb")
+                .HasConversion(ListConverter)
                 .Metadata
-                .SetValueComparer(listComparer);
+                .SetValueComparer(ListComparer);
 
             entity.Navigation(e => e.Author).AutoInclude();
         });
@@ -148,7 +152,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         builder.Entity<Participation>(entity =>
         {
             entity.Property(e => e.Status)
-                .HasConversion<int>();
+                .HasConversion<byte>();
 
             entity.HasMany(e => e.Instances).WithOne();
 
@@ -240,9 +244,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         builder.Entity<GameChallenge>(entity =>
         {
             entity.Property(e => e.Hints)
-                .HasConversion(listConverter)
+                .HasColumnType("jsonb")
+                .HasConversion(ListConverter)
                 .Metadata
-                .SetValueComparer(listComparer);
+                .SetValueComparer(ListComparer);
 
             entity.Property(e => e.NetworkMode)
                 .HasConversion<byte>()
@@ -291,9 +296,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         builder.Entity<ExerciseChallenge>(entity =>
         {
             entity.Property(e => e.Hints)
-                .HasConversion(listConverter)
+                .HasColumnType("jsonb")
+                .HasConversion(ListConverter)
                 .Metadata
-                .SetValueComparer(listComparer);
+                .SetValueComparer(ListComparer);
 
             entity.Property(e => e.NetworkMode)
                 .HasConversion<byte>()
@@ -305,9 +311,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .OnDelete(DeleteBehavior.SetNull);
 
             entity.Property(e => e.Tags)
-                .HasConversion(listConverter)
+                .HasColumnType("jsonb")
+                .HasConversion(ListConverter)
                 .Metadata
-                .SetValueComparer(listComparer);
+                .SetValueComparer(ListComparer);
 
             entity.HasMany(e => e.Flags)
                 .WithOne(e => e.Exercise)
@@ -361,17 +368,19 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
         builder.Entity<GameNotice>(entity =>
         {
             entity.Property(e => e.Values)
-                .HasConversion(listConverter)
+                .HasColumnType("jsonb")
+                .HasConversion(ListConverter)
                 .Metadata
-                .SetValueComparer(listComparer);
+                .SetValueComparer(ListComparer);
         });
 
         builder.Entity<GameEvent>(entity =>
         {
             entity.Property(e => e.Values)
-                .HasConversion(listConverter)
+                .HasColumnType("jsonb")
+                .HasConversion(ListConverter)
                 .Metadata
-                .SetValueComparer(listComparer);
+                .SetValueComparer(ListComparer);
 
             entity.HasOne(e => e.Team)
                 .WithMany()
@@ -447,5 +456,63 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
         });
+    }
+
+    private static ValueConverter<T?, string> GetJsonConverter<T>() where T : class, new() =>
+        new(
+            v => JsonSerializer.Serialize(v ?? new(), JsonOptions),
+            v => JsonSerializer.Deserialize<T>(v, JsonOptions)
+        );
+
+    private static ValueComparer<TList> GetEnumerableComparer<TList, T>()
+        where T : notnull
+        where TList : IEnumerable<T>, new() =>
+        new(
+            (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
+
+    private static readonly ValueConverter<List<string>?, string> ListConverter = GetJsonConverter<List<string>>();
+
+    private static readonly ValueComparer<List<string>> ListComparer = GetEnumerableComparer<List<string>, string>();
+
+    private static readonly ValueConverter<SortedSet<string>?, string> SortedSetConverter =
+        GetJsonConverter<SortedSet<string>>();
+
+    private static readonly ValueComparer<SortedSet<string>> SortedSetComparer =
+        GetEnumerableComparer<SortedSet<string>, string>();
+
+    private static readonly ValueConverter<MetadataStore?, string?> MetadataConverter = new(
+        v => v == null ? null : JsonSerializer.Serialize(v, JsonOptions),
+        v => string.IsNullOrWhiteSpace(v)
+            ? null
+            : JsonSerializer.Deserialize<MetadataStore>(v, JsonOptions));
+
+    private static readonly ValueComparer<MetadataStore> MetadataComparer = new(
+        (c1, c2) => ReferenceEquals(c1, c2) ||
+                    (c1 != null && c2 != null && MetadataEquals(c1, c2)),
+        c => c.Aggregate(0, (a, v) =>
+            HashCode.Combine(a, v.Key.GetHashCode(),
+                v.Value != null ? v.Value.RootElement.GetRawText().GetHashCode() : 0)));
+
+    private static bool MetadataEquals(MetadataStore left, MetadataStore right)
+    {
+        if (left.Count != right.Count)
+            return false;
+
+        foreach ((var key, JsonDocument? value) in left)
+        {
+            if (!right.TryGetValue(key, out var other))
+                return false;
+
+            if (value == null && other == null)
+                continue;
+
+            if (value != null && other != null && JsonElement.DeepEquals(value.RootElement, other.RootElement))
+                continue;
+
+            return false;
+        }
+
+        return true;
     }
 }

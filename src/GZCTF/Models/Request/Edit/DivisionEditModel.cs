@@ -8,7 +8,7 @@ public class DivisionCreateModel
     /// The name of the division.
     /// </summary>
     [Required]
-    [MaxLength(Limits.MaxDivisionNameLength)]
+    [MaxLength(Limits.MaxShortIdLength)]
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
@@ -33,7 +33,7 @@ public class DivisionEditModel
     /// <summary>
     /// The name of the division.
     /// </summary>
-    [MaxLength(Limits.MaxDivisionNameLength)]
+    [MaxLength(Limits.MaxShortIdLength)]
     public string? Name { get; set; } = string.Empty;
 
     /// <summary>

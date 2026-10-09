@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace GZCTF.Models.Request.Info;
+﻿namespace GZCTF.Models.Request.Info;
 
 /// <summary>
 /// Team member information
@@ -31,16 +29,4 @@ public class TeamUserInfoModel
     /// Is Captain
     /// </summary>
     public bool Captain { get; set; }
-
-    /// <summary>
-    /// Real name, used for generating the scoreboard
-    /// </summary>
-    [JsonIgnore]
-    public string? RealName { get; set; }
-
-    /// <summary>
-    /// Student number, used for generating the scoreboard
-    /// </summary>
-    [JsonIgnore]
-    public string? StudentNumber { get; set; }
 }

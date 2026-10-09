@@ -11,7 +11,7 @@ public class ContainerProviderMetadata
     /// <summary>
     /// The public entry address for accessing the containers
     /// </summary>
-    public string PublicEntry { get; set; } = string.Empty;
+    public string? PublicEntry { get; set; }
 
     /// <summary>
     /// Port mapping type

@@ -28,7 +28,7 @@ public class Server
     private static readonly string LanguageWarning =
         $"Warning: Current language {CultureInfo.CurrentCulture.DisplayName} is machine translated and may not be accurate.\n";
 
-    internal static IStringLocalizer<Program> StaticLocalizer { get; } =
+    public static IStringLocalizer<Program> StaticLocalizer { get; } =
         new CulturedLocalizer<Program>(CultureInfo.CurrentCulture);
 
     internal static void Banner()

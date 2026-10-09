@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using GZCTF.Extensions;
 using GZCTF.Middlewares;
 using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
@@ -26,6 +27,7 @@ public class AccountController(
     IHostEnvironment environment,
     ICaptchaService captcha,
     IConfigService configService,
+    IUserMetadataFieldRepository metadataRepository,
     IOptionsSnapshot<AccountPolicy> accountPolicy,
     IOptionsSnapshot<GlobalConfig> globalConfig,
     UserManager<UserInfo> userManager,
@@ -343,6 +345,7 @@ public class AccountController(
     /// Use this API to update username and description. User permissions required.
     /// </remarks>
     /// <param name="model"></param>
+    /// <param name="token"></param>
     /// <response code="200">User data updated successfully</response>
     /// <response code="400">Validation failed or user data update failed</response>
     /// <response code="401">Unauthorized</response>
@@ -350,9 +353,9 @@ public class AccountController(
     [RequireUser]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model)
+    public async Task<IActionResult> Update([FromBody] ProfileUpdateModel model, CancellationToken token = default)
     {
-        var user = await userManager.GetUserAsync(User);
+        var user = (await userManager.GetUserAsync(User))!;
 
         if (model.UserName is not null && model.UserName != user!.UserName)
         {
@@ -365,6 +368,14 @@ public class AccountController(
 
             logger.Log(StaticLocalizer[nameof(Resources.Program.Account_UserUpdated), oldName!, user.UserName!],
                 user, TaskStatus.Success);
+        }
+
+        if (model.Metadata is { Count: > 0 })
+        {
+            var fieldDefs = await metadataRepository.GetAllAsync(token);
+            if (fieldDefs.Count > 0)
+                if (!user.UpdateUserMetadataByUser(model.Metadata, localizer, fieldDefs, out var errorResponse))
+                    return BadRequest(new RequestResponse(errorResponse));
         }
 
         user!.UpdateUserInfo(model);

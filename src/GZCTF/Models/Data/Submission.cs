@@ -95,7 +95,7 @@ public class Submission
     /// Game
     /// </summary>
     [JsonIgnore]
-    public Game? Game { get; set; } = null!;
+    public Game? Game { get; set; }
 
     /// <summary>
     /// Challenge database ID
