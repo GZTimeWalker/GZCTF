@@ -59,6 +59,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
     {
         base.OnModelCreating(builder);
 
+        builder.Entity<IdentityUserPasskey<Guid>>(entity =>
+        {
+            entity.ToTable("AspNetUserPasskeys");
+            entity.HasKey(p => p.CredentialId);
+            entity.Property(p => p.CredentialId).HasMaxLength(1024);
+            entity.OwnsOne(p => p.Data).ToJson();
+            entity.HasOne<UserInfo>()
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
         // var setConverter = GetJsonConverter<HashSet<string>>();
         // var setComparer = GetEnumerableComparer<HashSet<string>, string>();
         var listConverter = GetJsonConverter<List<string>>();
