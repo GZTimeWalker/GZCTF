@@ -1088,4 +1088,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>The deadline for this challenge has passed</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>Could not verify the passkey or account. Please try again.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>You can register up to {0} passkeys.</value>
+  </data>
 </root>

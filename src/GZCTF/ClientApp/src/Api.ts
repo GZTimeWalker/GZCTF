@@ -10,6 +10,47 @@
  * ---------------------------------------------------------------
  */
 
+export interface PasskeyAntiforgeryModel {
+  token: string;
+}
+
+export interface PasskeyCredentialModel {
+  /**
+   * @minLength 1
+   * @maxLength 65536
+   */
+  credentialJson: string;
+}
+
+/** Public metadata for a registered passkey. Credential material is never returned. */
+export interface PasskeyModel {
+  credentialId: string;
+  name?: string | null;
+  /** @format uint64 */
+  createdAt?: number;
+}
+
+export interface PasskeyCreationModel {
+  /** @minLength 1 */
+  password: string;
+}
+
+export type PasskeyRegistrationModel = PasskeyCredentialModel & {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  name: string;
+};
+
+export interface PasskeyRenameModel {
+  /**
+   * @minLength 1
+   * @maxLength 100
+   */
+  name: string;
+}
+
 export enum CaptchaProvider {
   None = "None",
   HashPow = "HashPow",
@@ -2353,6 +2394,167 @@ import useSWR, { MutatorOptions, SWRConfiguration, mutate } from "swr";
 export class Api<
   SecurityDataType extends unknown,
 > extends HttpClient<SecurityDataType> {
+  passkey = {
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyCreationOptions
+     * @summary Confirm the current password and start registering a passkey
+     * @request POST:/api/passkey/creation-options
+     */
+    passkeyCreationOptions: (
+      data: PasskeyCreationModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<any, RequestResponse>({
+        path: `/api/passkey/creation-options`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyList
+     * @summary List the current user's passkeys
+     * @request GET:/api/passkey
+     */
+    passkeyList: (params: RequestParams = {}) =>
+      this.request<PasskeyModel[], any>({
+        path: `/api/passkey`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    usePasskeyList: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PasskeyModel[], any>(doFetch ? `/api/passkey` : null, options),
+
+    mutatePasskeyList: (
+      data?: PasskeyModel[] | Promise<PasskeyModel[]>,
+      options?: MutatorOptions,
+    ) => mutate<PasskeyModel[]>(`/api/passkey`, data, options),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyLogIn
+     * @summary Log in using a passkey
+     * @request POST:/api/passkey/login
+     */
+    passkeyLogIn: (data: PasskeyCredentialModel, params: RequestParams = {}) =>
+      this.request<void, RequestResponse>({
+        path: `/api/passkey/login`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyRegister
+     * @summary Verify and save a passkey for the current user
+     * @request POST:/api/passkey
+     */
+    passkeyRegister: (
+      data: PasskeyRegistrationModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse>({
+        path: `/api/passkey`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyRemove
+     * @summary Remove one of the current user's passkeys
+     * @request DELETE:/api/passkey/{credentialId}
+     */
+    passkeyRemove: (credentialId: string, params: RequestParams = {}) =>
+      this.request<void, RequestResponse | ProblemDetails>({
+        path: `/api/passkey/${credentialId}`,
+        method: "DELETE",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyRename
+     * @summary Rename one of the current user's passkeys
+     * @request PUT:/api/passkey/{credentialId}
+     */
+    passkeyRename: (
+      credentialId: string,
+      data: PasskeyRenameModel,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, RequestResponse | ProblemDetails>({
+        path: `/api/passkey/${credentialId}`,
+        method: "PUT",
+        body: data,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyRequestOptions
+     * @summary Start username-less passkey login
+     * @request POST:/api/passkey/options
+     */
+    passkeyRequestOptions: (params: RequestParams = {}) =>
+      this.request<any, any>({
+        path: `/api/passkey/options`,
+        method: "POST",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Passkey
+     * @name PasskeyToken
+     * @summary Get a CSRF token for passkey operations, including anonymous login
+     * @request GET:/api/passkey/token
+     */
+    passkeyToken: (params: RequestParams = {}) =>
+      this.request<PasskeyAntiforgeryModel, any>({
+        path: `/api/passkey/token`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+    usePasskeyToken: (options?: SWRConfiguration, doFetch: boolean = true) =>
+      useSWR<PasskeyAntiforgeryModel, any>(
+        doFetch ? `/api/passkey/token` : null,
+        options,
+      ),
+
+    mutatePasskeyToken: (
+      data?: PasskeyAntiforgeryModel | Promise<PasskeyAntiforgeryModel>,
+      options?: MutatorOptions,
+    ) => mutate<PasskeyAntiforgeryModel>(`/api/passkey/token`, data, options),
+  };
+
   account = {
     /**
      * @description Use this API to update user's avatar. User permissions required.
