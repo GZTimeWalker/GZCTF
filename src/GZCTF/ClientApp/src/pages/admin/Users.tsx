@@ -42,7 +42,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const Users: FC = () => {
   const [page, setPage] = useState(1)
-  const [update, setUpdate] = useState(new Date())
+  const [update, setUpdate] = useState(0)
   const [editModalOpened, setEditModalOpened] = useState(false)
   const [activeUser, setActiveUser] = useState<UserInfoModel>({})
   const { data: users, total, setData: setUsers, updateData: updateUsers } = useArrayResponse<UserInfoModel>()
@@ -182,7 +182,7 @@ const Users: FC = () => {
         updateUsers(users.filter((x) => x.id !== user.id))
       }
       setCurrent(current - 1)
-      setUpdate(new Date())
+      setUpdate((prev) => prev + 1)
     } catch (e: any) {
       showErrorMsg(e, t)
     } finally {

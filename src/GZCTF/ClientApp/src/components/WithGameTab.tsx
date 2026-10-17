@@ -19,6 +19,8 @@ import misc from '@Styles/Misc.module.css'
 
 dayjs.extend(duration)
 
+const isGameFinished = (game?: DetailedGameInfoModel) => dayjs() > dayjs(game?.end ?? new Date())
+
 const GameCountdown: FC<{ game?: DetailedGameInfoModel }> = ({ game }) => {
   const { endTime, progress } = getGameStatus(game)
 
@@ -60,7 +62,7 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const { game, status } = useGame(numId)
   const { t } = useTranslation()
 
-  const finished = dayjs() > dayjs(game?.end ?? new Date())
+  const finished = isGameFinished(game)
 
   const pages = [
     {
@@ -102,20 +104,13 @@ export const WithGameTab: FC<React.PropsWithChildren> = ({ children }) => {
   const getTab = (path: string) => filteredPages?.findIndex((page) => path.includes(page.path))
 
   const tabIndex = getTab(location.pathname)
-  const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
+  const activeTab = tabIndex < 0 ? 0 : tabIndex
 
-  const onChange = (active: number, tabKey: string) => {
-    setActiveTab(active)
+  const onChange = (_active: number, tabKey: string) => {
     navigate(`/games/${numId}/${tabKey}`)
   }
 
   usePageTitle(game?.title)
-
-  useEffect(() => {
-    const tab = getTab(location.pathname)
-    if (!tab || tab < 0) return
-    setActiveTab(tab)
-  })
 
   useEffect(() => {
     if (game) {

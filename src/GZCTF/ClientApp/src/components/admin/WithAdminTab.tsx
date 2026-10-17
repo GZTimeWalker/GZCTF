@@ -8,7 +8,7 @@ import {
   mdiSitemapOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router'
 import { IconTabs } from '@Components/IconTabs'
@@ -41,18 +41,14 @@ export const WithAdminTab: FC<AdminTabProps> = ({ head, headProps, isLoading, ch
   ]
   const getTab = (path: string) => pages.findIndex((page) => path.startsWith(`/admin/${page.path}`))
   const tabIndex = getTab(location.pathname)
-  const [activeTab, setActiveTab] = useState(tabIndex < 0 ? 0 : tabIndex)
+  const activeTab = tabIndex < 0 ? 0 : tabIndex
 
-  const onChange = (active: number, tabKey: string) => {
-    setActiveTab(active)
+  const onChange = (_active: number, tabKey: string) => {
     navigate(`/admin/${tabKey}`)
   }
 
   useEffect(() => {
-    const tab = getTab(location.pathname)
-    if (tab >= 0) {
-      setActiveTab(tab)
-    } else {
+    if (getTab(location.pathname) < 0) {
       navigate(pages[0].path)
     }
   }, [location])
