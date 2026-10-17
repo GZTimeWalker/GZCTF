@@ -239,7 +239,9 @@ public readonly struct BloodBonus(long init = BloodBonus.DefaultValue)
     public static BloodBonus FromValue(long value)
     {
         if ((value & Mask) > Base || ((value >> 10) & Mask) > Base || ((value >> 20) & Mask) > Base)
-            return new();
+            // `new()` would zero-initialize the struct and silently wipe every bonus,
+            // so fall back to the documented default value explicitly
+            return new(DefaultValue);
         return new(value);
     }
 
