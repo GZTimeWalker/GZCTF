@@ -173,6 +173,10 @@ _These list is not in any particular order, and PRs are welcome for additions._
 
 Thanks to NanoApe, the organizer of THUCTF 2022, for providing sponsorship and conducting Alibaba Cloud public network stress testing. This helped validate the service stability of the GZCTF standalone instance (16c90g) under the pressure of thousands of concurrent requests and 1.34 million requests in three minutes.
 
+## One-Click Deploy ☁️
+
+[![Deploy on RepoCloud](https://d16t0pc4846x52.cloudfront.net/deploylobe.svg)](https://repocloud.io/details/GZCTF/)
+
 ## License 📄
 
 GZCTF is dual-licensed:
