@@ -42,7 +42,7 @@ const ITEM_COUNT_PER_PAGE = 30
 
 const Teams: FC = () => {
   const [page, setPage] = useState(1)
-  const [update, setUpdate] = useState(new Date())
+  const [update, setUpdate] = useState(0)
   const { data: teams, total, setData: setTeams, updateData: updateTeams } = useArrayResponse<TeamInfoModel>()
   const [hint, setHint] = useInputState('')
   const [searching, setSearching] = useState(false)
@@ -116,7 +116,7 @@ const Teams: FC = () => {
       })
       if (teams) updateTeams(teams.filter((x) => x.id !== team.id))
       setCurrent(current - 1)
-      setUpdate(new Date())
+      setUpdate((prev) => prev + 1)
     } catch (e: any) {
       showErrorMsg(e, t)
     } finally {
@@ -144,7 +144,7 @@ const Teams: FC = () => {
           a.id! < b.id! ? -1 : 1
         )
       )
-      setUpdate(new Date())
+      setUpdate((prev) => prev + 1)
     } catch (e: any) {
       showErrorMsg(e, t)
     } finally {

@@ -9,7 +9,7 @@ import {
   mdiTextBoxOutline,
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, Link, useNavigate, useParams } from 'react-router'
 import { AdminPage } from '@Components/admin/AdminPage'
@@ -48,13 +48,10 @@ export const WithGameEditTab: FC<GameEditTabProps> = ({
 
   const getTab = (path: string) => pages.find((page) => path.includes(page.path))
 
-  const [activeTab, setActiveTab] = useState(getTab(location.pathname)?.path ?? pages[0].path)
+  const activeTab = getTab(location.pathname)?.path ?? pages[0].path
 
   useEffect(() => {
-    const tab = getTab(location.pathname)
-    if (tab) {
-      setActiveTab(tab.path ?? '')
-    } else {
+    if (!getTab(location.pathname)) {
       navigate(pages[0].path)
     }
   }, [location])
