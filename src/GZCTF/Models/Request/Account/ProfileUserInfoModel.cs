@@ -1,4 +1,6 @@
-﻿namespace GZCTF.Models.Request.Account;
+using System.Text.Json.Serialization;
+
+namespace GZCTF.Models.Request.Account;
 
 /// <summary>
 /// Basic account information
@@ -36,19 +38,15 @@ public class ProfileUserInfoModel
     public string? Phone { get; set; }
 
     /// <summary>
-    /// Real name
-    /// </summary>
-    public string? RealName { get; set; }
-
-    /// <summary>
-    /// Student ID
-    /// </summary>
-    public string? StdNumber { get; set; }
-
-    /// <summary>
     /// Avatar URL
     /// </summary>
     public string? Avatar { get; set; }
+
+    /// <summary>
+    /// User metadata (custom fields)
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public MetadataStore? Metadata { get; set; }
 
     internal static ProfileUserInfoModel FromUserInfo(UserInfo user) =>
         new()
@@ -57,10 +55,9 @@ public class ProfileUserInfoModel
             Bio = user.Bio,
             Email = user.Email,
             UserName = user.UserName,
-            RealName = user.RealName,
             Phone = user.PhoneNumber,
             Avatar = user.AvatarUrl,
-            StdNumber = user.StdNumber,
+            Metadata = user.Metadata,
             Role = user.Role
         };
 }

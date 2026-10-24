@@ -53,9 +53,7 @@ public class TeamInfoModel
                     Bio = m.Bio,
                     UserName = m.UserName,
                     Avatar = m.AvatarUrl,
-                    Captain = m.Id == team.CaptainId,
-                    RealName = m.RealName,
-                    StudentNumber = m.StdNumber
+                    Captain = m.Id == team.CaptainId
                 }).ToList()
                 : null
         };
@@ -76,9 +74,7 @@ public class TeamInfoModel
                     Bio = m.Bio,
                     UserName = m.UserName,
                     Avatar = m.AvatarUrl,
-                    Captain = m.Id == part.Team.CaptainId,
-                    RealName = m.RealName,
-                    StudentNumber = m.StdNumber
+                    Captain = m.Id == part.Team.CaptainId
                 }).ToList()
         };
 }

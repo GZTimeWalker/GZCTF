@@ -51,23 +51,15 @@ public partial class UserInfo : IdentityUser<Guid>
     public string Bio { get; set; } = string.Empty;
 
     /// <summary>
-    /// Real name
-    /// </summary>
-    [MaxLength(Limits.MaxUserDataLength)]
-    [ProtectedPersonalData]
-    public string RealName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Student ID
-    /// </summary>
-    [MaxLength(Limits.MaxStdNumberLength)]
-    [ProtectedPersonalData]
-    public string StdNumber { get; set; } = string.Empty;
-
-    /// <summary>
     /// Hide in exercise scoreboard
     /// </summary>
     public bool ExerciseVisible { get; set; } = true;
+
+    /// <summary>
+    /// User metadata stored as JSON (flexible user fields)
+    /// </summary>
+    [ProtectedPersonalData]
+    public MetadataStore? Metadata { get; set; }
 
     [NotMapped]
     [MemoryPackIgnore]
@@ -76,7 +68,7 @@ public partial class UserInfo : IdentityUser<Guid>
     /// <summary>
     /// Update user's last visit time and IP address via HTTP request
     /// </summary>
-    /// <param name="context"></param>
+    /// <param name="context">The HTTP context</param>
     public void UpdateByHttpContext(HttpContext context)
     {
         LastVisitedUtc = DateTimeOffset.UtcNow;
@@ -92,10 +84,9 @@ public partial class UserInfo : IdentityUser<Guid>
     internal void UpdateUserInfo(AdminUserInfoModel model)
     {
         // use SetUserNameAsync and SetEmailAsync to update UserName and Email
+        // use UpdateUserMetadataByAdmin to update Metadata
         Bio = model.Bio ?? Bio;
         Role = model.Role ?? Role;
-        StdNumber = model.StdNumber ?? StdNumber;
-        RealName = model.RealName ?? RealName;
         PhoneNumber = model.Phone ?? PhoneNumber;
         EmailConfirmed = model.EmailConfirmed ?? EmailConfirmed;
     }
@@ -109,18 +100,16 @@ public partial class UserInfo : IdentityUser<Guid>
     {
         UserName = model.UserName;
         Email = model.Email;
-        StdNumber = model.StdNumber ?? StdNumber;
-        RealName = model.RealName ?? RealName;
         PhoneNumber = model.Phone ?? PhoneNumber;
+        Metadata = model.Metadata ?? Metadata;
     }
 
     internal void UpdateUserInfo(ProfileUpdateModel model)
     {
         // use SetUserNameAsync to update UserName
+        // use UpdateUserMetadataByUser to update Metadata
         Bio = model.Bio ?? Bio;
         PhoneNumber = model.Phone ?? PhoneNumber;
-        RealName = model.RealName ?? RealName;
-        StdNumber = model.StdNumber ?? StdNumber;
     }
 
     #region Db Relationship

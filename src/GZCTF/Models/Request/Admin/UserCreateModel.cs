@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace GZCTF.Models.Request.Admin;
 
@@ -35,20 +36,6 @@ public class UserCreateModel
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
-    /// Real name
-    /// </summary>
-    [MaxLength(Limits.MaxUserDataLength, ErrorMessageResourceName = nameof(Resources.Program.Model_RealNameTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? RealName { get; set; }
-
-    /// <summary>
-    /// Student number
-    /// </summary>
-    [MaxLength(Limits.MaxStdNumberLength, ErrorMessageResourceName = nameof(Resources.Program.Model_StdNumberTooLong),
-        ErrorMessageResourceType = typeof(Resources.Program))]
-    public string? StdNumber { get; set; }
-
-    /// <summary>
     /// Contact phone number
     /// </summary>
     [Phone(ErrorMessageResourceName = nameof(Resources.Program.Model_MalformedPhoneNumber),
@@ -62,14 +49,19 @@ public class UserCreateModel
         ErrorMessageResourceType = typeof(Resources.Program))]
     public string? TeamName { get; set; }
 
+    /// <summary>
+    /// User metadata (custom fields)
+    /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public MetadataStore? Metadata { get; set; }
+
     internal UserInfo ToUserInfo() =>
         new()
         {
             Email = Email,
             UserName = UserName,
-            RealName = RealName ?? "",
-            StdNumber = StdNumber ?? "",
             PhoneNumber = Phone,
+            Metadata = Metadata,
             EmailConfirmed = true
         };
 }
