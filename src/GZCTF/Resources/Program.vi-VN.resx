@@ -1088,4 +1088,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Thời hạn cho thử thách này đã hết</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>Không thể xác minh passkey hoặc tài khoản. Vui lòng thử lại.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>Bạn có thể đăng ký tối đa {0} passkey.</value>
+  </data>
 </root>

@@ -130,7 +130,7 @@
     "unnamed": "Unnamed passkey",
     "saved": "Passkey saved.",
     "removed": "Passkey removed.",
-    "unsupported": "Passkeys require HTTPS (or localhost) and a browser that supports WebAuthn.",
+    "unsupported": "Passkeys are unavailable. You can still sign in with your password.",
     "cancelled": "The passkey request was cancelled or timed out. Please try again.",
     "already_registered": "This passkey is already registered. Try a different authenticator.",
     "load_failed": "Could not load your passkeys. Please reopen this dialog to try again.",

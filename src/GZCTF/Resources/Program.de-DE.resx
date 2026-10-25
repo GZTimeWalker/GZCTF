@@ -1108,4 +1108,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Die Frist für diese Herausforderung ist abgelaufen</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>Der Passkey oder das Konto konnte nicht verifiziert werden. Bitte versuche es erneut.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>Du kannst bis zu {0} Passkeys registrieren.</value>
+  </data>
 </root>

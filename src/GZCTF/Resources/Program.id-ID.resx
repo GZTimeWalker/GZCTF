@@ -1088,4 +1088,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Batas waktu untuk tantangan ini telah berakhir</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>Tidak dapat memverifikasi passkey atau akun. Silakan coba lagi.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>Anda dapat mendaftarkan hingga {0} passkey.</value>
+  </data>
 </root>

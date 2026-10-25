@@ -1088,4 +1088,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>Срок сдачи этого задания истёк</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>Не удалось проверить passkey или учётную запись. Попробуйте ещё раз.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>Максимальное количество passkey: {0}.</value>
+  </data>
 </root>

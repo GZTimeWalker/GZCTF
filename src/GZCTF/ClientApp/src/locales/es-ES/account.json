@@ -93,6 +93,26 @@
       "success": "La cuenta ha sido verificada, por favor inicie sesión"
     }
   },
+  "passkey": {
+    "title": "Llaves de acceso",
+    "login": "Iniciar sesión con una llave de acceso",
+    "description": "Inicia sesión sin contraseña con tu huella, rostro, PIN del dispositivo o llave de seguridad.",
+    "add": "Añadir llave de acceso",
+    "rename": "Cambiar nombre",
+    "remove": "Eliminar",
+    "remove_confirm": "¿Eliminar «{{name}}»? Ya no podrás iniciar sesión con esta llave de acceso.",
+    "name": "Nombre de la llave de acceso",
+    "confirm_password": "Confirma tu contraseña actual para añadir una llave de acceso.",
+    "created": "Añadida el {{date}}",
+    "unnamed": "Llave de acceso sin nombre",
+    "saved": "Llave de acceso guardada.",
+    "removed": "Llave de acceso eliminada.",
+    "unsupported": "Las llaves de acceso no están disponibles. Puedes seguir iniciando sesión con tu contraseña.",
+    "cancelled": "La solicitud de llave de acceso se canceló o caducó. Inténtalo de nuevo.",
+    "already_registered": "Esta llave de acceso ya está registrada. Prueba otro autenticador.",
+    "load_failed": "No se pudieron cargar tus llaves de acceso. Vuelve a abrir este diálogo para intentarlo de nuevo.",
+    "limit": "Puedes registrar hasta 10 llaves de acceso."
+  },
   "password": {
     "empty": "La contraseña no puede estar vacía",
     "include_lowercase": "Incluir letras minúsculas",

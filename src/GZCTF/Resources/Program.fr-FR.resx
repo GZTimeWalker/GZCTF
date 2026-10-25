@@ -1101,4 +1101,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>La date limite pour ce challenge est dépassée</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>Impossible de vérifier la clé d’accès ou le compte. Veuillez réessayer.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>Vous pouvez enregistrer jusqu’à {0} clés d’accès.</value>
+  </data>
 </root>

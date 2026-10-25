@@ -93,6 +93,26 @@
       "success": "Đã xác minh tài khoản, vui lòng đăng nhập"
     }
   },
+  "passkey": {
+    "title": "Passkey",
+    "login": "Đăng nhập bằng passkey",
+    "description": "Đăng nhập không cần mật khẩu bằng vân tay, khuôn mặt, mã PIN thiết bị hoặc khóa bảo mật.",
+    "add": "Thêm passkey",
+    "rename": "Đổi tên",
+    "remove": "Xóa",
+    "remove_confirm": "Xóa “{{name}}”? Bạn sẽ không thể đăng nhập bằng passkey này nữa.",
+    "name": "Tên passkey",
+    "confirm_password": "Xác nhận mật khẩu hiện tại để thêm passkey.",
+    "created": "Đã thêm vào {{date}}",
+    "unnamed": "Passkey chưa đặt tên",
+    "saved": "Đã lưu passkey.",
+    "removed": "Đã xóa passkey.",
+    "unsupported": "Passkey không khả dụng. Bạn vẫn có thể đăng nhập bằng mật khẩu.",
+    "cancelled": "Yêu cầu passkey đã bị hủy hoặc hết thời gian chờ. Vui lòng thử lại.",
+    "already_registered": "Passkey này đã được đăng ký. Hãy thử trình xác thực khác.",
+    "load_failed": "Không thể tải passkey. Vui lòng mở lại hộp thoại này để thử lại.",
+    "limit": "Bạn có thể đăng ký tối đa 10 passkey."
+  },
   "password": {
     "empty": "Mật khẩu không được để trống",
     "include_lowercase": "Bao gồm chữ thường",

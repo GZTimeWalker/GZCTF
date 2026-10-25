@@ -1088,4 +1088,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>このチャレンジの締め切りが過ぎています</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>パスキーまたはアカウントを確認できませんでした。もう一度お試しください。</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>パスキーは最大 {0} 個登録できます。</value>
+  </data>
 </root>

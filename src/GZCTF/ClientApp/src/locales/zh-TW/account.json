@@ -93,6 +93,26 @@
       "success": "帳戶已驗證，請登錄"
     }
   },
+  "passkey": {
+    "title": "通行密鑰",
+    "login": "使用通行密鑰登入",
+    "description": "使用指紋、臉部辨識、裝置 PIN 碼或安全金鑰登入，無需輸入密碼。",
+    "add": "新增通行密鑰",
+    "rename": "重新命名",
+    "remove": "移除",
+    "remove_confirm": "確定移除「{{name}}」嗎？移除後將無法使用此通行密鑰登入。",
+    "name": "通行密鑰名稱",
+    "confirm_password": "請輸入目前密碼以新增通行密鑰。",
+    "created": "新增於 {{date}}",
+    "unnamed": "未命名的通行密鑰",
+    "saved": "通行密鑰已儲存。",
+    "removed": "通行密鑰已移除。",
+    "unsupported": "通行密鑰無法使用，你仍可使用密碼登入。",
+    "cancelled": "通行密鑰請求已取消或逾時，請重試。",
+    "already_registered": "此通行密鑰已註冊，請嘗試其他驗證器。",
+    "load_failed": "無法載入通行密鑰，請重新開啟此對話框重試。",
+    "limit": "最多可以註冊 10 個通行密鑰。"
+  },
   "password": {
     "empty": "密碼不能為空",
     "include_lowercase": "包含小寫字母",

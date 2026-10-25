@@ -1088,4 +1088,10 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>该题目的截止时间已过</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>无法验证通行密钥或账户，请重试。</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>最多可以注册 {0} 个通行密钥。</value>
+  </data>
 </root>
