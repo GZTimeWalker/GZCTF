@@ -5,6 +5,7 @@ import { FC, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ColorPreview } from '@Components/ColorPreview'
 import { ColorProvider, CustomColor, useCustomColor } from '@Utils/ThemeOverride'
+import { useSyncOnChange } from '@Hooks/useSyncOnChange'
 import misc from '@Styles/Misc.module.css'
 
 const colorRegex = /^#[0-9A-F]{6}$/i
@@ -21,9 +22,7 @@ export const CustomColorModal: FC<ModalProps> = (props) => {
 
   const colors = color.provider === ColorProvider.Custom && valid ? generateColors(color.color) : theme.colors.brand
 
-  useEffect(() => {
-    setColor(customColor)
-  }, [customColor])
+  useSyncOnChange([customColor], () => setColor(customColor))
 
   useEffect(() => {
     setCustomColor(debouncedColor)

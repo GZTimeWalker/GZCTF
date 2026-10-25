@@ -9,9 +9,9 @@ interface CopyrightProps {
   isMobile?: boolean
 }
 
-export const Copyright: FC<CopyrightProps> = ({ isMobile }) => {
-  const currentYear = new Date().getFullYear()
+const currentYear = new Date().getFullYear()
 
+export const Copyright: FC<CopyrightProps> = ({ isMobile }) => {
   return (
     <Text size="sm" ta="center" fw={400} c="dimmed">
       Copyright&nbsp;©&nbsp;2022-{currentYear}&nbsp;

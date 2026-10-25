@@ -28,7 +28,7 @@ import {
 } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import cx from 'clsx'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { LogoBox } from '@Components/LogoBox'
@@ -103,15 +103,7 @@ export const AppNavbar: FC<AppControlProps> = ({ openColorModal }) => {
           : path.startsWith(item.link)
     )?.label
 
-  const [active, setActive] = useState(getLabel(location.pathname) ?? '')
-
-  useEffect(() => {
-    if (location.pathname === '/') {
-      setActive(items[0].label)
-    } else {
-      setActive(getLabel(location.pathname) ?? '')
-    }
-  }, [location.pathname])
+  const active = location.pathname === '/' ? items[0].label : (getLabel(location.pathname) ?? '')
 
   const links = items
     .filter((m) => !m.admin || user?.role === Role.Admin)

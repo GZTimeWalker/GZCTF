@@ -1088,4 +1088,37 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>该题目的截止时间已过</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>无法验证通行密钥或账户，请重试。</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>最多可以注册 {0} 个通行密钥。</value>
+  </data>
+  <data name="Auth_InvalidRequestToken" xml:space="preserve">
+    <value>无法验证你的请求，请刷新页面后重试。</value>
+  </data>
+  <data name="Account_UserLockedOut" xml:space="preserve">
+    <value>你的账户已被暂时锁定，请稍后重试。</value>
+  </data>
+  <data name="Account_PasskeyAdded" xml:space="preserve">
+    <value>已添加通行密钥</value>
+  </data>
+  <data name="Account_PasskeyRenamed" xml:space="preserve">
+    <value>已重命名通行密钥</value>
+  </data>
+  <data name="Account_PasskeyRemoved" xml:space="preserve">
+    <value>已移除通行密钥</value>
+  </data>
+  <data name="Model_PasskeyCredentialRequired" xml:space="preserve">
+    <value>需要通行密钥响应</value>
+  </data>
+  <data name="Model_PasskeyCredentialTooLong" xml:space="preserve">
+    <value>通行密钥响应过大</value>
+  </data>
+  <data name="Model_PasskeyNameRequired" xml:space="preserve">
+    <value>请输入通行密钥名称</value>
+  </data>
+  <data name="Model_PasskeyNameTooLong" xml:space="preserve">
+    <value>通行密钥名称不能超过 {1} 个字符</value>
+  </data>
 </root>

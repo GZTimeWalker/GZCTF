@@ -101,7 +101,7 @@ export const LanguageProvider = ({ children }: PropsWithChildren) => {
   }, [language])
 
   const setLanguage = useCallback(
-    (lang: SupportedLanguages) => {
+    function setLanguage(lang: SupportedLanguages) {
       // check if language is supported
       if (supportedLanguages.includes(lang)) {
         setLanguageInner(lang)

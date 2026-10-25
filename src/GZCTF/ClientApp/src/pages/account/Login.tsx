@@ -1,4 +1,4 @@
-import { Anchor, Button, Grid, PasswordInput, TextInput } from '@mantine/core'
+import { Anchor, Button, Grid, PasswordInput, Text, TextInput } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { showNotification, updateNotification } from '@mantine/notifications'
 import { mdiCheck, mdiClose } from '@mdi/js'
@@ -9,6 +9,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router'
 import { AccountView } from '@Components/AccountView'
 import { Captcha, useCaptchaRef } from '@Components/Captcha'
 import { encryptApiData } from '@Utils/Crypto'
+import { loginWithPasskey, showPasskeyError, supportsPasskeys } from '@Utils/Passkey'
 import { tryGetClientError } from '@Utils/Shared'
 import { useConfig } from '@Hooks/useConfig'
 import { usePageTitle } from '@Hooks/usePageTitle'
@@ -26,6 +27,10 @@ const Login: FC = () => {
   const [needRedirect, setNeedRedirect] = useState(false)
   // guards against redirecting twice without triggering another render
   const redirecting = useRef(false)
+  const passkeyOperation = useRef<AbortController | null>(null)
+  const [passkeyLoading, setPasskeyLoading] = useState(false)
+
+  useEffect(() => () => passkeyOperation.current?.abort(), [])
 
   const { captchaRef, getToken, cleanUp } = useCaptchaRef()
   const { user, mutate } = useUser()
@@ -117,6 +122,30 @@ const Login: FC = () => {
     }
   }
 
+  const onPasskeyLogin = async () => {
+    if (disabled) return
+    setDisabled(true)
+    setPasskeyLoading(true)
+    const controller = new AbortController()
+    passkeyOperation.current = controller
+    try {
+      await loginWithPasskey(controller.signal)
+      showNotification({
+        color: 'teal',
+        title: t('account.notification.login.success.title'),
+        message: t('account.notification.login.success.message'),
+        icon: <Icon path={mdiCheck} size={1} />,
+      })
+      setNeedRedirect(true)
+      await mutate()
+    } catch (err) {
+      showPasskeyError(err, t)
+    } finally {
+      setDisabled(false)
+      setPasskeyLoading(false)
+    }
+  }
+
   return (
     <AccountView onSubmit={onLogin}>
       <TextInput
@@ -155,6 +184,21 @@ const Login: FC = () => {
           </Button>
         </Grid.Col>
       </Grid>
+      <Button
+        fullWidth
+        variant="light"
+        type="button"
+        disabled={disabled || !supportsPasskeys()}
+        loading={passkeyLoading}
+        onClick={onPasskeyLogin}
+      >
+        {t('account.passkey.login')}
+      </Button>
+      {!supportsPasskeys() && (
+        <Text size="xs" c="dimmed">
+          {t('account.passkey.unsupported')}
+        </Text>
+      )}
     </AccountView>
   )
 }

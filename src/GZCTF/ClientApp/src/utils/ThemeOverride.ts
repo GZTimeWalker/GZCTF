@@ -13,12 +13,11 @@ import {
   Tabs,
   Tooltip,
   TooltipFloating,
-  createTheme,
   useMantineTheme,
 } from '@mantine/core'
 import { createStyles } from '@mantine/emotion'
 import { useLocalStorage, useMediaQuery } from '@mantine/hooks'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useConfig } from '@Hooks/useConfig'
 import tooltipClasses from '@Styles/Tooltip.module.css'
 
@@ -241,12 +240,9 @@ export const useCustomTheme = () => {
     return color && /^#[0-9A-F]{6}$/i.test(color) ? color : null
   }
 
-  const [theme, setTheme] = useState<MantineThemeOverride>(createTheme(CustomTheme))
-
-  useEffect(() => {
+  const theme = useMemo<MantineThemeOverride>(() => {
     if (customColor.provider === ColorProvider.Default) {
-      setTheme(CustomTheme)
-      return
+      return CustomTheme
     }
 
     const resolvedColor =
@@ -256,25 +252,25 @@ export const useCustomTheme = () => {
           ? resolveManaged(config.customTheme)
           : null
 
-    if (resolvedColor) {
-      setTheme({
-        ...CustomTheme,
-        colors: {
-          ...CustomTheme.colors,
-          custom: generateColors(resolvedColor),
-        },
-        components: {
-          ...CustomTheme.components,
-          Avatar: Avatar.extend({
-            defaultProps: {
-              color: 'custom',
-            },
-          }),
-        },
-        primaryColor: 'custom',
-      })
-    } else {
-      setTheme(CustomTheme)
+    if (!resolvedColor) {
+      return CustomTheme
+    }
+
+    return {
+      ...CustomTheme,
+      colors: {
+        ...CustomTheme.colors,
+        custom: generateColors(resolvedColor),
+      },
+      components: {
+        ...CustomTheme.components,
+        Avatar: Avatar.extend({
+          defaultProps: {
+            color: 'custom',
+          },
+        }),
+      },
+      primaryColor: 'custom',
     }
   }, [customColor, config.customTheme])
 

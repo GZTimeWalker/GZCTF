@@ -115,5 +115,26 @@
     "reset": "Reset password",
     "verify": "Account Verification",
     "verify_email": "Email Verification Pending"
+  },
+  "passkey": {
+    "failed": "The passkey request could not be completed.",
+    "title": "Passkeys",
+    "login": "Login with a passkey",
+    "description": "Use your fingerprint, face, device PIN, or security key to sign in without a password.",
+    "add": "Add passkey",
+    "rename": "Rename",
+    "remove": "Remove",
+    "remove_confirm": "Remove \"{{name}}\"? You will no longer be able to sign in with this passkey.",
+    "name": "Passkey name",
+    "confirm_password": "Confirm your current password to add a passkey.",
+    "created": "Added {{date}}",
+    "unnamed": "Unnamed passkey",
+    "saved": "Passkey saved.",
+    "removed": "Passkey removed.",
+    "unsupported": "Passkeys are unavailable. You can still sign in with your password.",
+    "cancelled": "The passkey request was cancelled or timed out. Please try again.",
+    "already_registered": "This passkey is already registered. Try a different authenticator.",
+    "load_failed": "Could not load your passkeys. Please reopen this dialog to try again.",
+    "limit": "You can register up to 10 passkeys."
   }
 }
