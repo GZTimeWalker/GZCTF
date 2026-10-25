@@ -1088,4 +1088,37 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>이 도전 과제의 마감 시간이 지났습니다</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>패스키 또는 계정을 확인하지 못했습니다. 다시 시도하세요.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>패스키는 최대 {0}개까지 등록할 수 있습니다.</value>
+  </data>
+  <data name="Auth_InvalidRequestToken" xml:space="preserve">
+    <value>요청을 확인하지 못했습니다. 페이지를 새로고침한 후 다시 시도하세요.</value>
+  </data>
+  <data name="Account_UserLockedOut" xml:space="preserve">
+    <value>계정이 일시적으로 잠겼습니다. 나중에 다시 시도하세요.</value>
+  </data>
+  <data name="Account_PasskeyAdded" xml:space="preserve">
+    <value>패스키를 추가했습니다</value>
+  </data>
+  <data name="Account_PasskeyRenamed" xml:space="preserve">
+    <value>패스키 이름을 변경했습니다</value>
+  </data>
+  <data name="Account_PasskeyRemoved" xml:space="preserve">
+    <value>패스키를 삭제했습니다</value>
+  </data>
+  <data name="Model_PasskeyCredentialRequired" xml:space="preserve">
+    <value>패스키 응답이 필요합니다</value>
+  </data>
+  <data name="Model_PasskeyCredentialTooLong" xml:space="preserve">
+    <value>패스키 응답이 너무 큽니다</value>
+  </data>
+  <data name="Model_PasskeyNameRequired" xml:space="preserve">
+    <value>패스키 이름을 입력하세요</value>
+  </data>
+  <data name="Model_PasskeyNameTooLong" xml:space="preserve">
+    <value>패스키 이름은 {1}자를 초과할 수 없습니다</value>
+  </data>
 </root>
