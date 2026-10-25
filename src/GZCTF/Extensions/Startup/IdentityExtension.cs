@@ -41,6 +41,14 @@ internal static class IdentityExtension
                 .AddErrorDescriber<TranslatedIdentityErrorDescriber>()
                 .AddDefaultTokenProviders();
 
+            builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN");
+            builder.Services.Configure<IdentityPasskeyOptions>(options =>
+            {
+                options.ServerDomain = builder.Configuration["Passkey:ServerDomain"];
+                options.UserVerificationRequirement = "required";
+                options.ResidentKeyRequirement = "required";
+            });
+
             builder.Services.Configure<DataProtectionTokenProviderOptions>(o =>
                 o.TokenLifespan = TimeSpan.FromHours(3)
             );

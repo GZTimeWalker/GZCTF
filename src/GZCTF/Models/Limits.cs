@@ -48,6 +48,16 @@ public static class Limits
     public const int MinPasswordLength = 6;
 
     /// <summary>
+    /// Maximum passkey display name length
+    /// </summary>
+    public const int MaxPasskeyNameLength = 100;
+
+    /// <summary>
+    /// Maximum serialized WebAuthn credential length
+    /// </summary>
+    public const int MaxPasskeyCredentialLength = 65536;
+
+    /// <summary>
     /// 文件哈希长度
     /// </summary>
     public const int FileHashLength = 64;

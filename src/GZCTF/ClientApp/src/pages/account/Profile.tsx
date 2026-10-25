@@ -22,6 +22,7 @@ import { mdiCheck, mdiClose } from '@mdi/js'
 import { Icon } from '@mdi/react'
 import { FC, useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
+import { PasskeyModal } from '@Components/PasskeyModal'
 import { PasswordChangeModal } from '@Components/PasswordChangeModal'
 import { WithNavBar } from '@Components/WithNavbar'
 import { showErrorMsg, tryGetErrorMsg } from '@Utils/Shared'
@@ -50,6 +51,7 @@ const Profile: FC = () => {
 
   const [mailEditOpened, setMailEditOpened] = useState(false)
   const [pwdChangeOpened, setPwdChangeOpened] = useState(false)
+  const [passkeysOpened, setPasskeysOpened] = useState(false)
 
   const [email, setEmail] = useState('')
 
@@ -230,6 +232,9 @@ const Profile: FC = () => {
               </Button>
             </Grid.Col>
           </Grid>
+          <Button fullWidth mt="sm" variant="light" onClick={() => setPasskeysOpened(true)}>
+            {t('account.passkey.title')}
+          </Button>
         </Box>
       </Stack>
     </>
@@ -254,6 +259,7 @@ const Profile: FC = () => {
         onClose={() => setPwdChangeOpened(false)}
         title={t('account.button.change_password')}
       />
+      <PasskeyModal opened={passkeysOpened} onClose={() => setPasskeysOpened(false)} userId={user?.userId} />
 
       <Modal opened={mailEditOpened} onClose={() => setMailEditOpened(false)} title={t('account.button.update_email')}>
         <Stack>

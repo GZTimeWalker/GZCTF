@@ -83,6 +83,10 @@ export const useLogOut = () => {
     } catch {
       navigate('/')
       mutateProfile(undefined, { revalidate: false })
+    } finally {
+      await mutate((key) => typeof key === 'string' && key.startsWith('/api/passkey'), undefined, {
+        revalidate: false,
+      })
     }
   }
 }

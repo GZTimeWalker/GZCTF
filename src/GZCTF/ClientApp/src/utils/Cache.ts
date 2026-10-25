@@ -13,6 +13,8 @@ const IDB_KEY = 'cache-map'
 
 type BinaryLike = Uint8Array | ArrayBuffer
 
+const isPasskeyCacheKey = (key: unknown) => typeof key === 'string' && key.startsWith('/api/passkey')
+
 class PersistentCache implements Cache<any> {
   private map = new Map<any, any>()
 
@@ -62,13 +64,18 @@ class PersistentCache implements Cache<any> {
   bulkAdd(entries: [any, any][]) {
     if (!entries.length) return
     let added = 0
+    let discarded = false
     for (const [k, v] of entries) {
+      if (isPasskeyCacheKey(k)) {
+        discarded = true
+        continue
+      }
       if (!this.map.has(k)) {
         this.map.set(k, v)
         added++
       }
     }
-    if (added) {
+    if (added || discarded) {
       dirty = true
       schedulePersist()
     }
@@ -76,7 +83,7 @@ class PersistentCache implements Cache<any> {
   }
 
   snapshotEntries() {
-    return Array.from(this.map.entries())
+    return Array.from(this.map.entries()).filter(([key]) => !isPasskeyCacheKey(key))
   }
 }
 
