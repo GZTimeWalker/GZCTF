@@ -115,5 +115,26 @@
     "reset": "Atur ulang kata sandi",
     "verify": "Verifikasi Akun",
     "verify_email": "Menunggu Verifikasi Email"
+  },
+  "passkey": {
+    "failed": "Permintaan passkey tidak dapat diselesaikan.",
+    "title": "Passkey",
+    "login": "Masuk dengan passkey",
+    "description": "Masuk tanpa kata sandi menggunakan sidik jari, wajah, PIN perangkat, atau kunci keamanan.",
+    "add": "Tambahkan passkey",
+    "rename": "Ubah nama",
+    "remove": "Hapus",
+    "remove_confirm": "Hapus “{{name}}”? Anda tidak akan bisa masuk lagi dengan passkey ini.",
+    "name": "Nama passkey",
+    "confirm_password": "Konfirmasi kata sandi saat ini untuk menambahkan passkey.",
+    "created": "Ditambahkan pada {{date}}",
+    "unnamed": "Passkey tanpa nama",
+    "saved": "Passkey disimpan.",
+    "removed": "Passkey dihapus.",
+    "unsupported": "Passkey tidak tersedia. Anda tetap dapat masuk dengan kata sandi.",
+    "cancelled": "Permintaan passkey dibatalkan atau waktu tunggunya habis. Silakan coba lagi.",
+    "already_registered": "Passkey ini sudah terdaftar. Coba autentikator lain.",
+    "load_failed": "Tidak dapat memuat passkey Anda. Buka kembali dialog ini untuk mencoba lagi.",
+    "limit": "Anda dapat mendaftarkan hingga 10 passkey."
   }
 }
