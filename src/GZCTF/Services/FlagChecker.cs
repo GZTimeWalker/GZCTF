@@ -53,16 +53,25 @@ public class FlagChecker(
 
     internal static int GetWorkerCount()
     {
-        // if RAM < 2GiB or CPU <= 3, return 1
-        // if RAM < 4GiB or CPU <= 6, return 2
-        // otherwise, return 4
         var memoryInfo = GC.GetGCMemoryInfo();
         var freeMemory = memoryInfo.TotalAvailableMemoryBytes / 1024.0 / 1024.0 / 1024.0;
-        var cpuCount = Environment.ProcessorCount;
 
-        if (freeMemory < 2 || cpuCount <= 3)
+        return ResolveWorkerCount(freeMemory, Environment.ProcessorCount);
+    }
+
+    /// <summary>
+    /// Resolve the worker count from the available memory (GiB) and CPU count.
+    /// </summary>
+    /// <remarks>
+    /// if RAM &lt; 2GiB or CPU &lt;= 3, return 1
+    /// if RAM &lt; 4GiB or CPU &lt;= 6, return 2
+    /// otherwise, return 4
+    /// </remarks>
+    internal static int ResolveWorkerCount(double availableMemoryGiB, int cpuCount)
+    {
+        if (availableMemoryGiB < 2 || cpuCount <= 3)
             return 1;
-        if (freeMemory < 4 || cpuCount <= 6)
+        if (availableMemoryGiB < 4 || cpuCount <= 6)
             return 2;
         return MaxWorkerCount;
     }
