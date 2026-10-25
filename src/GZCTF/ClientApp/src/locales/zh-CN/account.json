@@ -115,5 +115,26 @@
     "reset": "重置密码",
     "verify": "账户验证",
     "verify_email": "等待邮箱验证"
+  },
+  "passkey": {
+    "failed": "无法完成通行密钥请求。",
+    "title": "通行密钥",
+    "login": "使用通行密钥登录",
+    "description": "使用指纹、面容、设备 PIN 码或安全密钥登录，无需输入密码。",
+    "add": "添加通行密钥",
+    "rename": "重命名",
+    "remove": "移除",
+    "remove_confirm": "确定移除“{{name}}”吗？移除后将无法使用此通行密钥登录。",
+    "name": "通行密钥名称",
+    "confirm_password": "请输入当前密码以添加通行密钥。",
+    "created": "添加于 {{date}}",
+    "unnamed": "未命名的通行密钥",
+    "saved": "通行密钥已保存。",
+    "removed": "通行密钥已移除。",
+    "unsupported": "通行密钥不可用，你仍可使用密码登录。",
+    "cancelled": "通行密钥请求已取消或超时，请重试。",
+    "already_registered": "此通行密钥已注册，请尝试其他验证器。",
+    "load_failed": "无法加载通行密钥，请重新打开此对话框重试。",
+    "limit": "最多可以注册 10 个通行密钥。"
   }
 }
