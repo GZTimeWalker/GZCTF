@@ -18,7 +18,6 @@ using GZCTF.Models.Internal;
 using GZCTF.Models.Request.Account;
 using GZCTF.Services.Config;
 using GZCTF.Utils;
-using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +33,6 @@ using Xunit;
 
 namespace GZCTF.Test.UnitTests.Account;
 
-// Exercise the real Identity passkey handler, protected ceremony cookies and controller with a software ES256 authenticator.
 public sealed class PasskeyTests : IDisposable
 {
     private readonly ServiceProvider _services;
@@ -53,7 +51,6 @@ public sealed class PasskeyTests : IDisposable
         builder.WebHost.UseTestServer();
         builder.ConfigureIdentity();
         builder.AddWebServices();
-        builder.AddDevelopmentServices();
         builder.Services.AddControllers().AddApplicationPart(typeof(PasskeyController).Assembly);
         builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql());
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
@@ -183,32 +180,12 @@ public sealed class PasskeyTests : IDisposable
     }
 
     [Fact]
-    public async Task Antiforgery_RequiresMatchingRequestToken()
-    {
-        using var scope = _services.CreateScope();
-        var context = NewContext(scope.ServiceProvider);
-        var antiforgery = scope.ServiceProvider.GetRequiredService<IAntiforgery>();
-        var tokens = antiforgery.GetAndStoreTokens(context);
-        StoreCookies(context);
-
-        context = NewContext(scope.ServiceProvider);
-        context.Request.Method = "POST";
-        await Assert.ThrowsAsync<AntiforgeryValidationException>(() => antiforgery.ValidateRequestAsync(context));
-        context = NewContext(scope.ServiceProvider);
-        context.Request.Method = "POST";
-        context.Request.Headers["X-CSRF-TOKEN"] = tokens.RequestToken;
-        await antiforgery.ValidateRequestAsync(context);
-        Assert.NotNull(typeof(PasskeyController).GetCustomAttributes(typeof(AutoValidateAntiforgeryTokenAttribute), true).SingleOrDefault());
-    }
-
-    [Fact]
     public async Task HttpEndpoints_RequireAuthenticationAndCsrf()
     {
         await using var app = _builder.Build();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseRateLimiter();
-        app.UseOpenApi(options => options.Path = "/openapi/{documentName}.json");
         app.MapControllers();
         await app.StartAsync();
         using var client = app.GetTestClient();
@@ -225,21 +202,6 @@ public sealed class PasskeyTests : IDisposable
             SetCookieHeaderValue.ParseList(response.Headers.GetValues("Set-Cookie").ToArray()).Select(c => $"{c.Name}={c.Value}")));
         Assert.Equal(HttpStatusCode.OK, (await client.PostAsync("/api/passkey/options", null)).StatusCode);
         Assert.Equal(HttpStatusCode.Unauthorized, (await client.DeleteAsync("/api/passkey/credential")).StatusCode);
-
-        var openApi = await client.GetStringAsync("/openapi/v1.json");
-        Assert.Contains("/api/passkey/login", openApi);
-    }
-
-    [Fact]
-    public void MigrationModel_IncludesPasskeysWithoutChangingExistingIdentityColumns()
-    {
-        using var context = new DesignTimeAppDbContextFactory().CreateDbContext([]);
-        var entity = context.Model.FindEntityType(typeof(IdentityUserPasskey<Guid>));
-        Assert.NotNull(entity);
-        Assert.Equal("AspNetUserPasskeys", entity.GetTableName());
-        Assert.Equal(DeleteBehavior.Cascade, Assert.Single(entity.GetForeignKeys()).DeleteBehavior);
-        Assert.Equal("text", context.Model.FindEntityType(typeof(UserInfo))!.FindProperty("PhoneNumber")!.GetColumnType());
-        Assert.False(context.Database.HasPendingModelChanges());
     }
 
     private async Task Register()

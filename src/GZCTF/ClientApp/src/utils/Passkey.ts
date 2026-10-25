@@ -3,8 +3,8 @@ import { TFunction } from 'i18next'
 import { showErrorMsg } from '@Utils/Shared'
 import api from '@Api'
 
-// Convert WebAuthn's binary fields explicitly, including on browsers without the JSON helpers.
 type CredentialDescriptorJSON = Omit<PublicKeyCredentialDescriptor, 'id'> & { id: string }
+
 export type CreationOptionsJSON = Omit<
   PublicKeyCredentialCreationOptions,
   'challenge' | 'user' | 'excludeCredentials'
@@ -13,6 +13,7 @@ export type CreationOptionsJSON = Omit<
   user: Omit<PublicKeyCredentialUserEntity, 'id'> & { id: string }
   excludeCredentials?: CredentialDescriptorJSON[]
 }
+
 export type RequestOptionsJSON = Omit<PublicKeyCredentialRequestOptions, 'challenge' | 'allowCredentials'> & {
   challenge: string
   allowCredentials?: CredentialDescriptorJSON[]

@@ -10,12 +10,16 @@
  * ---------------------------------------------------------------
  */
 
+/** Request token for passkey operations */
 export interface PasskeyAntiforgeryModel {
+  /** Send in the X-CSRF-TOKEN header together with the matching antiforgery cookie */
   token: string;
 }
 
+/** WebAuthn credential returned by the browser */
 export interface PasskeyCredentialModel {
   /**
+   * Serialized public-key credential with base64url-encoded binary fields
    * @minLength 1
    * @maxLength 65536
    */
@@ -24,27 +28,40 @@ export interface PasskeyCredentialModel {
 
 /** Public metadata for a registered passkey. Credential material is never returned. */
 export interface PasskeyModel {
+  /** Base64url-encoded credential ID */
   credentialId: string;
+  /** User-assigned passkey name */
   name?: string | null;
-  /** @format uint64 */
+  /**
+   * Creation time
+   * @format uint64
+   */
   createdAt?: number;
 }
 
+/** Current password confirmation for passkey registration */
 export interface PasskeyCreationModel {
-  /** @minLength 1 */
+  /**
+   * Current password, encrypted when API encryption is enabled
+   * @minLength 1
+   */
   password: string;
 }
 
+/** A new passkey and its user-assigned name */
 export type PasskeyRegistrationModel = PasskeyCredentialModel & {
   /**
+   * Passkey name
    * @minLength 1
    * @maxLength 100
    */
   name: string;
 };
 
+/** Update a passkey's display name */
 export interface PasskeyRenameModel {
   /**
+   * New passkey name
    * @minLength 1
    * @maxLength 100
    */
@@ -2396,7 +2413,7 @@ export class Api<
 > extends HttpClient<SecurityDataType> {
   passkey = {
     /**
-     * No description
+     * @description Creates a protected, short-lived ceremony cookie required by POST /api/passkey.
      *
      * @tags Passkey
      * @name PasskeyCreationOptions
@@ -2425,14 +2442,17 @@ export class Api<
      * @request GET:/api/passkey
      */
     passkeyList: (params: RequestParams = {}) =>
-      this.request<PasskeyModel[], any>({
+      this.request<PasskeyModel[], RequestResponse>({
         path: `/api/passkey`,
         method: "GET",
         format: "json",
         ...params,
       }),
     usePasskeyList: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<PasskeyModel[], any>(doFetch ? `/api/passkey` : null, options),
+      useSWR<PasskeyModel[], RequestResponse>(
+        doFetch ? `/api/passkey` : null,
+        options,
+      ),
 
     mutatePasskeyList: (
       data?: PasskeyModel[] | Promise<PasskeyModel[]>,
@@ -2513,7 +2533,7 @@ export class Api<
       }),
 
     /**
-     * No description
+     * @description Creates a protected, short-lived ceremony cookie required by POST /api/passkey/login.
      *
      * @tags Passkey
      * @name PasskeyRequestOptions
@@ -2521,7 +2541,7 @@ export class Api<
      * @request POST:/api/passkey/options
      */
     passkeyRequestOptions: (params: RequestParams = {}) =>
-      this.request<any, any>({
+      this.request<any, RequestResponse>({
         path: `/api/passkey/options`,
         method: "POST",
         format: "json",
@@ -2537,14 +2557,14 @@ export class Api<
      * @request GET:/api/passkey/token
      */
     passkeyToken: (params: RequestParams = {}) =>
-      this.request<PasskeyAntiforgeryModel, any>({
+      this.request<PasskeyAntiforgeryModel, RequestResponse>({
         path: `/api/passkey/token`,
         method: "GET",
         format: "json",
         ...params,
       }),
     usePasskeyToken: (options?: SWRConfiguration, doFetch: boolean = true) =>
-      useSWR<PasskeyAntiforgeryModel, any>(
+      useSWR<PasskeyAntiforgeryModel, RequestResponse>(
         doFetch ? `/api/passkey/token` : null,
         options,
       ),

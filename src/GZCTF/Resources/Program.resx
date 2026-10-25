@@ -1094,4 +1094,31 @@
   <data name="Account_PasskeyLimit" xml:space="preserve">
     <value>You can register up to {0} passkeys.</value>
   </data>
+  <data name="Auth_InvalidRequestToken" xml:space="preserve">
+    <value>Your request could not be verified. Please refresh the page and try again.</value>
+  </data>
+  <data name="Account_UserLockedOut" xml:space="preserve">
+    <value>Your account is temporarily locked. Please try again later.</value>
+  </data>
+  <data name="Account_PasskeyAdded" xml:space="preserve">
+    <value>Passkey added</value>
+  </data>
+  <data name="Account_PasskeyRenamed" xml:space="preserve">
+    <value>Passkey renamed</value>
+  </data>
+  <data name="Account_PasskeyRemoved" xml:space="preserve">
+    <value>Passkey removed</value>
+  </data>
+  <data name="Model_PasskeyCredentialRequired" xml:space="preserve">
+    <value>Passkey response is required</value>
+  </data>
+  <data name="Model_PasskeyCredentialTooLong" xml:space="preserve">
+    <value>Passkey response is too large</value>
+  </data>
+  <data name="Model_PasskeyNameRequired" xml:space="preserve">
+    <value>Passkey name is required</value>
+  </data>
+  <data name="Model_PasskeyNameTooLong" xml:space="preserve">
+    <value>Passkey name cannot exceed {1} characters</value>
+  </data>
 </root>
