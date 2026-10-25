@@ -94,6 +94,7 @@
     }
   },
   "passkey": {
+    "failed": "No se pudo completar la solicitud de la llave de acceso.",
     "title": "Llaves de acceso",
     "login": "Iniciar sesión con una llave de acceso",
     "description": "Inicia sesión sin contraseña con tu huella, rostro, PIN del dispositivo o llave de seguridad.",

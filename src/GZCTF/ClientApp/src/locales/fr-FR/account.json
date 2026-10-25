@@ -94,6 +94,7 @@
     }
   },
   "passkey": {
+    "failed": "La demande de clé d’accès n’a pas pu être effectuée.",
     "title": "Clés d’accès",
     "login": "Se connecter avec une clé d’accès",
     "description": "Connectez-vous sans mot de passe avec votre empreinte digitale, votre visage, le code PIN de votre appareil ou une clé de sécurité.",

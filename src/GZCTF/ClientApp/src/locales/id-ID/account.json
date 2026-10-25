@@ -94,6 +94,7 @@
     }
   },
   "passkey": {
+    "failed": "Permintaan passkey tidak dapat diselesaikan.",
     "title": "Passkey",
     "login": "Masuk dengan passkey",
     "description": "Masuk tanpa kata sandi menggunakan sidik jari, wajah, PIN perangkat, atau kunci keamanan.",

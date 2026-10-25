@@ -88,7 +88,10 @@ export const loginWithPasskey = async (signal: AbortSignal) => {
 
 export const registerPasskey = async (name: string, password: string, signal: AbortSignal) => {
   const headers = await passkeyHeaders(signal)
-  const { data }: { data: CreationOptionsJSON } = await api.passkey.passkeyCreationOptions({ password }, { headers, signal })
+  const { data }: { data: CreationOptionsJSON } = await api.passkey.passkeyCreationOptions(
+    { password },
+    { headers, signal }
+  )
   const credential = await navigator.credentials.create({
     publicKey: {
       ...data,
@@ -104,8 +107,22 @@ export const registerPasskey = async (name: string, password: string, signal: Ab
 export const showPasskeyError = (error: unknown, t: TFunction) => {
   if (isCancel(error)) return
   if (error instanceof DOMException) {
-    if (error.name === 'AbortError') return
-    const key = error.name === 'InvalidStateError' ? 'already_registered' : 'cancelled'
+    let key = 'failed'
+    switch (error.name) {
+      case 'AbortError':
+        return
+      case 'NotAllowedError':
+        key = 'cancelled'
+        break
+      case 'InvalidStateError':
+        key = 'already_registered'
+        break
+      case 'NotSupportedError':
+        key = 'unsupported'
+        break
+      default:
+        console.warn(error)
+    }
     showErrorMsg(t(`account.passkey.${key}`), t)
     return
   }

@@ -94,6 +94,7 @@
     }
   },
   "passkey": {
+    "failed": "Không thể hoàn tất yêu cầu passkey.",
     "title": "Passkey",
     "login": "Đăng nhập bằng passkey",
     "description": "Đăng nhập không cần mật khẩu bằng vân tay, khuôn mặt, mã PIN thiết bị hoặc khóa bảo mật.",

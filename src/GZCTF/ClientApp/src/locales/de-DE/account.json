@@ -94,6 +94,7 @@
     }
   },
   "passkey": {
+    "failed": "Die Passkey-Anfrage konnte nicht abgeschlossen werden.",
     "title": "Passkeys",
     "login": "Mit Passkey anmelden",
     "description": "Melde dich mit Fingerabdruck, Gesichtserkennung, Geräte-PIN oder Sicherheitsschlüssel ohne Passwort an.",

@@ -25,6 +25,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -53,6 +55,7 @@ public sealed class PasskeyTests : IDisposable
         builder.AddWebServices();
         builder.Services.AddControllers().AddApplicationPart(typeof(PasskeyController).Assembly);
         builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql());
+        builder.Services.AddScoped<AppDbContext, TestDbContext>();
         builder.Services.AddDataProtection().UseEphemeralDataProtectionProvider();
         builder.Services.AddLocalization();
         builder.Services.AddSingleton<Serilog.IDiagnosticContext>(new Serilog.Extensions.Hosting.DiagnosticContext(Serilog.Log.Logger));
@@ -350,6 +353,29 @@ public sealed class PasskeyTests : IDisposable
             Passkeys[user.Id].RemoveAll(p => p.CredentialId.SequenceEqual(credentialId));
             return Task.FromResult(IdentityResult.Success);
         }
+    }
+
+    private sealed class TestDbContext(DbContextOptions<AppDbContext> options) : AppDbContext(options)
+    {
+        private DatabaseFacade? _database;
+        public override DatabaseFacade Database => _database ??= new TestDatabaseFacade(this);
+    }
+
+    private sealed class TestDatabaseFacade(DbContext context) : DatabaseFacade(context)
+    {
+        public override Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken token = default) =>
+            Task.FromResult<IDbContextTransaction>(new TestTransaction());
+    }
+
+    private sealed class TestTransaction : IDbContextTransaction
+    {
+        public Guid TransactionId { get; } = Guid.NewGuid();
+        public void Commit() { }
+        public Task CommitAsync(CancellationToken token = default) => Task.CompletedTask;
+        public void Rollback() { }
+        public Task RollbackAsync(CancellationToken token = default) => Task.CompletedTask;
+        public void Dispose() { }
+        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
     }
 
     private sealed class EmptyStore : IUserStore<UserInfo>

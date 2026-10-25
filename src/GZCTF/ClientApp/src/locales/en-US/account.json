@@ -117,6 +117,7 @@
     "verify_email": "Email Verification Pending"
   },
   "passkey": {
+    "failed": "The passkey request could not be completed.",
     "title": "Passkeys",
     "login": "Login with a passkey",
     "description": "Use your fingerprint, face, device PIN, or security key to sign in without a password.",

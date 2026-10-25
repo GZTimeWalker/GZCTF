@@ -259,7 +259,7 @@ const Profile: FC = () => {
         onClose={() => setPwdChangeOpened(false)}
         title={t('account.button.change_password')}
       />
-      <PasskeyModal opened={passkeysOpened} onClose={() => setPasskeysOpened(false)} />
+      <PasskeyModal opened={passkeysOpened} onClose={() => setPasskeysOpened(false)} userId={user?.userId} />
 
       <Modal opened={mailEditOpened} onClose={() => setMailEditOpened(false)} title={t('account.button.update_email')}>
         <Stack>

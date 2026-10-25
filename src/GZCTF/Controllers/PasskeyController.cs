@@ -25,6 +25,7 @@ namespace GZCTF.Controllers;
 [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 [ProducesResponseType(typeof(RequestResponse), StatusCodes.Status429TooManyRequests)]
 public class PasskeyController(
+    AppDbContext context,
     UserManager<UserInfo> userManager,
     SignInManager<UserInfo> signInManager,
     IAntiforgery antiforgery,
@@ -195,6 +196,7 @@ public class PasskeyController(
         if (!attestation.Succeeded || attestation.UserEntity.Id != await userManager.GetUserIdAsync(user))
             return PasskeyFailure();
 
+        await using var transaction = await context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
         if ((await userManager.GetPasskeysAsync(user)).Count >= MaxPasskeys)
             return PasskeyLimit();
 
@@ -203,6 +205,7 @@ public class PasskeyController(
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
 
+        await transaction.CommitAsync(HttpContext.RequestAborted);
         logger.Log(StaticLocalizer[nameof(Resources.Program.Account_PasskeyAdded)], user, TaskStatus.Success);
         return Ok();
     }
@@ -231,11 +234,13 @@ public class PasskeyController(
         if (passkey is null)
             return NotFound();
 
+        await using var transaction = await context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
         passkey.Name = model.Name.Trim();
         var result = await userManager.AddOrUpdatePasskeyAsync(user, passkey);
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
 
+        await transaction.CommitAsync(HttpContext.RequestAborted);
         logger.Log(StaticLocalizer[nameof(Resources.Program.Account_PasskeyRenamed)], user, TaskStatus.Success);
         return Ok();
     }
@@ -263,10 +268,12 @@ public class PasskeyController(
         if (passkey is null)
             return NotFound();
 
+        await using var transaction = await context.Database.BeginTransactionAsync(HttpContext.RequestAborted);
         var result = await userManager.RemovePasskeyAsync(user, passkey.CredentialId);
         if (!result.Succeeded)
             return HandleIdentityError(result.Errors);
 
+        await transaction.CommitAsync(HttpContext.RequestAborted);
         logger.Log(StaticLocalizer[nameof(Resources.Program.Account_PasskeyRemoved)], user, TaskStatus.Success);
         return Ok();
     }
