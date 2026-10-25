@@ -1104,4 +1104,37 @@
   <data name="Challenge_DeadlinePassed" xml:space="preserve">
     <value>La fecha límite de este desafío ha pasado</value>
   </data>
+  <data name="Account_PasskeyFailed" xml:space="preserve">
+    <value>No se pudo verificar la llave de acceso o la cuenta. Inténtalo de nuevo.</value>
+  </data>
+  <data name="Account_PasskeyLimit" xml:space="preserve">
+    <value>Puedes registrar hasta {0} llaves de acceso.</value>
+  </data>
+  <data name="Auth_InvalidRequestToken" xml:space="preserve">
+    <value>No se pudo verificar tu solicitud. Actualiza la página e inténtalo de nuevo.</value>
+  </data>
+  <data name="Account_UserLockedOut" xml:space="preserve">
+    <value>Tu cuenta está bloqueada temporalmente. Inténtalo de nuevo más tarde.</value>
+  </data>
+  <data name="Account_PasskeyAdded" xml:space="preserve">
+    <value>Llave de acceso añadida</value>
+  </data>
+  <data name="Account_PasskeyRenamed" xml:space="preserve">
+    <value>Nombre de la llave de acceso cambiado</value>
+  </data>
+  <data name="Account_PasskeyRemoved" xml:space="preserve">
+    <value>Llave de acceso eliminada</value>
+  </data>
+  <data name="Model_PasskeyCredentialRequired" xml:space="preserve">
+    <value>Se requiere la respuesta de la llave de acceso</value>
+  </data>
+  <data name="Model_PasskeyCredentialTooLong" xml:space="preserve">
+    <value>La respuesta de la llave de acceso es demasiado grande</value>
+  </data>
+  <data name="Model_PasskeyNameRequired" xml:space="preserve">
+    <value>Se requiere un nombre para la llave de acceso</value>
+  </data>
+  <data name="Model_PasskeyNameTooLong" xml:space="preserve">
+    <value>El nombre de la llave de acceso no puede superar los {1} caracteres</value>
+  </data>
 </root>
