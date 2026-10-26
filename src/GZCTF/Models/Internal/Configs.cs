@@ -423,12 +423,42 @@ public class ContainerProvider
     public DockerConfig? DockerConfig { get; set; }
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<ImagePullPolicy>))]
+public enum ImagePullPolicy
+{
+    /// <summary>
+    /// Pull an image only when it does not exist locally.
+    /// </summary>
+    Missing,
+
+    /// <summary>
+    /// Check the registry for an updated image before every container creation.
+    /// </summary>
+    Always,
+
+    /// <summary>
+    /// Check the registry only when the configured pull interval has elapsed.
+    /// </summary>
+    IfStale
+}
+
 public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
     public string? UserName { get; set; }
     public string? Password { get; set; }
     public string? ChallengeNetwork { get; set; }
+
+    /// <summary>
+    /// Image pull policy used before creating a container.
+    /// </summary>
+    public ImagePullPolicy ImagePullPolicy { get; set; } = ImagePullPolicy.Missing;
+
+    /// <summary>
+    /// Minimum interval in minutes between registry checks when <see cref="ImagePullPolicy"/>
+    /// is <see cref="ImagePullPolicy.IfStale"/>.
+    /// </summary>
+    public int ImagePullIntervalMinutes { get; set; } = 10;
 }
 
 public class KubernetesConfig
