@@ -353,6 +353,12 @@
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
     <value>Cannot convert port number：{0}, this is an unexpected action</value>
   </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>Failed to pull container image {0}</value>
+  </data>
+  <data name="ContainerManager_ImagePullFallbackToLocal" xml:space="preserve">
+    <value>Failed to pull container image {0}, falling back to the local image</value>
+  </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
     <value>Pull container image {0}</value>
   </data>

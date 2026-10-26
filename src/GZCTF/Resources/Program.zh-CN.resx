@@ -353,6 +353,12 @@
   <data name="ContainerManager_PortParsingFailed" xml:space="preserve">
     <value>无法转换端口号：{0}，这是非预期的行为</value>
   </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>拉取容器镜像 {0} 失败</value>
+  </data>
+  <data name="ContainerManager_ImagePullFallbackToLocal" xml:space="preserve">
+    <value>拉取容器镜像 {0} 失败，回退到本地镜像</value>
+  </data>
   <data name="ContainerManager_PullContainerImage" xml:space="preserve">
     <value>拉取容器镜像 {0}</value>
   </data>

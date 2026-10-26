@@ -3,9 +3,11 @@
 // Restricted Component - NOT under AGPLv3.
 // See licenses/LicenseRef-GZCTF-Restricted.txt
 
+using System.Collections.Concurrent;
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
@@ -16,6 +18,8 @@ public class DockerManager : IContainerManager
     private readonly DockerClient _client;
     private readonly ILogger<DockerManager> _logger;
     private readonly DockerMetadata _meta;
+    private readonly ConcurrentDictionary<string, DateTimeOffset> _imagePulledAt = new();
+    private readonly ConcurrentDictionary<string, SemaphoreSlim> _imagePullLocks = new();
 
     public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
@@ -81,6 +85,9 @@ public class DockerManager : IContainerManager
             return null;
         }
 
+        if (!await EnsureImageAsync(config.Image, token))
+            return null;
+
         var parameters = GetCreateContainerParameters(config);
         var containerName = parameters.Name ?? DockerMetadata.GetName(config);
         parameters.Name = containerName;
@@ -119,18 +126,14 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            _logger.SystemLog(
-                StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
-                TaskStatus.Pending, LogLevel.Information);
-
-            var auth = _meta.AuthConfigs.GetForImage(config.Image) ?? new AuthConfig();
-
-            // pull the image and retry
-            await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, auth,
-                new Progress<JSONMessage>(msg =>
-                {
-                    Console.WriteLine($@"{msg.Status}|{msg.Progress}|{msg.Error}");
-                }), token);
+            // the image is missing locally, pull it and retry
+            if (!await PullImageAsync(config.Image, true, token))
+            {
+                _logger.SystemLog(
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ContainerCreationFailed),
+                        containerName], TaskStatus.Failed, LogLevel.Information);
+                return null;
+            }
 
             goto CreateDockerContainer;
         }
@@ -295,6 +298,120 @@ public class DockerManager : IContainerManager
                  .Value
                  ?? matchedPorts[0].Value
         };
+    }
+
+    private async Task<bool> EnsureImageAsync(string image, CancellationToken token)
+    {
+        if (IsImmutableReference(image) || !ShouldPullImage(image, DateTimeOffset.UtcNow))
+            return true;
+
+        return await PullImageAsync(image, false, token);
+    }
+
+    private async Task<bool> PullImageAsync(string image, bool force, CancellationToken token)
+    {
+        var key = NormalizeImageReference(image);
+        var requestedAt = DateTimeOffset.UtcNow;
+        var gate = _imagePullLocks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
+
+        await gate.WaitAsync(token);
+        try
+        {
+            var now = DateTimeOffset.UtcNow;
+
+            // another request may have refreshed this image while we were waiting
+            if (_imagePulledAt.TryGetValue(key, out var lastPulledAt) && lastPulledAt >= requestedAt)
+                return true;
+
+            if (!force && !ShouldPullImage(key, now))
+                return true;
+
+            _logger.SystemLog(
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), image],
+                TaskStatus.Pending, LogLevel.Information);
+
+            var auth = _meta.AuthConfigs.GetForImage(image) ?? new AuthConfig();
+
+            try
+            {
+                await _client.Images.CreateImageAsync(new() { FromImage = image }, auth,
+                    new Progress<JSONMessage>(msg =>
+                    {
+                        Console.WriteLine($@"{msg.Status}|{msg.Progress}|{msg.Error}");
+                    }), token);
+
+                _imagePulledAt[key] = DateTimeOffset.UtcNow;
+                return true;
+            }
+            catch (Exception e) when (e is not OperationCanceledException)
+            {
+                if (await LocalImageExistsAsync(image, token))
+                {
+                    _logger.LogWarning(e, "{msg:l}",
+                        StaticLocalizer[
+                            nameof(Resources.Program.ContainerManager_ImagePullFallbackToLocal), image]);
+                    return true;
+                }
+
+                _logger.LogErrorMessage(e,
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ImagePullFailed), image]);
+                return false;
+            }
+        }
+        finally
+        {
+            gate.Release();
+        }
+    }
+
+    private bool ShouldPullImage(string image, DateTimeOffset now) =>
+        ShouldPullImage(_meta.Config.ImagePullPolicy,
+            _imagePulledAt.TryGetValue(NormalizeImageReference(image), out var lastPulledAt)
+                ? lastPulledAt
+                : null,
+            now,
+            TimeSpan.FromMinutes(_meta.Config.ImagePullIntervalMinutes));
+
+    internal static bool ShouldPullImage(ImagePullPolicy policy, DateTimeOffset? lastPulledAt,
+        DateTimeOffset now, TimeSpan interval)
+    {
+        if (policy is ImagePullPolicy.Missing)
+            return false;
+
+        if (policy is ImagePullPolicy.Always || lastPulledAt is null || interval <= TimeSpan.Zero)
+            return true;
+
+        return now - lastPulledAt.Value >= interval;
+    }
+
+    internal static bool IsImmutableReference(string image) => image.Contains('@');
+
+    internal static string NormalizeImageReference(string image)
+    {
+        if (IsImmutableReference(image))
+            return image;
+
+        var lastSlash = image.LastIndexOf('/');
+        var lastSegment = lastSlash >= 0 ? image[(lastSlash + 1)..] : image;
+
+        return lastSegment.Contains(':') ? image : $"{image}:latest";
+    }
+
+    private async Task<bool> LocalImageExistsAsync(string image, CancellationToken token)
+    {
+        try
+        {
+            await _client.Images.InspectImageAsync(image, token);
+            return true;
+        }
+        catch (DockerImageNotFoundException)
+        {
+            return false;
+        }
+        catch (DockerApiException e) when (e.StatusCode == HttpStatusCode.NotFound)
+        {
+            return false;
+        }
     }
 
     private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>
