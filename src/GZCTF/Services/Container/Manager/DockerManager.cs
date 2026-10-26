@@ -456,7 +456,7 @@ public class DockerManager : IContainerManager
 
     internal sealed class ImagePull
     {
-        private readonly object _gate = new();
+        private readonly Lock _gate = new();
         private int _waiters;
         private bool _closed;
 
