@@ -22,7 +22,7 @@ public class DockerManager : IContainerManager
     private readonly DockerClient _client;
     private readonly ILogger<DockerManager> _logger;
     private readonly DockerMetadata _meta;
-    private readonly ConcurrentDictionary<string, Lazy<Task<bool>>> _imagePulls = new();
+    private readonly ConcurrentDictionary<string, ImagePull> _imagePulls = new();
 
     public DockerManager(IContainerProvider<DockerClient, DockerMetadata> provider, ILogger<DockerManager> logger)
     {
@@ -373,37 +373,46 @@ public class DockerManager : IContainerManager
         return false;
     }
 
-    // The shared pull is not bound to the caller's token, so cancelling one waiter
-    // does not cancel the pull for the others.
-    private Task<bool> PullImageAsync(string image, CancellationToken token)
+    // The shared pull is not bound to one caller's token: a single cancelled waiter
+    // does not abort it, but the last waiter leaving cancels the shared pull.
+    private async Task<bool> PullImageAsync(string image, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
 
         var pull = _imagePulls.GetOrAdd(image, CreateImagePull);
-        return pull.Value.WaitAsync(token);
+        pull.AddWaiter();
+
+        try
+        {
+            return await pull.Task.Value.WaitAsync(token);
+        }
+        finally
+        {
+            pull.RemoveWaiter();
+        }
     }
 
-    private Lazy<Task<bool>> CreateImagePull(string image)
+    private ImagePull CreateImagePull(string image)
     {
-        Lazy<Task<bool>>? pull = null;
+        var pull = new ImagePull();
 
-        pull = new Lazy<Task<bool>>(async () =>
+        pull.Task = new Lazy<Task<bool>>(async () =>
         {
             try
             {
-                return await PullImageCoreAsync(image);
+                return await PullImageCoreAsync(image, pull.Cancellation.Token);
             }
             finally
             {
                 // Value-based removal never drops a newer in-flight pull.
-                _imagePulls.TryRemove(new KeyValuePair<string, Lazy<Task<bool>>>(image, pull!));
+                _imagePulls.TryRemove(new KeyValuePair<string, ImagePull>(image, pull));
             }
         });
 
         return pull;
     }
 
-    private async Task<bool> PullImageCoreAsync(string image)
+    private async Task<bool> PullImageCoreAsync(string image, CancellationToken token)
     {
         _logger.SystemLog(
             StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), image],
@@ -415,15 +424,36 @@ public class DockerManager : IContainerManager
         try
         {
             await _client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = image }, auth,
-                progress, CancellationToken.None);
+                progress, token);
 
             return !progress.Failed;
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            return false;
         }
         catch (Exception e)
         {
             _logger.LogErrorMessage(e,
                 StaticLocalizer[nameof(Resources.Program.ContainerManager_ImagePullFailed), image]);
             return false;
+        }
+    }
+
+    private sealed class ImagePull
+    {
+        private int _waiters;
+
+        public CancellationTokenSource Cancellation { get; } = new();
+
+        public Lazy<Task<bool>> Task { get; set; } = null!;
+
+        public void AddWaiter() => Interlocked.Increment(ref _waiters);
+
+        public void RemoveWaiter()
+        {
+            if (Interlocked.Decrement(ref _waiters) == 0)
+                Cancellation.Cancel();
         }
     }
 
