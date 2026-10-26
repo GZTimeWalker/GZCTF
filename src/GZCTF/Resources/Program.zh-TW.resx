@@ -347,6 +347,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>容器管理模式：Docker 單實例容器控制</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>檢查容器映像 {0} 失敗</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>本機不存在容器映像 {0}，且映像拉取原則不允許拉取</value>
   </data>

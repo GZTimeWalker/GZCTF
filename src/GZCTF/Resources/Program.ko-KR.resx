@@ -347,6 +347,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>컨테이너 모드: Docker Instance 컨테이너 제어</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>컨테이너 이미지 {0} 검사에 실패했습니다</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>컨테이너 이미지 {0}이(가) 로컬에 없으며 이미지 풀 정책에서 풀을 허용하지 않습니다</value>
   </data>

@@ -347,6 +347,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>コンテナ管理モード：Docker 単一インスタンスコンテナー制御</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>コンテナイメージ {0} の検査に失敗しました</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>コンテナイメージ {0} はローカルに存在せず、イメージプルポリシーによりプルが許可されていません</value>
   </data>

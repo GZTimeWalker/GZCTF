@@ -347,6 +347,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Режим контейнеризации：Docker Instance Container Controls</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Не удалось проверить образ контейнера {0}</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>Образ контейнера {0} отсутствует локально, а политика загрузки образов не разрешает его загрузку</value>
   </data>

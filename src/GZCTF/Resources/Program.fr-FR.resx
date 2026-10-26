@@ -349,6 +349,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Mode conteneur：Contrôles de conteneur d'instance Docker</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Échec de l'inspection de l'image du conteneur {0}</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>L'image du conteneur {0} n'est pas présente localement et la stratégie de téléchargement des images ne permet pas de la télécharger</value>
   </data>

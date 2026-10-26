@@ -351,6 +351,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Containermodus: Docker-Instanz-Containersteuerung</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Das Container-Image {0} konnte nicht geprüft werden</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>Das Container-Image {0} ist lokal nicht vorhanden und die Image-Pull-Richtlinie erlaubt das Abrufen nicht</value>
   </data>

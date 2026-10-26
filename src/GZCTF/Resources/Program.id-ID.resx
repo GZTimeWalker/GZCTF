@@ -347,6 +347,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Mode container ： kontrol container instance docker instance</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Gagal memeriksa image kontainer {0}</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>Image kontainer {0} tidak ada secara lokal dan kebijakan penarikan image tidak mengizinkan penarikan</value>
   </data>

@@ -347,6 +347,9 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Container mode：Docker Instance Container Controls</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Không thể kiểm tra image container {0}</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>Image container {0} không có sẵn cục bộ và chính sách kéo image không cho phép kéo</value>
   </data>
