@@ -6,6 +6,7 @@
 using System.Net;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using GZCTF.Models.Internal;
 using GZCTF.Services.Container.Provider;
 using ContainerStatus = GZCTF.Utils.ContainerStatus;
 
@@ -81,6 +82,13 @@ public class DockerManager : IContainerManager
             return null;
         }
 
+        var pullPolicy = _meta.Config.ImagePullPolicy;
+
+        // The Docker Engine API does not accept a pull policy when creating a container,
+        // so the configured policy is applied on the client side instead.
+        if (pullPolicy == ImagePullPolicy.Always && !await PullImageAsync(config.Image, token))
+            return null;
+
         var parameters = GetCreateContainerParameters(config);
         var containerName = parameters.Name ?? DockerMetadata.GetName(config);
         parameters.Name = containerName;
@@ -119,18 +127,17 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            _logger.SystemLog(
-                StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), config.Image],
-                TaskStatus.Pending, LogLevel.Information);
-
-            var auth = _meta.AuthConfigs.GetForImage(config.Image) ?? new AuthConfig();
+            if (pullPolicy == ImagePullPolicy.Never)
+            {
+                _logger.SystemLog(
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ImageNotFound), config.Image],
+                    TaskStatus.Failed, LogLevel.Warning);
+                return null;
+            }
 
             // pull the image and retry
-            await _client.Images.CreateImageAsync(new() { FromImage = config.Image }, auth,
-                new Progress<JSONMessage>(msg =>
-                {
-                    Console.WriteLine($@"{msg.Status}|{msg.Progress}|{msg.Error}");
-                }), token);
+            if (!await PullImageAsync(config.Image, token))
+                return null;
 
             goto CreateDockerContainer;
         }
@@ -295,6 +302,36 @@ public class DockerManager : IContainerManager
                  .Value
                  ?? matchedPorts[0].Value
         };
+    }
+
+    private async Task<bool> PullImageAsync(string image, CancellationToken token)
+    {
+        _logger.SystemLog(
+            StaticLocalizer[nameof(Resources.Program.ContainerManager_PullContainerImage), image],
+            TaskStatus.Pending, LogLevel.Information);
+
+        var auth = _meta.AuthConfigs.GetForImage(image) ?? new AuthConfig();
+
+        try
+        {
+            await _client.Images.CreateImageAsync(new() { FromImage = image }, auth,
+                new Progress<JSONMessage>(msg =>
+                {
+                    Console.WriteLine($@"{msg.Status}|{msg.Progress}|{msg.Error}");
+                }), token);
+
+            return true;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            _logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ImagePullFailed), image]);
+            return false;
+        }
     }
 
     private CreateContainerParameters GetCreateContainerParameters(GZCTF.Models.Internal.ContainerConfig config) =>

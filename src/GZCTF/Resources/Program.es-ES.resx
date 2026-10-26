@@ -352,6 +352,12 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Modo de contenedor: Controles de contenedor de instancia Docker</value>
   </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>La imagen del contenedor {0} no está presente localmente y la política de descarga de imágenes no permite descargarla</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>No se pudo descargar la imagen del contenedor {0}</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>Modo de contenedor: Control de contenedor de pod de clúster K8s</value>
   </data>

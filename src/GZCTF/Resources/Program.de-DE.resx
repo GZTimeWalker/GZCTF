@@ -351,6 +351,12 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Containermodus: Docker-Instanz-Containersteuerung</value>
   </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>Das Container-Image {0} ist lokal nicht vorhanden und die Image-Pull-Richtlinie erlaubt das Abrufen nicht</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>Das Container-Image {0} konnte nicht abgerufen werden</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>Containermodus: K8s-Cluster-Pod-Containersteuerung</value>
   </data>

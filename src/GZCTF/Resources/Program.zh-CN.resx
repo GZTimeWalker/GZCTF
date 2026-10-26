@@ -347,6 +347,12 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>容器管理模式：Docker 单实例容器控制</value>
   </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>本地不存在容器镜像 {0}，且镜像拉取策略不允许拉取</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>拉取容器镜像 {0} 失败</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>容器管理模式：K8s 集群 Pod 容器控制</value>
   </data>

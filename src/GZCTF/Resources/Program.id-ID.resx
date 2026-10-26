@@ -347,6 +347,12 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Mode container ： kontrol container instance docker instance</value>
   </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>Image kontainer {0} tidak ada secara lokal dan kebijakan penarikan image tidak mengizinkan penarikan</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>Gagal menarik image kontainer {0}</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>Mode Kontainer ： kontrol container Pod cluster K8s</value>
   </data>

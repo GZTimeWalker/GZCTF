@@ -347,6 +347,12 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>コンテナ管理モード：Docker 単一インスタンスコンテナー制御</value>
   </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>コンテナイメージ {0} はローカルに存在せず、イメージプルポリシーによりプルが許可されていません</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>コンテナイメージ {0} のプルに失敗しました</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>コンテナ管理モード：K8s Pod コンテナー制御</value>
   </data>
