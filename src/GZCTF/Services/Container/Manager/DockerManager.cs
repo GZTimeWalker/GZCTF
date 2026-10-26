@@ -347,6 +347,10 @@ public class DockerManager : IContainerManager
             {
                 if (await LocalImageExistsAsync(image, token))
                 {
+                    // remember the failed check so queued callers and IfStale requests do not
+                    // immediately hit the registry again while it is unavailable
+                    _imagePulledAt[key] = DateTimeOffset.UtcNow;
+
                     _logger.LogWarning(e, "{msg:l}",
                         StaticLocalizer[
                             nameof(Resources.Program.ContainerManager_ImagePullFallbackToLocal), image]);
