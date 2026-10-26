@@ -3,6 +3,28 @@
 All notable changes to [**GZCTF**](https://github.com/GZTimeWalker/GZCTF) will be documented in this file.
 
 ---
+## [1.9.1](https://github.com/GZTimeWalker/GZCTF/compare/v1.9.0..v1.9.1) - 2026-10-26
+
+### ⛰️ Features
+
+- **(container)** add configurable Docker image pull policy (#606) - ([6dd4db](https://github.com/GZTimeWalker/GZCTF/commit/6dd4db)) by **GZTime**
+- add support for Passkeys (#598) - ([890a6c](https://github.com/GZTimeWalker/GZCTF/commit/890a6c)) by **Steve**
+
+### 🐛 Bug Fixes
+
+- **(frontend)** add file extensions to vite config plugin imports - ([e16794](https://github.com/GZTimeWalker/GZCTF/commit/e16794)) by **GZTime**
+- **(scoring)** keep default when a stored blood bonus is out of range - ([f52b58](https://github.com/GZTimeWalker/GZCTF/commit/f52b58)) by **王小路**
+
+### 🔨 Refactor
+
+- **(deps)** upgrade frontend dependencies - ([1e6ac3](https://github.com/GZTimeWalker/GZCTF/commit/1e6ac3)) by **GZTime**
+- **(deps)** upgrade NuGet packages and .NET SDK - ([8d0b17](https://github.com/GZTimeWalker/GZCTF/commit/8d0b17)) by **GZTime**
+
+### 📦 Other Changes
+
+- update GitHub Actions to latest major versions - ([65db1a](https://github.com/GZTimeWalker/GZCTF/commit/65db1a)) by **GZTime**
+
+---
 ## [1.9.0](https://github.com/GZTimeWalker/GZCTF/compare/v1.8.7..v1.9.0) - 2026-10-03
 
 ### ⛰️ Features

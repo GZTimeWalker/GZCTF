@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -7,7 +7,7 @@
     <IsTestProject>true</IsTestProject>
     <CollectCoverage>true</CollectCoverage>
     <Configurations>Debug;Release</Configurations>
-    <ReleaseVersion>1.9.0</ReleaseVersion>
+    <ReleaseVersion>1.9.1</ReleaseVersion>
     <EnablePreviewFeatures>True</EnablePreviewFeatures>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
