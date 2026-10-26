@@ -379,8 +379,7 @@ public class DockerManager : IContainerManager
     {
         token.ThrowIfCancellationRequested();
 
-        var pull = _imagePulls.GetOrAdd(image, CreateImagePull);
-        pull.AddWaiter();
+        var pull = AcquireImagePull(image, token);
 
         try
         {
@@ -389,6 +388,21 @@ public class DockerManager : IContainerManager
         finally
         {
             pull.RemoveWaiter();
+        }
+    }
+
+    private ImagePull AcquireImagePull(string image, CancellationToken token)
+    {
+        while (true)
+        {
+            token.ThrowIfCancellationRequested();
+
+            var pull = _imagePulls.GetOrAdd(image, CreateImagePull);
+
+            if (pull.TryAddWaiter())
+                return pull;
+
+            _imagePulls.TryRemove(new KeyValuePair<string, ImagePull>(image, pull));
         }
     }
 
@@ -440,19 +454,41 @@ public class DockerManager : IContainerManager
         }
     }
 
-    private sealed class ImagePull
+    internal sealed class ImagePull
     {
+        private readonly object _gate = new();
         private int _waiters;
+        private bool _closed;
 
         public CancellationTokenSource Cancellation { get; } = new();
 
         public Lazy<Task<bool>> Task { get; set; } = null!;
 
-        public void AddWaiter() => Interlocked.Increment(ref _waiters);
+        public bool TryAddWaiter()
+        {
+            lock (_gate)
+            {
+                if (_closed)
+                    return false;
+
+                _waiters++;
+                return true;
+            }
+        }
 
         public void RemoveWaiter()
         {
-            if (Interlocked.Decrement(ref _waiters) == 0)
+            bool cancel;
+
+            lock (_gate)
+            {
+                cancel = --_waiters == 0;
+
+                if (cancel)
+                    _closed = true;
+            }
+
+            if (cancel)
                 Cancellation.Cancel();
         }
     }
