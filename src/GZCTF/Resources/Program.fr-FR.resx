@@ -352,6 +352,9 @@
   <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
     <value>Échec de l'inspection de l'image du conteneur {0}</value>
   </data>
+  <data name="ContainerManager_ImageMissing" xml:space="preserve">
+    <value>L'image du conteneur {0} est absente lors de la création du conteneur</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>L'image du conteneur {0} n'est pas présente localement et la stratégie de téléchargement des images ne permet pas de la télécharger</value>
   </data>

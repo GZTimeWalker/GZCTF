@@ -354,6 +354,9 @@
   <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
     <value>Das Container-Image {0} konnte nicht geprüft werden</value>
   </data>
+  <data name="ContainerManager_ImageMissing" xml:space="preserve">
+    <value>Das Container-Image {0} fehlt beim Erstellen des Containers</value>
+  </data>
   <data name="ContainerManager_ImageNotFound" xml:space="preserve">
     <value>Das Container-Image {0} ist lokal nicht vorhanden und die Image-Pull-Richtlinie erlaubt das Abrufen nicht</value>
   </data>

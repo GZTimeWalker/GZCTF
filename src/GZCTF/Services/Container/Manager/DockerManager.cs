@@ -233,7 +233,19 @@ public class DockerManager : IContainerManager
         if (pullPolicy == ImagePullPolicy.Always)
             return await PullImageAsync(image, token);
 
-        if (await ImageExistsAsync(image, token))
+        bool exists;
+        try
+        {
+            exists = await ImageExistsAsync(image, token);
+        }
+        catch (Exception e) when (e is not OperationCanceledException)
+        {
+            _logger.LogErrorMessage(e,
+                StaticLocalizer[nameof(Resources.Program.ContainerManager_ImageInspectFailed), image]);
+            return false;
+        }
+
+        if (exists)
             return true;
 
         if (pullPolicy == ImagePullPolicy.Never)
@@ -256,16 +268,6 @@ public class DockerManager : IContainerManager
         }
         catch (DockerImageNotFoundException)
         {
-            return false;
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception e)
-        {
-            _logger.LogErrorMessage(e,
-                StaticLocalizer[nameof(Resources.Program.ContainerManager_ImageInspectFailed), image]);
             return false;
         }
     }
@@ -295,7 +297,7 @@ public class DockerManager : IContainerManager
             {
                 // The image was removed after EnsureImageAsync; do not pull again.
                 _logger.SystemLog(
-                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ImageNotFound), image],
+                    StaticLocalizer[nameof(Resources.Program.ContainerManager_ImageMissing), image],
                     TaskStatus.Failed, LogLevel.Warning);
                 return null;
             }
