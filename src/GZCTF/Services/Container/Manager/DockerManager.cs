@@ -334,7 +334,7 @@ public class DockerManager : IContainerManager
 
             try
             {
-                await _client.Images.CreateImageAsync(new() { FromImage = image }, auth,
+                await _client.Images.CreateImageAsync(new() { FromImage = key }, auth,
                     new Progress<JSONMessage>(msg =>
                     {
                         Console.WriteLine($@"{msg.Status}|{msg.Progress}|{msg.Error}");
