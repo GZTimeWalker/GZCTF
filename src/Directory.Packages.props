@@ -15,16 +15,16 @@
     <PackageVersion Include="KubernetesClient" Version="21.0.8" />
     <PackageVersion Include="MailKit" Version="4.18.2" />
     <PackageVersion Include="MemoryPack" Version="1.21.4" />
-    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.13" />
-    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.DataProtection.EntityFrameworkCore" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.SpaProxy" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.AspNetCore.TestHost" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tasks" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.14" />
+    <PackageVersion Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.14" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Common" Version="10.11.0" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.11.0" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.11.0" />
@@ -60,7 +60,7 @@
     <PackageVersion Include="SimpleBase" Version="5.6.4" />
     <PackageVersion Include="SixLabors.ImageSharp" Version="4.1.3" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
-    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.14" />
     <PackageVersion Include="Testcontainers" Version="4.16.0" />
     <PackageVersion Include="Testcontainers.K3s" Version="4.16.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.16.0" />
