@@ -423,12 +423,39 @@ public class ContainerProvider
     public DockerConfig? DockerConfig { get; set; }
 }
 
+/// <summary>
+/// Docker image pull policy
+/// </summary>
+[JsonConverter(typeof(JsonStringEnumConverter<ImagePullPolicy>))]
+public enum ImagePullPolicy
+{
+    /// <summary>
+    /// Pull the image only when it is not present locally
+    /// </summary>
+    IfNotPresent = 0,
+
+    /// <summary>
+    /// Always pull the image before creating the container
+    /// </summary>
+    Always = 1,
+
+    /// <summary>
+    /// Never pull the image, fail if it is not present locally
+    /// </summary>
+    Never = 2
+}
+
 public class DockerConfig
 {
     public string Uri { get; set; } = string.Empty;
     public string? UserName { get; set; }
     public string? Password { get; set; }
     public string? ChallengeNetwork { get; set; }
+
+    /// <summary>
+    /// Image pull policy for the Docker provider
+    /// </summary>
+    public ImagePullPolicy ImagePullPolicy { get; set; } = ImagePullPolicy.IfNotPresent;
 }
 
 public class KubernetesConfig
