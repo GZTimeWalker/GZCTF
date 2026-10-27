@@ -4,6 +4,18 @@ using System.Text.Json.Serialization;
 namespace GZCTF.Models.Request.Edit;
 
 /// <summary>
+/// Reject blood bonus values that do not fit the packed layout
+/// </summary>
+[AttributeUsage(AttributeTargets.Property)]
+public sealed class BloodBonusValueAttribute : ValidationAttribute
+{
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext) =>
+        value is not long bonus || BloodBonus.IsValid(bonus)
+            ? ValidationResult.Success
+            : new ValidationResult(ErrorMessageString);
+}
+
+/// <summary>
 /// Game information (Edit)
 /// </summary>
 public class GameInfoModel
@@ -106,6 +118,8 @@ public class GameInfoModel
     /// Blood bonus points
     /// </summary>
     [JsonPropertyName("bloodBonus")]
+    [BloodBonusValue(ErrorMessageResourceName = nameof(Resources.Program.Model_BloodBonusOutOfRange),
+        ErrorMessageResourceType = typeof(Resources.Program))]
     public long BloodBonusValue { get; set; } = BloodBonus.DefaultValue;
 
     internal static GameInfoModel FromGame(Data.Game game) =>
