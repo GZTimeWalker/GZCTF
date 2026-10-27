@@ -347,6 +347,18 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Container mode：Docker Instance Container Controls</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Failed to inspect container image {0}</value>
+  </data>
+  <data name="ContainerManager_ImageMissing" xml:space="preserve">
+    <value>Container image {0} is missing when creating the container</value>
+  </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>Container image {0} is not present locally and the image pull policy does not allow pulling it</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>Failed to pull container image {0}</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>Container Mode：K8s Cluster Pod Container Control</value>
   </data>
