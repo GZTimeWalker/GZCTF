@@ -347,6 +347,18 @@
   <data name="ContainerManager_DockerMode" xml:space="preserve">
     <value>Container mode：Docker Instance Container Controls</value>
   </data>
+  <data name="ContainerManager_ImageInspectFailed" xml:space="preserve">
+    <value>Không thể kiểm tra image container {0}</value>
+  </data>
+  <data name="ContainerManager_ImageMissing" xml:space="preserve">
+    <value>Không tìm thấy image container {0} khi tạo container</value>
+  </data>
+  <data name="ContainerManager_ImageNotFound" xml:space="preserve">
+    <value>Image container {0} không có sẵn cục bộ và chính sách kéo image không cho phép kéo</value>
+  </data>
+  <data name="ContainerManager_ImagePullFailed" xml:space="preserve">
+    <value>Không thể kéo image container {0}</value>
+  </data>
   <data name="ContainerManager_K8sMode" xml:space="preserve">
     <value>Container Mode：K8s Cluster Pod Container Control</value>
   </data>
