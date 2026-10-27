@@ -136,5 +136,26 @@
     "reset": "Réinitialiser le mot de passe",
     "verify": "Vérification de compte",
     "verify_email": "Vérification d'email en attente"
+  },
+  "passkey": {
+    "failed": "La demande de clé d’accès n’a pas pu être effectuée.",
+    "title": "Clés d’accès",
+    "login": "Se connecter avec une clé d’accès",
+    "description": "Connectez-vous sans mot de passe avec votre empreinte digitale, votre visage, le code PIN de votre appareil ou une clé de sécurité.",
+    "add": "Ajouter une clé d’accès",
+    "rename": "Renommer",
+    "remove": "Supprimer",
+    "remove_confirm": "Supprimer « {{name}} » ? Vous ne pourrez plus vous connecter avec cette clé d’accès.",
+    "name": "Nom de la clé d’accès",
+    "confirm_password": "Confirmez votre mot de passe actuel pour ajouter une clé d’accès.",
+    "created": "Ajoutée le {{date}}",
+    "unnamed": "Clé d’accès sans nom",
+    "saved": "Clé d’accès enregistrée.",
+    "removed": "Clé d’accès supprimée.",
+    "unsupported": "Les clés d’accès ne sont pas disponibles. Vous pouvez toujours vous connecter avec votre mot de passe.",
+    "cancelled": "La demande de clé d’accès a été annulée ou a expiré. Veuillez réessayer.",
+    "already_registered": "Cette clé d’accès est déjà enregistrée. Essayez un autre authentificateur.",
+    "load_failed": "Impossible de charger vos clés d’accès. Rouvrez cette fenêtre pour réessayer.",
+    "limit": "Vous pouvez enregistrer jusqu’à 10 clés d’accès."
   }
 }
