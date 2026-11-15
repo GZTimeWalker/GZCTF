@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <AssemblyVersion>1.9.0.0</AssemblyVersion>
     <Description>GZ::CTF $(VITE_APP_GIT_NAME)-$(VITE_APP_GIT_SHA) build at $(VITE_APP_BUILD_TIMESTAMP)</Description>
     <Nullable>enable</Nullable>
@@ -85,7 +85,6 @@
     <PackageReference Include="PacketDotNet" />
     <PackageReference Include="SharpPcap" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" />
     <PackageReference Include="ZstdSharp.Port" />
   </ItemGroup>
 

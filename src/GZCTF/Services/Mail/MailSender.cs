@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Net.Security;
 using System.Text;
 using GZCTF.Models.Internal;
+using MailKit;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
@@ -143,7 +144,7 @@ public sealed class MailSender : IMailSender, IDisposable
 
         try
         {
-            await _smtpClient.SendAsync(msg, _cancellationToken);
+            await _smtpClient.SendAsync(FormatOptions.Default, new SendRequest(msg), _cancellationToken);
 
             _logger.SystemLog(StaticLocalizer[nameof(Resources.Program.MailSender_SendMail), to],
                 TaskStatus.Success, LogLevel.Information);

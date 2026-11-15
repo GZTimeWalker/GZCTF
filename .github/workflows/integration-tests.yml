@@ -30,7 +30,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 26
 
       - uses: pnpm/action-setup@v6
         name: Install pnpm
@@ -119,7 +119,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 26
 
       - uses: pnpm/action-setup@v6
         name: Install pnpm
