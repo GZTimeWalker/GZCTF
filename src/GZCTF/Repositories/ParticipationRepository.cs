@@ -35,10 +35,11 @@ public class ParticipationRepository(
             .FirstOrDefaultAsync(p => p.Id == id, token);
 
     public Task<Participation?> GetParticipation(Team team, Game game, CancellationToken token = default) =>
-        Context.Participations.FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
+        Context.Participations.Include(p => p.Members)
+            .FirstOrDefaultAsync(e => e.Team == team && e.Game == game, token);
 
     public Task<Participation?> GetParticipation(Guid userId, int gameId, CancellationToken token = default) =>
-        Context.Participations
+        Context.Participations.Include(p => p.Members)
             .FirstOrDefaultAsync(p => p.Members.Any(m => m.GameId == gameId && m.UserId == userId),
                 token);
 
