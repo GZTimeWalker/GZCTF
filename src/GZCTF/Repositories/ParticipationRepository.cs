@@ -66,7 +66,6 @@ public class ParticipationRepository(
         var writeups = await Context.Participations.AsNoTracking()
             .Where(p => p.Game == game && p.Writeup != null)
             .OrderByDescending(p => p.Writeup!.UploadTimeUtc)
-            .AsSplitQuery()
             .Select(part => new WriteupInfo
             {
                 Id = part.Id,
