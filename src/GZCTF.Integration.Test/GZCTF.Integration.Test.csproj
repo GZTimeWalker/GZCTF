@@ -1,8 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <!-- xUnit1051: cancel-token plumbing across the suite is a separate cleanup -->
-    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

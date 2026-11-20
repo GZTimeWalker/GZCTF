@@ -20,22 +20,18 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         var password = "S3eded!Pass";
         var userName = TestDataSeeder.RandomName();
         var email = $"{userName}@example.com";
-        var seeded = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName,
-            password,
-            email);
+        var seeded = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, email, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = seeded.UserName, Password = password });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = seeded.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken);
 
         loginResponse.EnsureSuccessStatusCode();
 
-        var profileResponse = await client.GetAsync("/api/Account/Profile");
+        var profileResponse = await client.GetAsync("/api/Account/Profile", TestContext.Current.CancellationToken);
         profileResponse.EnsureSuccessStatusCode();
 
-        var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
+        var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(profile);
         Assert.Equal(seeded.UserName, profile.UserName);
         Assert.Equal(seeded.Email, profile.Email);
@@ -53,10 +49,10 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
+        var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel, cancellationToken: TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Response: {content}");
 
         // Assert
@@ -81,7 +77,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
+        var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel, cancellationToken: TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
@@ -95,7 +91,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         var registerModel = new { userName = "testuser", password = "123", email = "test@example.com" };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel);
+        var response = await _client.PostAsJsonAsync("/api/Account/Register", registerModel, cancellationToken: TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
@@ -109,7 +105,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         var loginModel = new { };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/Account/LogIn", loginModel);
+        var response = await _client.PostAsJsonAsync("/api/Account/LogIn", loginModel, cancellationToken: TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
@@ -120,7 +116,7 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
     public async Task Logout_WhenNotAuthenticated_ReturnsUnauthorized()
     {
         // Act
-        var response = await _client.PostAsync("/api/Account/LogOut", null);
+        var response = await _client.PostAsync("/api/Account/LogOut", null, TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert
@@ -134,10 +130,10 @@ public class AuthenticationTests(GZCTFApplicationFactory factory, ITestOutputHel
         var verifyModel = new { email = "test@example.com", token = "invalid-token" };
 
         // Act
-        var response = await _client.PostAsJsonAsync("/api/Account/Verify", verifyModel);
+        var response = await _client.PostAsJsonAsync("/api/Account/Verify", verifyModel, cancellationToken: TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Response: {content}");
 
         // Assert - endpoint returns OK with error message in body

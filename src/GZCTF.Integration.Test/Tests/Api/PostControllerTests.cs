@@ -38,12 +38,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         var postModel = new PostEditModel
@@ -56,18 +54,18 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         };
 
         // Act
-        var response = await client.PostAsJsonAsync("/api/Edit/Posts", postModel);
+        var response = await client.PostAsJsonAsync("/api/Edit/Posts", postModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var postId = await response.Content.ReadFromJsonAsync<string>();
+        var postId = await response.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
         Assert.Equal(8, postId.Length);
 
         // Verify the post was created correctly
-        var getResponse = await client.GetAsync($"/api/Posts/{postId}");
+        var getResponse = await client.GetAsync($"/api/Posts/{postId}", TestContext.Current.CancellationToken);
         getResponse.EnsureSuccessStatusCode();
-        var post = await getResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var post = await getResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(post);
         Assert.Equal(postModel.Title, post.Title);
@@ -90,12 +88,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         var postModel = new PostEditModel
@@ -105,17 +101,17 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         };
 
         // Act
-        var response = await client.PostAsJsonAsync("/api/Edit/Posts", postModel);
+        var response = await client.PostAsJsonAsync("/api/Edit/Posts", postModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var postId = await response.Content.ReadFromJsonAsync<string>();
+        var postId = await response.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Verify defaults
-        var getResponse = await client.GetAsync($"/api/Posts/{postId}");
+        var getResponse = await client.GetAsync($"/api/Posts/{postId}", TestContext.Current.CancellationToken);
         getResponse.EnsureSuccessStatusCode();
-        var post = await getResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var post = await getResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(post);
         Assert.Equal("Minimal Post", post.Title);
@@ -136,12 +132,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         var postModel = new PostEditModel
@@ -151,17 +145,17 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         };
 
         // Act
-        var response = await client.PostAsJsonAsync("/api/Edit/Posts", postModel);
+        var response = await client.PostAsJsonAsync("/api/Edit/Posts", postModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert - succeeds but creates post with empty title
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        var postId = await response.Content.ReadFromJsonAsync<string>();
+        var postId = await response.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Verify the post has empty title
-        var getResponse = await client.GetAsync($"/api/Posts/{postId}");
+        var getResponse = await client.GetAsync($"/api/Posts/{postId}", TestContext.Current.CancellationToken);
         getResponse.EnsureSuccessStatusCode();
-        var post = await getResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var post = await getResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(post);
         Assert.Equal(string.Empty, post.Title);
         Assert.Equal(string.Empty, post.Summary);
@@ -180,12 +174,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a post (without isPinned)
@@ -197,14 +189,13 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Tags = ["original"]
         };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Pin the post in a separate call
-        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}",
-            new PostEditModel { IsPinned = true });
+        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", new PostEditModel { IsPinned = true }, cancellationToken: TestContext.Current.CancellationToken);
         pinResponse.EnsureSuccessStatusCode();
 
         // Act: Update the content WITHOUT sending IsPinned (null means don't touch pin status)
@@ -217,11 +208,11 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             // IsPinned is null - pin status should be preserved automatically
         };
 
-        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel);
+        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
-        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(updatedPost);
         Assert.Equal("Updated Title", updatedPost.Title);
@@ -245,12 +236,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create an unpinned post with content
@@ -262,9 +251,9 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Tags = ["important", "announcement"]
         };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Act: Pin the post without sending other fields
@@ -274,11 +263,11 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             // All other fields are null - should preserve existing values
         };
 
-        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", pinModel);
+        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", pinModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, pinResponse.StatusCode);
-        var pinnedPost = await pinResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var pinnedPost = await pinResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(pinnedPost);
         Assert.Equal("Important Post", pinnedPost.Title); // Content preserved
@@ -293,11 +282,11 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         // Act: Unpin the post
         var unpinModel = new PostEditModel { IsPinned = false };
 
-        var unpinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", unpinModel);
+        var unpinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", unpinModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, unpinResponse.StatusCode);
-        var unpinnedPost = await unpinResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var unpinnedPost = await unpinResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(unpinnedPost);
         Assert.Equal("Important Post", unpinnedPost.Title); // Content still preserved
@@ -319,12 +308,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create an unpinned post
@@ -336,9 +323,9 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Tags = ["original"]
         };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Act: Try to pin AND update content in the same request
@@ -351,11 +338,11 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             IsPinned = true // When IsPinned is present, only pin status is updated
         };
 
-        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel);
+        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert: Only pin status should change, content should remain unchanged
         Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
-        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(updatedPost);
         Assert.Equal("Original Title", updatedPost.Title); // Content unchanged
@@ -377,12 +364,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a post
@@ -394,14 +379,13 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Tags = ["tag1", "tag2"]
         };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Pin the post
-        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}",
-            new PostEditModel { IsPinned = true });
+        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", new PostEditModel { IsPinned = true }, cancellationToken: TestContext.Current.CancellationToken);
         pinResponse.EnsureSuccessStatusCode();
 
         // Act: Update only the title
@@ -411,11 +395,11 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             // All other fields are null
         };
 
-        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel);
+        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
-        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(updatedPost);
         Assert.Equal("New Title", updatedPost.Title); // Title updated
@@ -436,12 +420,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a pinned post
@@ -453,24 +435,23 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Tags = ["old-tag"]
         };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Pin the post
-        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}",
-            new PostEditModel { IsPinned = true });
+        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", new PostEditModel { IsPinned = true }, cancellationToken: TestContext.Current.CancellationToken);
         pinResponse.EnsureSuccessStatusCode();
 
         // Act: Update only tags
         var updateModel = new PostEditModel { Tags = ["new-tag", "another-tag"] };
 
-        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel);
+        var updateResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", updateModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, updateResponse.StatusCode);
-        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var updatedPost = await updateResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(updatedPost);
         Assert.Equal("Tagged Post", updatedPost.Title); // Preserved
@@ -494,12 +475,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Step 1: Create a post
@@ -511,14 +490,13 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             Tags = ["announcement", "pinned"]
         };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Step 2: Pin the post
-        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}",
-            new PostEditModel { IsPinned = true });
+        var pinResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", new PostEditModel { IsPinned = true }, cancellationToken: TestContext.Current.CancellationToken);
         pinResponse.EnsureSuccessStatusCode();
 
         output.WriteLine($"Created and pinned post: {postId}");
@@ -534,11 +512,11 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
             // IsPinned is null - this tells the backend to preserve the current pin status
         };
 
-        var editResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", editModel);
+        var editResponse = await client.PutAsJsonAsync($"/api/Edit/Posts/{postId}", editModel, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert: Content should be updated and pin status preserved
         Assert.Equal(HttpStatusCode.OK, editResponse.StatusCode);
-        var editedPost = await editResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions);
+        var editedPost = await editResponse.Content.ReadFromJsonAsync<PostDetailModel>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(editedPost);
         Assert.Equal("Updated Pinned Announcement", editedPost.Title);
@@ -553,7 +531,7 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         // Step 3: Verify the post in the database
         using var scope = factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var dbPost = await context.Posts.FindAsync(postId);
+        var dbPost = await context.Posts.FindAsync(new object?[] { postId }, TestContext.Current.CancellationToken);
 
         Assert.NotNull(dbPost);
         Assert.Equal("Updated Pinned Announcement", dbPost.Title);
@@ -572,30 +550,28 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a post
         var createModel = new PostEditModel { Title = "Post to Delete", Content = "This post will be deleted" };
 
-        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel);
+        var createResponse = await client.PostAsJsonAsync("/api/Edit/Posts", createModel, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var postId = await createResponse.Content.ReadFromJsonAsync<string>();
+        var postId = await createResponse.Content.ReadFromJsonAsync<string>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(postId);
 
         // Act: Delete the post
-        var deleteResponse = await client.DeleteAsync($"/api/Edit/Posts/{postId}");
+        var deleteResponse = await client.DeleteAsync($"/api/Edit/Posts/{postId}", TestContext.Current.CancellationToken);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, deleteResponse.StatusCode);
 
         // Verify post is deleted
-        var getResponse = await client.GetAsync($"/api/Posts/{postId}");
+        var getResponse = await client.GetAsync($"/api/Posts/{postId}", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
 
         output.WriteLine($"Post {postId} deleted successfully");
@@ -609,12 +585,10 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
     {
         // Arrange
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create multiple posts
@@ -624,9 +598,9 @@ public class PostControllerTests(GZCTFApplicationFactory factory, ITestOutputHel
         var post4Id = await CreatePostAsync(client, "Pinned Post 2", isPinned: true);
 
         // Act: Get posts list
-        var response = await client.GetAsync("/api/Posts/Latest");
+        var response = await client.GetAsync("/api/Posts/Latest", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        var posts = await response.Content.ReadFromJsonAsync<PostInfoModel[]>(JsonOptions);
+        var posts = await response.Content.ReadFromJsonAsync<PostInfoModel[]>(JsonOptions, cancellationToken: TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(posts);

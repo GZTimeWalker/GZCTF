@@ -126,7 +126,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Verify flag was removed
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var updatedChallenge = await context.GameChallenges.FindAsync(challenge.Id);
+        var updatedChallenge = await context.GameChallenges.FindAsync(new object?[] { challenge.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(updatedChallenge);
         await challengeRepo.LoadFlags(updatedChallenge, CancellationToken.None);
 
@@ -190,7 +190,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
 
         // Verify challenge is now disabled
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var updatedChallenge = await context.GameChallenges.FindAsync(challenge.Id);
+        var updatedChallenge = await context.GameChallenges.FindAsync(new object?[] { challenge.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(updatedChallenge);
         Assert.False(updatedChallenge.IsEnabled);
 
@@ -285,12 +285,12 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
         var retrievedChallenge = await context.GameChallenges
             .AsNoTracking()
             .IgnoreAutoIncludes()
-            .FirstOrDefaultAsync(c => c.Id == challenge.Id);
+            .FirstOrDefaultAsync(c => c.Id == challenge.Id, cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(retrievedChallenge);
 
         // Create a new context to get a fresh entity
         using var context2 = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var challengeToLoad = await context2.GameChallenges.FindAsync(challenge.Id);
+        var challengeToLoad = await context2.GameChallenges.FindAsync(new object?[] { challenge.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(challengeToLoad);
 
         // Load flags explicitly
@@ -325,9 +325,8 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
         await gameRepo.CreateGame(game, CancellationToken.None);
 
         // Create team and participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Instance Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Instance Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
@@ -337,8 +336,8 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Create challenge after participation exists
         var challenge = new GameChallenge
@@ -356,7 +355,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
 
         // Ensure instances - should create one for existing participation
-        var gameEntity = await context.Games.FindAsync(game.Id);
+        var gameEntity = await context.Games.FindAsync(new object?[] { game.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(gameEntity);
 
         var instancesCreated = await challengeRepo.EnsureInstances(challenge, gameEntity, CancellationToken.None);
@@ -408,7 +407,7 @@ public class GameChallengeRepositoryTests(GZCTFApplicationFactory factory, ITest
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var gameEntity = await context.Games.FindAsync(game.Id);
+        var gameEntity = await context.Games.FindAsync(new object?[] { game.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(gameEntity);
 
         // Ensure instances - should return false since no participations

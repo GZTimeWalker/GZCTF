@@ -39,9 +39,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         await gameRepo.CreateGame(game, CancellationToken.None);
 
         // Create team and participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Test Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Test Team", token: TestContext.Current.CancellationToken);
 
         var participation = new Participation
         {
@@ -51,8 +50,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         };
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Initially no instances
         var instancesBefore = await EnsureInstances(participationRepo, participation, game);
@@ -112,9 +111,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         await gameRepo.CreateGame(game, CancellationToken.None);
 
         // Create team and participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Lock Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Lock Team", token: TestContext.Current.CancellationToken);
 
         // Verify team is not locked initially
         var teamBefore = await teamRepo.GetTeamById(team.Id, CancellationToken.None);
@@ -129,8 +127,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         };
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Accept participation
         await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Accepted,
@@ -172,9 +170,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         for (var i = 0; i < 5; i++)
         {
-            var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                TestDataSeeder.RandomName(), "Test@123");
-            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Count Team {i}");
+            var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Count Team {i}", token: TestContext.Current.CancellationToken);
 
             var participation = new Participation
             {
@@ -183,10 +180,10 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
                 Status = ParticipationStatus.Accepted
             };
 
-            await context.Participations.AddAsync(participation);
+            await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
         }
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Count should now be 5
         var finalCount = await participationRepo.GetParticipationCount(game.Id, CancellationToken.None);
@@ -216,14 +213,13 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
         await gameRepo.CreateGame(game, CancellationToken.None);
 
         // Create user and team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Repeat Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Repeat Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var userInfo = await context.Users.FindAsync(user.Id);
+        var userInfo = await context.Users.FindAsync(new object?[] { user.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(userInfo);
-        var gameEntity = await context.Games.FindAsync(game.Id);
+        var gameEntity = await context.Games.FindAsync(new object?[] { game.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(gameEntity);
 
         // Initially no participation
@@ -239,8 +235,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync(); // Save to get the participation ID
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken); // Save to get the participation ID
 
         // Create UserParticipation link
         var userParticipation = new UserParticipation
@@ -251,8 +247,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
             ParticipationId = participation.Id
         };
 
-        await context.UserParticipations.AddAsync(userParticipation);
-        await context.SaveChangesAsync();
+        await context.UserParticipations.AddAsync(userParticipation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Should detect repeat participation
         var hasRepeat = await participationRepo.CheckRepeatParticipation(userInfo, gameEntity, CancellationToken.None);
@@ -300,9 +296,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
             }, CancellationToken.None);
 
         // Create participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Division Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Division Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
@@ -313,8 +308,8 @@ public class ParticipationRepositoryTests(GZCTFApplicationFactory factory, ITest
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Verify initial division
         Assert.Equal(division1.Id, participation.DivisionId);

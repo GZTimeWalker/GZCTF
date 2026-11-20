@@ -21,36 +21,33 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
     {
         var password = "Team@Create123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = user.UserName, Password = password });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Test 1: Create a new team via API
-        var createResponse = await client.PostAsJsonAsync("/api/Team",
-            new TeamUpdateModel { Name = "Test Team Alpha", Bio = "This is a test team for integration testing" });
+        var createResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Test Team Alpha", Bio = "This is a test team for integration testing" }, cancellationToken: TestContext.Current.CancellationToken);
         createResponse.EnsureSuccessStatusCode();
-        var createdTeam = await createResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
+        var createdTeam = await createResponse.Content.ReadFromJsonAsync<TeamInfoModel>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(createdTeam);
         Assert.Equal("Test Team Alpha", createdTeam.Name);
         Assert.Equal("This is a test team for integration testing", createdTeam.Bio);
 
         // Test 2: Retrieve the created team by ID
-        var getResponse = await client.GetAsync($"/api/Team/{createdTeam.Id}");
+        var getResponse = await client.GetAsync($"/api/Team/{createdTeam.Id}", TestContext.Current.CancellationToken);
         getResponse.EnsureSuccessStatusCode();
-        var retrievedTeam = await getResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
+        var retrievedTeam = await getResponse.Content.ReadFromJsonAsync<TeamInfoModel>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(retrievedTeam);
         Assert.Equal(createdTeam.Id, retrievedTeam.Id);
         Assert.Equal(createdTeam.Name, retrievedTeam.Name);
 
         // Test 3: Get user's teams
-        var teamsResponse = await client.GetAsync("/api/Team");
+        var teamsResponse = await client.GetAsync("/api/Team", TestContext.Current.CancellationToken);
         teamsResponse.EnsureSuccessStatusCode();
-        var teams = await teamsResponse.Content.ReadFromJsonAsync<TeamInfoModel[]>();
+        var teams = await teamsResponse.Content.ReadFromJsonAsync<TeamInfoModel[]>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(teams);
         Assert.Contains(teams, t => t.Id == createdTeam.Id);
     }
@@ -63,28 +60,25 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
     {
         var password = "Team@Update123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Original Team Name");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Original Team Name", token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = user.UserName, Password = password });
+        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken);
 
         // Test 1: Update team information
-        var updateResponse = await client.PutAsJsonAsync($"/api/Team/{team.Id}",
-            new TeamUpdateModel { Name = "Updated Team Name", Bio = "Updated bio information" });
+        var updateResponse = await client.PutAsJsonAsync($"/api/Team/{team.Id}", new TeamUpdateModel { Name = "Updated Team Name", Bio = "Updated bio information" }, cancellationToken: TestContext.Current.CancellationToken);
         updateResponse.EnsureSuccessStatusCode();
-        var updatedTeam = await updateResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
+        var updatedTeam = await updateResponse.Content.ReadFromJsonAsync<TeamInfoModel>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(updatedTeam);
         Assert.Equal("Updated Team Name", updatedTeam.Name);
         Assert.Equal("Updated bio information", updatedTeam.Bio);
 
         // Test 2: Verify the update persisted
-        var getResponse = await client.GetAsync($"/api/Team/{team.Id}");
+        var getResponse = await client.GetAsync($"/api/Team/{team.Id}", TestContext.Current.CancellationToken);
         getResponse.EnsureSuccessStatusCode();
-        var retrievedTeam = await getResponse.Content.ReadFromJsonAsync<TeamInfoModel>();
+        var retrievedTeam = await getResponse.Content.ReadFromJsonAsync<TeamInfoModel>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(retrievedTeam);
         Assert.Equal("Updated Team Name", retrievedTeam.Name);
         Assert.Equal("Updated bio information", retrievedTeam.Bio);
@@ -98,26 +92,24 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
     {
         var password = "Team@Limit123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = user.UserName, Password = password });
+        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken);
 
         // Create teams up to the limit (MaxTeamsAllowed = 3 per TeamController)
-        var team1Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team One" });
+        var team1Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team One" }, cancellationToken: TestContext.Current.CancellationToken);
         team1Response.EnsureSuccessStatusCode();
 
-        var team2Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Two" });
+        var team2Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Two" }, cancellationToken: TestContext.Current.CancellationToken);
         team2Response.EnsureSuccessStatusCode();
 
-        var team3Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Three" });
+        var team3Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Three" }, cancellationToken: TestContext.Current.CancellationToken);
         team3Response.EnsureSuccessStatusCode();
 
         // Test: Attempt to create a 4th team should fail
-        var team4Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Four" });
+        var team4Response = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Team Four" }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.BadRequest, team4Response.StatusCode);
     }
 
@@ -130,16 +122,16 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
         using var client = factory.CreateClient();
 
         // Test 1: GET /api/Team should return 401
-        var getTeamsResponse = await client.GetAsync("/api/Team");
+        var getTeamsResponse = await client.GetAsync("/api/Team", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Unauthorized, getTeamsResponse.StatusCode);
 
         // Test 2: POST /api/Team should return 401
         var createResponse =
-            await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Unauthorized Team" });
+            await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "Unauthorized Team" }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Unauthorized, createResponse.StatusCode);
 
         // Test 3: PUT /api/Team/{id} should return 401
-        var updateResponse = await client.PutAsJsonAsync("/api/Team/1", new TeamUpdateModel { Name = "Updated Name" });
+        var updateResponse = await client.PutAsJsonAsync("/api/Team/1", new TeamUpdateModel { Name = "Updated Name" }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Unauthorized, updateResponse.StatusCode);
     }
 
@@ -151,20 +143,18 @@ public class TeamManagementTests(GZCTFApplicationFactory factory)
     {
         var password = "Team@Validate123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = user.UserName, Password = password });
+        await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken);
 
         // Test 1: Empty team name should be rejected
-        var emptyNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "" });
+        var emptyNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = "" }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.BadRequest, emptyNameResponse.StatusCode);
 
         // Test 2: Null team name should be rejected
-        var nullNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = null! });
+        var nullNameResponse = await client.PostAsJsonAsync("/api/Team", new TeamUpdateModel { Name = null! }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.BadRequest, nullNameResponse.StatusCode);
     }
 }

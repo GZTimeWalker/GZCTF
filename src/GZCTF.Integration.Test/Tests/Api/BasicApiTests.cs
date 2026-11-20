@@ -19,7 +19,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
     public async Task Server_IsRunning_AndResponding()
     {
         // Verify the server is running by checking an actual API endpoint
-        var response = await _client.GetAsync("/api/Config");
+        var response = await _client.GetAsync("/api/Config", TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         response.EnsureSuccessStatusCode();
@@ -29,12 +29,12 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
     [Fact]
     public async Task Api_Config_ReturnsServerConfig()
     {
-        var response = await _client.GetAsync("/api/Config");
+        var response = await _client.GetAsync("/api/Config", TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Response: {content}");
 
         Assert.NotEmpty(content);
@@ -43,12 +43,12 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
     [Fact]
     public async Task Api_OpenApi_ReturnsSpec()
     {
-        var response = await _client.GetAsync("/openapi/v1.json");
+        var response = await _client.GetAsync("/openapi/v1.json", TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Response length: {content.Length}");
 
         Assert.NotEmpty(content);
@@ -65,19 +65,19 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
 
         var registerModel = new RegisterModel { UserName = userName, Email = email, Password = "P@ssw0rd!123" };
 
-        var registerResponse = await client.PostAsJsonAsync("/api/Account/Register", registerModel);
+        var registerResponse = await client.PostAsJsonAsync("/api/Account/Register", registerModel, cancellationToken: TestContext.Current.CancellationToken);
         output.WriteLine($"Register status: {registerResponse.StatusCode}");
         registerResponse.EnsureSuccessStatusCode();
 
-        var payload = await registerResponse.Content.ReadFromJsonAsync<RequestResponse<RegisterStatus>>();
+        var payload = await registerResponse.Content.ReadFromJsonAsync<RequestResponse<RegisterStatus>>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(payload);
         Assert.Equal(RegisterStatus.LoggedIn, payload.Data);
 
-        var profileResponse = await client.GetAsync("/api/Account/Profile");
+        var profileResponse = await client.GetAsync("/api/Account/Profile", TestContext.Current.CancellationToken);
         output.WriteLine($"Profile status: {profileResponse.StatusCode}");
         profileResponse.EnsureSuccessStatusCode();
 
-        var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>();
+        var profile = await profileResponse.Content.ReadFromJsonAsync<ProfileUserInfoModel>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(profile);
         Assert.Equal(registerModel.UserName, profile.UserName);
         Assert.Equal(registerModel.Email, profile.Email);
@@ -88,7 +88,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
     {
         using var client = factory.CreateClient();
 
-        var response = await client.GetAsync("/api/Account/Profile");
+        var response = await client.GetAsync("/api/Account/Profile", TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -98,7 +98,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
     public async Task Fallback_CONNECT_Method_Returns405()
     {
         var request = new HttpRequestMessage(new HttpMethod("CONNECT"), "/nonexistent");
-        var response = await _client.SendAsync(request);
+        var response = await _client.SendAsync(request, TestContext.Current.CancellationToken);
         output.WriteLine($"CONNECT Status: {response.StatusCode}");
 
         Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
@@ -107,7 +107,7 @@ public class BasicApiTests(GZCTFApplicationFactory factory, ITestOutputHelper ou
     [Fact]
     public async Task Fallback_GET_Method_ReturnsIndex()
     {
-        var response = await _client.GetAsync("/nonexistent");
+        var response = await _client.GetAsync("/nonexistent", TestContext.Current.CancellationToken);
         output.WriteLine($"GET Status: {response.StatusCode}");
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

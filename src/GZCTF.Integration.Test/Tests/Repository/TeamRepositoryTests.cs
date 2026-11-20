@@ -21,16 +21,13 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create teams with distinct names and different captains
-        var user1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123", $"search1{Guid.NewGuid():N}@test.com");
-        var user2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123", $"search2{Guid.NewGuid():N}@test.com");
-        var user3 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123", $"search3{Guid.NewGuid():N}@test.com");
+        var user1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", $"search1{Guid.NewGuid():N}@test.com", token: TestContext.Current.CancellationToken);
+        var user2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", $"search2{Guid.NewGuid():N}@test.com", token: TestContext.Current.CancellationToken);
+        var user3 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", $"search3{Guid.NewGuid():N}@test.com", token: TestContext.Current.CancellationToken);
 
-        var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, "SearchableTeam Alpha");
-        var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, "SearchableTeam Beta");
-        var team3 = await TestDataSeeder.CreateTeamAsync(factory.Services, user3.Id, "DifferentName Gamma");
+        var team1 = await TestDataSeeder.CreateTeamAsync(factory.Services, user1.Id, "SearchableTeam Alpha", token: TestContext.Current.CancellationToken);
+        var team2 = await TestDataSeeder.CreateTeamAsync(factory.Services, user2.Id, "SearchableTeam Beta", token: TestContext.Current.CancellationToken);
+        var team3 = await TestDataSeeder.CreateTeamAsync(factory.Services, user3.Id, "DifferentName Gamma", token: TestContext.Current.CancellationToken);
 
         // Search for teams containing "searchable"
         var results = await teamRepo.SearchTeams("searchable", CancellationToken.None);
@@ -54,9 +51,8 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Team By ID");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Team By ID", token: TestContext.Current.CancellationToken);
 
         // Search by ID
         var results = await teamRepo.SearchTeams(team.Id.ToString(), CancellationToken.None);
@@ -73,12 +69,11 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "No Active Games Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "No Active Games Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var teamEntity = await context.Teams.FindAsync(team.Id);
+        var teamEntity = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(teamEntity);
 
         // Check no active games
@@ -96,9 +91,8 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var gameRepo = scope.ServiceProvider.GetRequiredService<IGameRepository>();
 
         // Create team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Active Game Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Active Game Team", token: TestContext.Current.CancellationToken);
 
         // Create active game
         var game = new Game
@@ -122,10 +116,10 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var teamEntity = await context.Teams.FindAsync(team.Id);
+        var teamEntity = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(teamEntity);
 
         // Check has active games
@@ -142,17 +136,16 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create locked team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Locked Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Locked Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var teamEntity = await context.Teams.FindAsync(team.Id);
+        var teamEntity = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(teamEntity);
 
         // Lock the team
         teamEntity.Locked = true;
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Verify team is locked
         Assert.True(teamEntity.Locked);
@@ -162,7 +155,7 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         Assert.False(hasActive);
 
         // Verify team is now unlocked
-        var updatedTeam = await context.Teams.FindAsync(team.Id);
+        var updatedTeam = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(updatedTeam);
         Assert.False(updatedTeam.Locked);
 
@@ -176,24 +169,22 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create team with original captain
-        var captain1 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, captain1.Id, "Transfer Team");
+        var captain1 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, captain1.Id, "Transfer Team", token: TestContext.Current.CancellationToken);
 
         // Create new captain
-        var captain2 = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
+        var captain2 = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
         // Add new captain to team
-        var teamEntity = await context.Teams.FindAsync(team.Id);
-        var user2 = await context.Users.FindAsync(captain2.Id);
+        var teamEntity = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
+        var user2 = await context.Users.FindAsync(new object?[] { captain2.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(teamEntity);
         Assert.NotNull(user2);
 
         teamEntity.Members.Add(user2);
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Verify original captain
         Assert.Equal(captain1.Id, teamEntity.CaptainId);
@@ -216,12 +207,11 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create team
-        var captain = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        await TestDataSeeder.CreateTeamAsync(factory.Services, captain.Id, "Captain Check Team");
+        var captain = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        await TestDataSeeder.CreateTeamAsync(factory.Services, captain.Id, "Captain Check Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var userEntity = await context.Users.FindAsync(captain.Id);
+        var userEntity = await context.Users.FindAsync(new object?[] { captain.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(userEntity);
 
         // Check is captain
@@ -238,11 +228,10 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create non-captain user
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var userEntity = await context.Users.FindAsync(user.Id);
+        var userEntity = await context.Users.FindAsync(new object?[] { user.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(userEntity);
 
         // Check is not captain
@@ -259,12 +248,11 @@ public class TeamRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         var teamRepo = scope.ServiceProvider.GetRequiredService<ITeamRepository>();
 
         // Create team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Token Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Token Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var teamEntity = await context.Teams.FindAsync(team.Id);
+        var teamEntity = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(teamEntity);
 
         var inviteCode = teamEntity.InviteCode;

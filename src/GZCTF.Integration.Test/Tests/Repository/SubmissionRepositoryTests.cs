@@ -51,9 +51,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
 
         // Create participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Submission Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Submission Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
@@ -63,8 +62,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Initially no submissions
         var initialCount =
@@ -133,9 +132,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
 
         // Create participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Filter Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Filter Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
@@ -145,8 +143,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Add different types of submissions
         var submissionTypes = new[]
@@ -169,7 +167,7 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             };
 
             await submissionRepo.AddSubmission(submission, CancellationToken.None);
-            await Task.Delay(10); // Ensure different timestamps
+            await Task.Delay(10, TestContext.Current.CancellationToken); // Ensure different timestamps
         }
 
         // Get all submissions
@@ -229,9 +227,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
 
         // Create participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Page Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Page Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
@@ -241,8 +238,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Add 10 submissions
         for (var i = 0; i < 10; i++)
@@ -315,9 +312,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
         await challengeRepo.CreateChallenge(game, challenge, CancellationToken.None);
 
         // Create participation
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Unchecked Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Unchecked Team", token: TestContext.Current.CancellationToken);
 
         using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var participation = new Participation
@@ -327,8 +323,8 @@ public class SubmissionRepositoryTests(GZCTFApplicationFactory factory, ITestOut
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Add submissions with different statuses
         var unchecked1 = new Submission

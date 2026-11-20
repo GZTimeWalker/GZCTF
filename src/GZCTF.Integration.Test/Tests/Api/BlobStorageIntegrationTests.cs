@@ -19,14 +19,12 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
     {
         // Arrange: Create admin user and authenticate
         var adminPassword = "Admin@Storage123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
         // Login as admin
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create test file content
@@ -41,12 +39,12 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
         content.Add(fileContent, "files", testFileName);
 
         // Act: Upload file via Assets API
-        var uploadResponse = await client.PostAsync("/api/Assets", content);
+        var uploadResponse = await client.PostAsync("/api/Assets", content, TestContext.Current.CancellationToken);
         output.WriteLine($"Upload Status: {uploadResponse.StatusCode}");
 
         uploadResponse.EnsureSuccessStatusCode();
 
-        var uploadedFiles = await uploadResponse.Content.ReadFromJsonAsync<List<LocalFile>>();
+        var uploadedFiles = await uploadResponse.Content.ReadFromJsonAsync<List<LocalFile>>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(uploadedFiles);
         Assert.Single(uploadedFiles);
 
@@ -59,12 +57,12 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
         output.WriteLine($"Uploaded file URL: {uploadedFile.Url()}");
 
         // Act: Retrieve file via Assets API
-        var retrieveResponse = await client.GetAsync(uploadedFile.Url());
+        var retrieveResponse = await client.GetAsync(uploadedFile.Url(), TestContext.Current.CancellationToken);
         output.WriteLine($"Retrieve Status: {retrieveResponse.StatusCode}");
 
         retrieveResponse.EnsureSuccessStatusCode();
 
-        var retrievedContent = await retrieveResponse.Content.ReadAsStringAsync();
+        var retrievedContent = await retrieveResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert: Verify content matches
         Assert.Equal(testContent, retrievedContent);
@@ -78,14 +76,12 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
     {
         // Arrange: Create admin user and authenticate
         var adminPassword = "Admin@CustomName123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
         // Login as admin
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create test file content
@@ -102,12 +98,12 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
 
         // Act: Upload file with custom filename
         var uploadUrl = $"/api/Assets?filename={Uri.EscapeDataString(customFileName)}";
-        var uploadResponse = await client.PostAsync(uploadUrl, content);
+        var uploadResponse = await client.PostAsync(uploadUrl, content, TestContext.Current.CancellationToken);
         output.WriteLine($"Upload Status: {uploadResponse.StatusCode}");
 
         uploadResponse.EnsureSuccessStatusCode();
 
-        var uploadedFiles = await uploadResponse.Content.ReadFromJsonAsync<List<LocalFile>>();
+        var uploadedFiles = await uploadResponse.Content.ReadFromJsonAsync<List<LocalFile>>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(uploadedFiles);
         Assert.Single(uploadedFiles);
 
@@ -123,14 +119,12 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
     {
         // Arrange: Create admin user and authenticate
         var adminPassword = "Admin@WrongName123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
         // Login as admin
-        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create test file content
@@ -145,20 +139,20 @@ public class BlobStorageIntegrationTests(GZCTFApplicationFactory factory, ITestO
         content.Add(fileContent, "files", testFileName);
 
         // Upload file
-        var uploadResponse = await client.PostAsync("/api/Assets", content);
+        var uploadResponse = await client.PostAsync("/api/Assets", content, TestContext.Current.CancellationToken);
         uploadResponse.EnsureSuccessStatusCode();
 
-        var uploadedFiles = await uploadResponse.Content.ReadFromJsonAsync<List<LocalFile>>();
+        var uploadedFiles = await uploadResponse.Content.ReadFromJsonAsync<List<LocalFile>>(cancellationToken: TestContext.Current.CancellationToken);
         var uploadedFile = uploadedFiles![0];
 
         // Act: Retrieve file with different filename (API ignores filename, uses hash)
         var wrongFilename = "completely-different-name.pdf";
-        var retrieveResponse = await client.GetAsync($"/Assets/{uploadedFile.Hash}/{wrongFilename}");
+        var retrieveResponse = await client.GetAsync($"/Assets/{uploadedFile.Hash}/{wrongFilename}", TestContext.Current.CancellationToken);
         output.WriteLine($"Retrieve Status: {retrieveResponse.StatusCode}");
 
         retrieveResponse.EnsureSuccessStatusCode();
 
-        var retrievedContent = await retrieveResponse.Content.ReadAsStringAsync();
+        var retrievedContent = await retrieveResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         // Assert: Content should still match even with wrong filename
         Assert.Equal(testContent, retrievedContent);

@@ -32,11 +32,11 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
 
         // Act - Create
         dbContext.Users.Add(user);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Created user with ID: {user.Id}");
 
         // Act - Read
-        var savedUser = await dbContext.Users.FindAsync(user.Id);
+        var savedUser = await dbContext.Users.FindAsync(new object?[] { user.Id }, TestContext.Current.CancellationToken);
 
         // Assert
         Assert.NotNull(savedUser);
@@ -45,7 +45,7 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
 
         // Cleanup
         dbContext.Users.Remove(savedUser);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -75,13 +75,13 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
         // Act
         dbContext.Users.Add(captain);
         dbContext.Teams.Add(team);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Created team with ID: {team.Id}");
 
         // Assert
         var savedTeam = await dbContext.Teams
             .Include(t => t.Captain)
-            .FirstOrDefaultAsync(t => t.Id == team.Id);
+            .FirstOrDefaultAsync(t => t.Id == team.Id, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedTeam);
         Assert.Equal(team.Name, savedTeam.Name);
@@ -91,7 +91,7 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
         // Cleanup
         dbContext.Teams.Remove(savedTeam);
         dbContext.Users.Remove(captain);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -113,17 +113,17 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
 
         // Act
         dbContext.Games.Add(game);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Created game with ID: {game.Id}");
 
         // Assert
-        var savedGame = await dbContext.Games.FindAsync(game.Id);
+        var savedGame = await dbContext.Games.FindAsync(new object?[] { game.Id }, TestContext.Current.CancellationToken);
         Assert.NotNull(savedGame);
         Assert.Equal(game.Title, savedGame.Title);
 
         // Cleanup
         dbContext.Games.Remove(savedGame);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 
     [Fact]
@@ -161,14 +161,14 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
         dbContext.Teams.Add(team);
         dbContext.Games.Add(game);
         dbContext.Participations.Add(participation);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Created participation with Team ID: {team.Id}, Game ID: {game.Id}");
 
         // Assert
         var savedParticipation = await dbContext.Participations
             .Include(p => p.Team)
             .Include(p => p.Game)
-            .FirstOrDefaultAsync(p => p.Id == participation.Id);
+            .FirstOrDefaultAsync(p => p.Id == participation.Id, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(savedParticipation);
         Assert.NotNull(savedParticipation.Team);
@@ -181,6 +181,6 @@ public class DatabaseContextTests(GZCTFApplicationFactory factory, ITestOutputHe
         dbContext.Teams.Remove(team);
         dbContext.Games.Remove(game);
         dbContext.Users.Remove(captain);
-        await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 }

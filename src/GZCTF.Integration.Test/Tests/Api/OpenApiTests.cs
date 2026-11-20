@@ -17,12 +17,12 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
     public async Task OpenApi_Spec_IsValidJson()
     {
         // Act
-        var response = await _client.GetAsync("/openapi/v1.json");
+        var response = await _client.GetAsync("/openapi/v1.json", TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Response length: {content.Length} bytes");
 
         // Assert - should be valid JSON
@@ -47,10 +47,10 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
     public async Task OpenApi_ContainsExpectedEndpoints()
     {
         // Act
-        var response = await _client.GetAsync("/openapi/v1.json");
+        var response = await _client.GetAsync("/openapi/v1.json", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var jsonDoc = JsonDocument.Parse(content);
         var paths = jsonDoc.RootElement.GetProperty("paths");
 
@@ -74,10 +74,10 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
     public async Task OpenApi_HasSchemaDefinitions()
     {
         // Act
-        var response = await _client.GetAsync("/openapi/v1.json");
+        var response = await _client.GetAsync("/openapi/v1.json", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
 
-        var content = await response.Content.ReadAsStringAsync();
+        var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
         var jsonDoc = JsonDocument.Parse(content);
 
         // Assert - should have components/schemas section
@@ -98,7 +98,7 @@ public class OpenApiTests(GZCTFApplicationFactory factory, ITestOutputHelper out
     {
         // Scalar is the API documentation UI
         // Act
-        var response = await _client.GetAsync("/scalar/v1");
+        var response = await _client.GetAsync("/scalar/v1", TestContext.Current.CancellationToken);
         output.WriteLine($"Status: {response.StatusCode}");
 
         // Assert - in development mode, Scalar should be available
