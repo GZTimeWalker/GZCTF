@@ -55,6 +55,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
             (c1, c2) => (c1 == null && c2 == null) || (c2 != null && c1 != null && c1.SequenceEqual(c2)),
             c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())));
 
+    // Npgsql's timestamptz mapping reports a DateTime comparer; pin ours so EF 11's
+    // compiled model does not wrap the wrong one.
+    private static readonly ValueComparer<DateTimeOffset> DateTimeOffsetComparer = new(
+        (left, right) => left.Equals(right),
+        value => value.GetHashCode(),
+        value => value);
+
+    private static readonly ValueComparer<DateTimeOffset?> NullableDateTimeOffsetComparer = new(
+        (left, right) => left == right,
+        value => value.GetHashCode(),
+        value => value);
+
+    private static void ConfigureDateTimeOffsetComparers(ModelBuilder builder)
+    {
+        foreach (var property in builder.Model.GetEntityTypes().SelectMany(e => e.GetDeclaredProperties()))
+            if (property.ClrType == typeof(DateTimeOffset))
+                property.SetValueComparer(DateTimeOffsetComparer);
+            else if (property.ClrType == typeof(DateTimeOffset?))
+                property.SetValueComparer(NullableDateTimeOffsetComparer);
+    }
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -458,5 +479,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
                 .HasConversion<string>()
                 .HasMaxLength(Limits.MaxLogStatusLength);
         });
+
+        ConfigureDateTimeOffsetComparers(builder);
     }
 }
