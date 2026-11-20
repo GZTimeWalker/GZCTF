@@ -136,5 +136,26 @@
     "reset": "Passwort zurücksetzen",
     "verify": "Kontoverifizierung",
     "verify_email": "E-Mail-Verifizierung ausstehend"
+  },
+  "passkey": {
+    "failed": "Die Passkey-Anfrage konnte nicht abgeschlossen werden.",
+    "title": "Passkeys",
+    "login": "Mit Passkey anmelden",
+    "description": "Melde dich mit Fingerabdruck, Gesichtserkennung, Geräte-PIN oder Sicherheitsschlüssel ohne Passwort an.",
+    "add": "Passkey hinzufügen",
+    "rename": "Umbenennen",
+    "remove": "Entfernen",
+    "remove_confirm": "„{{name}}“ entfernen? Du kannst dich mit diesem Passkey nicht mehr anmelden.",
+    "name": "Passkey-Name",
+    "confirm_password": "Bestätige dein aktuelles Passwort, um einen Passkey hinzuzufügen.",
+    "created": "Hinzugefügt am {{date}}",
+    "unnamed": "Unbenannter Passkey",
+    "saved": "Passkey gespeichert.",
+    "removed": "Passkey entfernt.",
+    "unsupported": "Passkeys sind nicht verfügbar. Du kannst dich weiterhin mit deinem Passwort anmelden.",
+    "cancelled": "Die Passkey-Anfrage wurde abgebrochen oder ist abgelaufen. Bitte versuche es erneut.",
+    "already_registered": "Dieser Passkey ist bereits registriert. Verwende einen anderen Authentifikator.",
+    "load_failed": "Passkeys konnten nicht geladen werden. Öffne diesen Dialog erneut, um es noch einmal zu versuchen.",
+    "limit": "Du kannst bis zu 10 Passkeys registrieren."
   }
 }
