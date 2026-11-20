@@ -46,7 +46,7 @@ public class ParticipationRepository(
         Context.Participations.Where(p => p.GameId == gameId).CountAsync(token);
 
     public Task<Participation[]> GetParticipations(Game game, CancellationToken token = default) =>
-        Context.Participations.Where(p => p.GameId == game.Id)
+        Context.Participations.AsSingleQuery().Where(p => p.GameId == game.Id)
             .Include(p => p.Team)
             .ThenInclude(t => t.Members)
             .OrderBy(p => p.TeamId).ToArrayAsync(token);

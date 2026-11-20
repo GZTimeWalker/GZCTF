@@ -15,6 +15,9 @@ internal static class DatabaseExtension
 
             builder.Services.AddDbContext<AppDbContext>(options =>
                 {
+                    // Split queries stay enabled globally; read queries with bounded
+                    // collection includes opt into AsSingleQuery so a concurrent write
+                    // cannot make EF 11 throw DbQueryConcurrencyException mid-query.
                     options.UseNpgsql(builder.Configuration.GetConnectionString("Database"),
                         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 

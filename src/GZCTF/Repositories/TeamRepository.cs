@@ -49,24 +49,25 @@ public class TeamRepository(AppDbContext context) : RepositoryBase(context), ITe
     }
 
     public Task<Team?> GetTeamById(int id, CancellationToken token = default) =>
-        Context.Teams.Include(e => e.Members)
+        Context.Teams.AsSingleQuery().Include(e => e.Members)
             .FirstOrDefaultAsync(t => t.Id == id, token);
 
     public Task<Team[]> GetTeams(int count = 100, int skip = 0, CancellationToken token = default) =>
-        Context.Teams.Include(t => t.Members).OrderBy(t => t.Id)
+        Context.Teams.AsSingleQuery().Include(t => t.Members).OrderBy(t => t.Id)
             .Skip(skip).Take(count).ToArrayAsync(token);
 
     public Task<Team[]> GetUserTeams(UserInfo user, CancellationToken token = default) =>
-        Context.Teams.Where(t => t.Members.Any(u => u.Id == user.Id))
+        Context.Teams.AsSingleQuery().Where(t => t.Members.Any(u => u.Id == user.Id))
             .Include(t => t.Members).ToArrayAsync(token);
 
     public Task<Team[]> SearchTeams(string hint, CancellationToken token = default)
     {
         var loweredHint = hint.ToLower();
         var query = int.TryParse(hint, out var id)
-            ? Context.Teams.Include(t => t.Members)
+            ? Context.Teams.AsSingleQuery().Include(t => t.Members)
                 .Where(item => item.Name.ToLower().Contains(loweredHint) || item.Id == id)
-            : Context.Teams.Include(t => t.Members).Where(item => item.Name.ToLower().Contains(loweredHint));
+            : Context.Teams.AsSingleQuery().Include(t => t.Members)
+                .Where(item => item.Name.ToLower().Contains(loweredHint));
 
         return query.OrderBy(t => t.Id).Take(30).ToArrayAsync(token);
     }
