@@ -9,7 +9,6 @@ using GZCTF.Models.Request.Info;
 using GZCTF.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 

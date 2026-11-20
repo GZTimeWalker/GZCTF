@@ -9,7 +9,7 @@ using k8s;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit.Abstractions;
+using Xunit;
 
 namespace GZCTF.Integration.Test.Base;
 

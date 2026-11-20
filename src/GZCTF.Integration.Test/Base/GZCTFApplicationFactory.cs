@@ -240,7 +240,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
             $"s3://bucket=gzctf-test;endpoint={rustfsEndpoint};accessKey={TestStorageCredential};secretKey={TestStorageCredential};forcePathStyle=true;useHttp=true;";
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         Console.WriteLine(@"[InitializeAsync] Starting container initialization...");
 
@@ -272,7 +272,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         await context.Database.MigrateAsync();
     }
 
-    public new async Task DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
         // Dispose containers
         await _postgresContainer.DisposeAsync();

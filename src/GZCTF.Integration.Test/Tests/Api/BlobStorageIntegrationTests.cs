@@ -4,7 +4,6 @@ using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
 using GZCTF.Utils;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 

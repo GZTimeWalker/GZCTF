@@ -3,7 +3,6 @@ using System.Net.Http.Json;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models.Request.Account;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 

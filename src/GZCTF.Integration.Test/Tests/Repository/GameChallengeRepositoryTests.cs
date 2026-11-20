@@ -7,7 +7,6 @@ using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Abstractions;
 using TaskStatus = GZCTF.Utils.TaskStatus;
 
 namespace GZCTF.Integration.Test.Tests.Repository;

@@ -1,5 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <!-- xUnit1051: cancel-token plumbing across the suite is a separate cleanup -->
+    <NoWarn>$(NoWarn);xUnit1051</NoWarn>
     <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -14,9 +17,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3.mtp-off" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="xunit.runner.console" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="coverlet.msbuild" />
   </ItemGroup>

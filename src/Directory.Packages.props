@@ -69,8 +69,7 @@
     <PackageVersion Include="ZstdSharp.Port" Version="0.8.8" />
     <PackageVersion Include="coverlet.collector" Version="10.1.1" />
     <PackageVersion Include="coverlet.msbuild" Version="10.1.1" />
-    <PackageVersion Include="xunit" Version="2.9.3" />
-    <PackageVersion Include="xunit.runner.console" Version="2.9.3" />
+    <PackageVersion Include="xunit.v3.mtp-off" Version="4.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
   </ItemGroup>
 </Project>

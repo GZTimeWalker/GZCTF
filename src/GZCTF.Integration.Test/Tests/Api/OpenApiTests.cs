@@ -2,7 +2,6 @@ using System.Net;
 using System.Text.Json;
 using GZCTF.Integration.Test.Base;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
