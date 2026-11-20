@@ -1,10 +1,10 @@
 # GZ::CTF — AI Coding Agent Guide
 
-GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 10 + EF Core (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
+GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and practice, designed for extensibility (dynamic/static challenges, containers, dynamic flags), observability (health/metrics/traces), and operability (rate limiting, RBAC, pluggable captcha/storage/cache). Backend is ASP.NET Core 11 + EF Core 11 (PostgreSQL), frontend is React 19 + Vite with real‑time SignalR.
 
 ## Development principles
 
-- Exercise-related models/features are out of scope for now. Ignore those files when implementing features.
+- Exercise mode feature code has been removed (repositories, endpoints, DTOs, UI). Its entities/tables remain for backward compatibility, so do not build new features on them.
 - Be conservative with database schema changes. If logic can be done in the frontend (calculation/UI), avoid adding backend fields or endpoints.
 - Prefer existing extension points (RateLimiter, Captcha, Storage, Telemetry, SignalR) and use inline JSON fields (`Tags`/`Hints`/`Divisions`) to keep schema flexible and avoid premature hardening.
 - Follow role-based access patterns: use `[RequireUser]`, `[RequireMonitor]`, `[RequireAdmin]`, `[RequireAdminOrToken]` attributes consistently.
@@ -61,9 +61,9 @@ GZ::CTF is a full‑stack, production‑ready CTF platform for competitions and 
 Design notes (flexibility vs performance)
 
 - JSON converters for `List<string>`/`HashSet<string>` store tags/hints/divisions inline (avoid join tables; easy to evolve).
-- Widespread `Navigation.AutoInclude()` on hot paths improves DX; `QuerySplittingBehavior.SplitQuery` is enabled to avoid cartesian explosion when including graphs.
+- `QuerySplittingBehavior.SingleQuery` is the default, so no query splits implicitly and a concurrent write cannot break one. Queries that genuinely need to split (multiple/large collections) must call `AsSplitQuery()` explicitly inside a repeatable-read transaction. Collection navigations are not `AutoInclude`d — include them explicitly where they are read.
 - Delete behaviors prefer `SetNull`/`NoAction` to preserve audit trails and prevent cascade storms across instances/submissions.
-- Many‑to‑many bridges (e.g., `Participation`, `GameInstance`) carry extra state and keep write paths efficient; Exercise-related bridges are currently ignored.
+- Many‑to‑many bridges (e.g., `Participation`, `GameInstance`) carry extra state and keep write paths efficient; exercise-related bridges are retained only for the legacy schema.
 
 ## Conventions & patterns
 

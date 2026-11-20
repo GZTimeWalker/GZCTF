@@ -457,11 +457,6 @@ export interface ContainerPolicy {
   /** Automatically destroy the oldest container when the limit is reached */
   autoDestroyOnLimitReached?: boolean;
   /**
-   * User container limit, used to limit the number of exercise containers
-   * @format int32
-   */
-  maxExerciseContainerCountPerUser?: number;
-  /**
    * Default container lifetime in minutes
    * @format int32
    * @min 1

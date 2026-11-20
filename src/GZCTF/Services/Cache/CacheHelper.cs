@@ -217,11 +217,6 @@ public static class CacheKey
     public const string CronJobLock = "_CronJobLock";
 
     /// <summary>
-    /// Is exercise available
-    /// </summary>
-    public const string ExerciseAvailable = "_ExerciseAvailable";
-
-    /// <summary>
     /// The client configuration
     /// </summary>
     public const string ClientConfig = "_ClientConfig";
