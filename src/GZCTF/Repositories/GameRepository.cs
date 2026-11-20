@@ -93,7 +93,7 @@ public class GameRepository(
             entry =>
             {
                 entry.SlidingExpiration = TimeSpan.FromDays(2);
-                return Context.Games.AsNoTracking().AsSingleQuery()
+                return Context.Games.AsNoTracking()
                     .Include(g => g.Divisions)
                     .FirstOrDefaultAsync(x => x.Id == gameId, token);
             }, token: token);
@@ -182,7 +182,7 @@ public class GameRepository(
 
         // load team info & participants
         var ids = scoreboard.Items.Values.Select(i => i.Id).ToArray();
-        var teams = await Context.Teams.AsSingleQuery()
+        var teams = await Context.Teams
             .IgnoreAutoIncludes().Include(t => t.Captain)
             .Where(t => ids.Contains(t.Id))
             .Include(t => t.Members).ToHashSetAsync(token);
@@ -290,7 +290,7 @@ public class GameRepository(
         await using (var trans = await Context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, token))
         {
             // 1. Fetch all divisions for this game
-            var divisionsQuery = await Context.Divisions.AsNoTracking().IgnoreAutoIncludes().AsSingleQuery()
+            var divisionsQuery = await Context.Divisions.AsNoTracking().IgnoreAutoIncludes()
                 .Where(d => d.GameId == game.Id)
                 .Include(d => d.ChallengeConfigs)
                 .Select(d => new

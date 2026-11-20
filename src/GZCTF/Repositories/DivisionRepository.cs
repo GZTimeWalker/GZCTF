@@ -36,13 +36,13 @@ public class DivisionRepository(AppDbContext context, CacheHelper cacheHelper)
     }
 
     public Task<Division[]> GetDivisions(int gameId, CancellationToken token = default) =>
-        Context.Divisions.AsSingleQuery().Where(d => d.GameId == gameId)
+        Context.Divisions.Where(d => d.GameId == gameId)
             .Include(d => d.ChallengeConfigs)
             .OrderBy(d => d.Id)
             .ToArrayAsync(token);
 
     public Task<Division?> GetDivision(int gameId, int divisionId, CancellationToken token = default) =>
-        Context.Divisions.AsSingleQuery()
+        Context.Divisions
             .Include(d => d.ChallengeConfigs)
             .FirstOrDefaultAsync(d => d.Id == divisionId && d.GameId == gameId, token);
 

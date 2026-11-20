@@ -99,7 +99,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         var divisions = await dbContext.Divisions
             .AsNoTracking()
             .IgnoreAutoIncludes()
-            .AsSingleQuery()
+            
             .Where(d => d.GameId == gameId)
             .Include(d => d.ChallengeConfigs)
             .ToHashSetAsync(ct);

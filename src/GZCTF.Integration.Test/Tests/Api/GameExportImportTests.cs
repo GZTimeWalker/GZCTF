@@ -1,3 +1,4 @@
+using System.Data;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
@@ -655,7 +656,11 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         using var scope = factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // Use AsSplitQuery to avoid cartesian product from multiple includes
+        // Two collection paths would multiply rows in a single statement, so this
+        // query is split explicitly; the transaction keeps both statements on one
+        // snapshot (required by EF 11 for split queries).
+        await using var transaction =
+            await context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead);
         var importedGame = await context.Games
             .AsSplitQuery()
             .Include(g => g.Divisions!)
@@ -663,6 +668,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             .Include(g => g.Challenges)
             .ThenInclude(c => c.Flags)
             .FirstOrDefaultAsync(g => g.Id == importedGameId);
+        await transaction.CommitAsync();
 
         Assert.NotNull(importedGame);
 
