@@ -65,8 +65,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         if (_useRustfsStorage)
         {
             Console.WriteLine(@"[GZCTFApplicationFactory] Creating RustFS container...");
-            _rustfsContainer = new ContainerBuilder()
-                .WithImage("rustfs/rustfs:1.0.0")
+            _rustfsContainer = new ContainerBuilder("rustfs/rustfs:1.0.1")
                 .WithEnvironment("RUSTFS_ACCESS_KEY", TestStorageCredential)
                 .WithEnvironment("RUSTFS_SECRET_KEY", TestStorageCredential)
                 .WithPortBinding(9000, true)
