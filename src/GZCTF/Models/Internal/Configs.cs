@@ -72,11 +72,6 @@ public class ContainerPolicy
     public bool AutoDestroyOnLimitReached { get; set; }
 
     /// <summary>
-    /// User container limit, used to limit the number of exercise containers
-    /// </summary>
-    public int MaxExerciseContainerCountPerUser { get; set; } = 1;
-
-    /// <summary>
     /// Default container lifetime in minutes
     /// </summary>
     [CacheFlush(CacheKey.ClientConfig)]
