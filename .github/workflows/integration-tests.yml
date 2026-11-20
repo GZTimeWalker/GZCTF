@@ -28,6 +28,11 @@ jobs:
         with:
           global-json-file: src/global.json
 
+      - name: Install Aspire CLI
+        run: |
+          dotnet tool install -g aspire.cli --version 17.0.0
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
       - uses: actions/setup-node@v6
         with:
           node-version: 26
@@ -116,6 +121,11 @@ jobs:
       - uses: actions/setup-dotnet@v5
         with:
           global-json-file: src/global.json
+
+      - name: Install Aspire CLI
+        run: |
+          dotnet tool install -g aspire.cli --version 17.0.0
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
 
       - uses: actions/setup-node@v6
         with:

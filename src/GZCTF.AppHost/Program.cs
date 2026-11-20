@@ -16,7 +16,7 @@ var redis = builder.AddRedis("redis").WithDataVolume();
 
 var storage = builder.AddRustFS("rustfs");
 
-var web = builder.AddProject<Projects.GZCTF>("gzctf")
+var web = builder.AddDotnetProject("gzctf", "../GZCTF/GZCTF.csproj")
     .WithReference(database)
     .WaitFor(database)
     .WithReference(redis)
