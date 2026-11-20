@@ -30,10 +30,10 @@ public class CheatInfoRepository(
     }
 
     public Task<CheatInfo[]> GetCheatInfoByGameId(int gameId, CancellationToken token = default) =>
-        Context.CheatInfo.IgnoreAutoIncludes().Where(i => i.GameId == gameId)
+        Context.CheatInfo.AsNoTracking().IgnoreAutoIncludes().Where(i => i.GameId == gameId)
             .Include(i => i.SourceTeam).ThenInclude(t => t.Team)
             .Include(i => i.SubmitTeam).ThenInclude(t => t.Team)
             .Include(i => i.Submission).ThenInclude(s => s.User)
             .Include(i => i.Submission).ThenInclude(s => s.GameChallenge)
-            .AsSplitQuery().ToArrayAsync(token);
+            .ToArrayAsync(token);
 }

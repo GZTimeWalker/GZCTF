@@ -1,3 +1,4 @@
+using System.Data;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
@@ -14,7 +15,6 @@ using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Api;
 
@@ -40,14 +40,12 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
         // Admin login
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a complex game with all features
@@ -56,19 +54,19 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
 
         // Act 1: Export the game
         output.WriteLine($"Exporting game {originalGame.Id}...");
-        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{originalGame.Id}/Export", null);
+        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{originalGame.Id}/Export", null, TestContext.Current.CancellationToken);
         exportResponse.EnsureSuccessStatusCode();
 
         Assert.Equal("application/zip", exportResponse.Content.Headers.ContentType?.MediaType);
 
         // Download and validate the exported ZIP
-        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync();
+        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken);
         Assert.NotEmpty(exportedZipBytes);
         output.WriteLine($"Exported ZIP size: {exportedZipBytes.Length} bytes");
 
         // Validate ZIP structure
         var tempZipPath = Path.Combine(Path.GetTempPath(), $"test-export-{Guid.NewGuid()}.zip");
-        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes);
+        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes, TestContext.Current.CancellationToken);
 
         try
         {
@@ -82,10 +80,10 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
             content.Add(streamContent, "file", "game-import.zip");
 
-            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content, TestContext.Current.CancellationToken);
             importResponse.EnsureSuccessStatusCode();
 
-            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>();
+            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>(cancellationToken: TestContext.Current.CancellationToken);
             Assert.True(importedGameId > 0);
             output.WriteLine($"Imported game with new ID: {importedGameId}");
 
@@ -108,17 +106,15 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Act: Try to export a non-existent game
-        var exportResponse = await adminClient.PostAsync("/api/Edit/Games/999999/Export", null);
+        var exportResponse = await adminClient.PostAsync("/api/Edit/Games/999999/Export", null, TestContext.Current.CancellationToken);
 
         // Assert: Should return 404
         Assert.Equal(HttpStatusCode.NotFound, exportResponse.StatusCode);
@@ -132,13 +128,11 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Act: Try to import a non-ZIP file
@@ -147,7 +141,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         textContent.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
         content.Add(textContent, "file", "invalid.txt");
 
-        var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+        var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content, TestContext.Current.CancellationToken);
 
         // Assert: Should return bad request
         Assert.Equal(HttpStatusCode.BadRequest, importResponse.StatusCode);
@@ -161,13 +155,11 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Act: Try to import an empty file
@@ -176,7 +168,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         emptyContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
         content.Add(emptyContent, "file", "empty.zip");
 
-        var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+        var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content, TestContext.Current.CancellationToken);
 
         // Assert: Should return bad request
         Assert.Equal(HttpStatusCode.BadRequest, importResponse.StatusCode);
@@ -190,13 +182,11 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Act: Try to import a corrupted ZIP (just random bytes with .zip extension)
@@ -205,7 +195,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         corruptedContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
         content.Add(corruptedContent, "file", "corrupted.zip");
 
-        var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+        var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content, TestContext.Current.CancellationToken);
 
         // Assert: Should return bad request for corrupted ZIP
         Assert.Equal(HttpStatusCode.BadRequest, importResponse.StatusCode);
@@ -219,19 +209,17 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create regular user (not admin)
         var userPassword = "User@Pass123";
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), userPassword, role: Role.User);
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), userPassword, role: Role.User, token: TestContext.Current.CancellationToken);
 
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Test Game");
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Test Game", token: TestContext.Current.CancellationToken);
 
         using var userClient = factory.CreateClient();
 
-        var loginResponse = await userClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = user.UserName, Password = userPassword });
+        var loginResponse = await userClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = userPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Act: Try to export as regular user
-        var exportResponse = await userClient.PostAsync($"/api/Edit/Games/{game.Id}/Export", null);
+        var exportResponse = await userClient.PostAsync($"/api/Edit/Games/{game.Id}/Export", null, TestContext.Current.CancellationToken);
 
         // Assert: Should return 403 Forbidden
         Assert.Equal(HttpStatusCode.Forbidden, exportResponse.StatusCode);
@@ -249,14 +237,12 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@BlobTest123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
         // Admin login
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a game with attachments
@@ -280,10 +266,10 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         }
 
         // Act 1: Export the game
-        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{gameWithBlobs.Id}/Export", null);
+        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{gameWithBlobs.Id}/Export", null, TestContext.Current.CancellationToken);
         exportResponse.EnsureSuccessStatusCode();
 
-        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync();
+        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken);
         output.WriteLine($"Exported game to ZIP ({exportedZipBytes.Length} bytes)");
 
         // Verify reference counts haven't changed after export
@@ -300,7 +286,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
 
         // Act 2: Import the game
         var tempZipPath = Path.Combine(Path.GetTempPath(), $"blob-test-{Guid.NewGuid()}.zip");
-        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes);
+        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes, TestContext.Current.CancellationToken);
 
         try
         {
@@ -310,10 +296,10 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
             content.Add(streamContent, "file", "game-import.zip");
 
-            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content, TestContext.Current.CancellationToken);
             importResponse.EnsureSuccessStatusCode();
 
-            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>();
+            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>(cancellationToken: TestContext.Current.CancellationToken);
             output.WriteLine($"Imported game with ID {importedGameId}");
 
             // Assert: Verify reference counts increased for shared files
@@ -656,7 +642,11 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
         using var scope = factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-        // Use AsSplitQuery to avoid cartesian product from multiple includes
+        // Two collection paths would multiply rows in a single statement, so this
+        // query is split explicitly; the transaction keeps both statements on one
+        // snapshot (required by EF 11 for split queries).
+        await using var transaction =
+            await context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead);
         var importedGame = await context.Games
             .AsSplitQuery()
             .Include(g => g.Divisions!)
@@ -664,6 +654,7 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             .Include(g => g.Challenges)
             .ThenInclude(c => c.Flags)
             .FirstOrDefaultAsync(g => g.Id == importedGameId);
+        await transaction.CommitAsync();
 
         Assert.NotNull(importedGame);
 
@@ -960,14 +951,12 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
     {
         // Arrange: Create admin user
         var adminPassword = "Admin@Pass123";
-        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), adminPassword, role: Role.Admin);
+        var adminUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword, role: Role.Admin, token: TestContext.Current.CancellationToken);
 
         using var adminClient = factory.CreateClient();
 
         // Admin login
-        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = adminUser.UserName, Password = adminPassword });
+        var loginResponse = await adminClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = adminUser.UserName, Password = adminPassword }, cancellationToken: TestContext.Current.CancellationToken);
         loginResponse.EnsureSuccessStatusCode();
 
         // Create a game with challenges that have attachments
@@ -976,12 +965,12 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
 
         // Act 1: Export the game
         output.WriteLine("Exporting game with attachments...");
-        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{originalGame.Id}/Export", null);
+        var exportResponse = await adminClient.PostAsync($"/api/Edit/Games/{originalGame.Id}/Export", null, TestContext.Current.CancellationToken);
         exportResponse.EnsureSuccessStatusCode();
 
-        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync();
+        var exportedZipBytes = await exportResponse.Content.ReadAsByteArrayAsync(TestContext.Current.CancellationToken);
         var tempZipPath = Path.Combine(Path.GetTempPath(), $"test-attachment-export-{Guid.NewGuid()}.zip");
-        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes);
+        await File.WriteAllBytesAsync(tempZipPath, exportedZipBytes, TestContext.Current.CancellationToken);
 
         try
         {
@@ -993,10 +982,10 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             streamContent.Headers.ContentType = new MediaTypeHeaderValue("application/zip");
             content.Add(streamContent, "file", "game-import.zip");
 
-            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content);
+            var importResponse = await adminClient.PostAsync("/api/Edit/Games/Import", content, TestContext.Current.CancellationToken);
             importResponse.EnsureSuccessStatusCode();
 
-            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>();
+            var importedGameId = await importResponse.Content.ReadFromJsonAsync<int>(cancellationToken: TestContext.Current.CancellationToken);
             output.WriteLine($"Imported game with new ID: {importedGameId}");
 
             // Assert: Verify attachment file names are preserved

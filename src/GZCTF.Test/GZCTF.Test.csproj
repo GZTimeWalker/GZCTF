@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net11.0</TargetFramework>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <CollectCoverage>true</CollectCoverage>
@@ -14,9 +15,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.v3.mtp-off" />
     <PackageReference Include="xunit.runner.visualstudio" />
-    <PackageReference Include="xunit.runner.console" />
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="coverlet.msbuild" />
   </ItemGroup>

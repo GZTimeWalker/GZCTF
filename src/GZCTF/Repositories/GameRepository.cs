@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data;
+using System.Diagnostics;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
 using GZCTF.Services.Cache;
@@ -285,8 +286,8 @@ public class GameRepository(
         Dictionary<int, ChallengeScoreMeta> challengeMetas;
         List<SolveSnapshot> solveSnapshots;
 
-        // 0. Begin transaction
-        await using (var trans = await Context.Database.BeginTransactionAsync(token))
+        // 0. Begin transaction; one snapshot keeps the scoreboard internally consistent
+        await using (var trans = await Context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead, token))
         {
             // 1. Fetch all divisions for this game
             var divisionsQuery = await Context.Divisions.AsNoTracking().IgnoreAutoIncludes()

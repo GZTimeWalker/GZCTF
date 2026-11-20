@@ -65,8 +65,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         if (_useRustfsStorage)
         {
             Console.WriteLine(@"[GZCTFApplicationFactory] Creating RustFS container...");
-            _rustfsContainer = new ContainerBuilder()
-                .WithImage("rustfs/rustfs:1.0.0")
+            _rustfsContainer = new ContainerBuilder("rustfs/rustfs:1.0.1")
                 .WithEnvironment("RUSTFS_ACCESS_KEY", TestStorageCredential)
                 .WithEnvironment("RUSTFS_SECRET_KEY", TestStorageCredential)
                 .WithPortBinding(9000, true)
@@ -241,7 +240,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
             $"s3://bucket=gzctf-test;endpoint={rustfsEndpoint};accessKey={TestStorageCredential};secretKey={TestStorageCredential};forcePathStyle=true;useHttp=true;";
     }
 
-    public async Task InitializeAsync()
+    public async ValueTask InitializeAsync()
     {
         Console.WriteLine(@"[InitializeAsync] Starting container initialization...");
 
@@ -273,7 +272,7 @@ public class GZCTFApplicationFactory : WebApplicationFactory<Program>, IAsyncLif
         await context.Database.MigrateAsync();
     }
 
-    public new async Task DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
         // Dispose containers
         await _postgresContainer.DisposeAsync();

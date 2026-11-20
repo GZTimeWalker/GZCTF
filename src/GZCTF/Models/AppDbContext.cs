@@ -187,7 +187,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) :
 
             entity.Navigation(e => e.Game).AutoInclude();
             entity.Navigation(e => e.Team).AutoInclude();
-            entity.Navigation(e => e.Members).AutoInclude();
             entity.Navigation(e => e.Writeup).AutoInclude();
 
             entity.HasMany(e => e.Challenges)

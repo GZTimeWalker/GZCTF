@@ -14,7 +14,6 @@ using GZCTF.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using NPOI.SS.UserModel;
 using Xunit;
-using Xunit.Abstractions;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 // ReSharper disable NotAccessedPositionalProperty.Local
@@ -218,11 +217,11 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         // All teams solve challenge1 first
         await SubmitFlag(teamA.client, game.Id, challenge1.Id, "flag{perm1}");
-        await Task.Delay(100); // Small delay to ensure different submission times
+        await Task.Delay(100, TestContext.Current.CancellationToken); // Small delay to ensure different submission times
         await SubmitFlag(teamB.client, game.Id, challenge1.Id, "flag{perm1}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
         await SubmitFlag(teamC.client, game.Id, challenge1.Id, "flag{perm1}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
         await SubmitFlag(teamD.client, game.Id, challenge1.Id, "flag{perm1}");
 
         // Force scoreboard recalculation
@@ -384,9 +383,9 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         var teamB = await CreateTeamInDivision("RankTeamB", game.Id, divisionB.Id, "RANK_B");
 
         await SubmitFlag(teamB.client, game.Id, challenge1.Id, "flag{rank}"); // +1000, rank 1
-        await Task.Delay(150);
+        await Task.Delay(150, TestContext.Current.CancellationToken);
         await SubmitFlag(teamA.client, game.Id, challenge1.Id, "flag{rank}"); // +1000, rank 2
-        await Task.Delay(150);
+        await Task.Delay(150, TestContext.Current.CancellationToken);
         await SubmitFlag(teamB.client, game.Id, challenge2.Id, "flag{noscore}"); // still rank 1, not rank 2
 
         await FlushScoreboardCache(game.Id);
@@ -542,20 +541,20 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         await SubmitFlag(teamPro1.client, game.Id, challenge1.Id, "flag{public}");
         await SubmitFlag(teamPro1.client, game.Id, challenge2.Id, "flag{exclusive}");
         await SubmitFlag(teamPro1.client, game.Id, challenge3.Id, "flag{mixed}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Stu1: Solves challenge1 and challenge2 (second blood)
         await SubmitFlag(teamStu1.client, game.Id, challenge1.Id, "flag{public}");
         await SubmitFlag(teamStu1.client, game.Id, challenge2.Id, "flag{exclusive}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Pro2: Solves challenge1 (third blood)
         await SubmitFlag(teamPro2.client, game.Id, challenge1.Id, "flag{public}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Stu2: Solves challenge3 (second blood)
         await SubmitFlag(teamStu2.client, game.Id, challenge3.Id, "flag{mixed}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Unoff1: Solves all 3 (should get normal scores, no blood bonus, no overall rank)
         await SubmitFlag(teamUnoff1.client, game.Id, challenge1.Id, "flag{public}");
@@ -805,15 +804,12 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
     {
         // Setup: Create monitor user
         var monitorPassword = "Monitor@Sheet123";
-        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), monitorPassword, role: Role.Monitor);
+        var monitorUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), monitorPassword, role: Role.Monitor, token: TestContext.Current.CancellationToken);
 
         // Create game with specific scoring setup
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game For Excel Export");
-        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Challenge 1", "flag{one}", originalScore: 1000);
-        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Challenge 2", "flag{two}", originalScore: 500);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Game For Excel Export", token: TestContext.Current.CancellationToken);
+        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Challenge 1", "flag{one}", originalScore: 1000, token: TestContext.Current.CancellationToken);
+        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Challenge 2", "flag{two}", originalScore: 500, token: TestContext.Current.CancellationToken);
 
         // Create two divisions:
         // 1. Regular: Full permissions with RankOverall
@@ -845,11 +841,11 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         // Team 1: Solves both challenges (highest score = 1500)
         await SubmitFlag(team1.client, game.Id, challenge1.Id, "flag{one}");
         await SubmitFlag(team1.client, game.Id, challenge2.Id, "flag{two}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Team 2: Solves only challenge 1 (score = 1000, but no overall rank)
         await SubmitFlag(team2.client, game.Id, challenge1.Id, "flag{one}");
-        await Task.Delay(100);
+        await Task.Delay(100, TestContext.Current.CancellationToken);
 
         // Team 3: Solves nothing (score = 0)
         // (just join the game)
@@ -859,31 +855,27 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
 
         // Download scoreboard as monitor
         using var monitorClient = factory.CreateClient();
-        await monitorClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = monitorUser.UserName, Password = monitorPassword });
+        await monitorClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = monitorUser.UserName, Password = monitorPassword }, cancellationToken: TestContext.Current.CancellationToken);
 
         // Test: Non-existent game returns 404
-        var notFoundResponse = await monitorClient.GetAsync("/api/Game/99999/ScoreboardSheet");
+        var notFoundResponse = await monitorClient.GetAsync("/api/Game/99999/ScoreboardSheet", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, notFoundResponse.StatusCode);
 
         // Test: Non-started game returns BadRequest
         var futureStart = DateTimeOffset.UtcNow.AddHours(1);
-        var futureGame = await TestDataSeeder.CreateGameAsync(factory.Services, "Future Game",
-            start: futureStart);
-        var futureResponse = await monitorClient.GetAsync($"/api/Game/{futureGame.Id}/ScoreboardSheet");
+        var futureGame = await TestDataSeeder.CreateGameAsync(factory.Services, "Future Game", start: futureStart, token: TestContext.Current.CancellationToken);
+        var futureResponse = await monitorClient.GetAsync($"/api/Game/{futureGame.Id}/ScoreboardSheet", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.BadRequest, futureResponse.StatusCode);
 
         // Test: Non-monitor user returns Forbidden
-        var normalUser = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Pass@123", role: Role.User);
+        var normalUser = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Pass@123", role: Role.User, token: TestContext.Current.CancellationToken);
         using var userClient = factory.CreateClient();
-        await userClient.PostAsJsonAsync("/api/Account/LogIn",
-            new LoginModel { UserName = normalUser.UserName, Password = "Pass@123" });
-        var forbiddenResponse = await userClient.GetAsync($"/api/Game/{game.Id}/ScoreboardSheet");
+        await userClient.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = normalUser.UserName, Password = "Pass@123" }, cancellationToken: TestContext.Current.CancellationToken);
+        var forbiddenResponse = await userClient.GetAsync($"/api/Game/{game.Id}/ScoreboardSheet", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Forbidden, forbiddenResponse.StatusCode);
 
         // Main test: Download and verify Excel content
-        var scoreboardResponse = await monitorClient.GetAsync($"/api/Game/{game.Id}/ScoreboardSheet");
+        var scoreboardResponse = await monitorClient.GetAsync($"/api/Game/{game.Id}/ScoreboardSheet", TestContext.Current.CancellationToken);
         scoreboardResponse.EnsureSuccessStatusCode();
 
         // Verify Excel file format
@@ -891,7 +883,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
             scoreboardResponse.Content.Headers.ContentType?.MediaType);
 
         // Parse and validate Excel structure
-        await using var excelStream = await scoreboardResponse.Content.ReadAsStreamAsync();
+        await using var excelStream = await scoreboardResponse.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
         Assert.True(excelStream.Length > 0, "Excel file should not be empty");
 
         using var workbook = new NPOI.XSSF.UserModel.XSSFWorkbook(excelStream);
@@ -1064,22 +1056,22 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         output.WriteLine("\n=== Testing Submission Sheet Download ===");
 
         // Test: Non-existent game returns 404
-        var submissionNotFoundResponse = await monitorClient.GetAsync("/api/Game/99999/SubmissionSheet");
+        var submissionNotFoundResponse = await monitorClient.GetAsync("/api/Game/99999/SubmissionSheet", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, submissionNotFoundResponse.StatusCode);
         output.WriteLine("  ✓ Non-existent game returns 404");
 
         // Test: Non-started game returns BadRequest
-        var submissionFutureResponse = await monitorClient.GetAsync($"/api/Game/{futureGame.Id}/SubmissionSheet");
+        var submissionFutureResponse = await monitorClient.GetAsync($"/api/Game/{futureGame.Id}/SubmissionSheet", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.BadRequest, submissionFutureResponse.StatusCode);
         output.WriteLine("  ✓ Non-started game returns BadRequest");
 
         // Test: Non-monitor user returns Forbidden
-        var submissionForbiddenResponse = await userClient.GetAsync($"/api/Game/{game.Id}/SubmissionSheet");
+        var submissionForbiddenResponse = await userClient.GetAsync($"/api/Game/{game.Id}/SubmissionSheet", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Forbidden, submissionForbiddenResponse.StatusCode);
         output.WriteLine("  ✓ Non-monitor user returns Forbidden");
 
         // Main test: Download and verify submission Excel content
-        var submissionResponse = await monitorClient.GetAsync($"/api/Game/{game.Id}/SubmissionSheet");
+        var submissionResponse = await monitorClient.GetAsync($"/api/Game/{game.Id}/SubmissionSheet", TestContext.Current.CancellationToken);
         submissionResponse.EnsureSuccessStatusCode();
 
         // Verify Excel file format
@@ -1088,7 +1080,7 @@ public class ScoreboardCalculationTests(GZCTFApplicationFactory factory, ITestOu
         output.WriteLine("  ✓ Submission file has correct content type");
 
         // Parse and validate Excel structure
-        await using var submissionStream = await submissionResponse.Content.ReadAsStreamAsync();
+        await using var submissionStream = await submissionResponse.Content.ReadAsStreamAsync(TestContext.Current.CancellationToken);
         Assert.True(submissionStream.Length > 0, "Submission Excel file should not be empty");
         output.WriteLine($"  ✓ Submission file size: {submissionStream.Length} bytes");
 

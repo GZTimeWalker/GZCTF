@@ -190,21 +190,21 @@ public sealed class PasskeyTests : IDisposable
         app.UseAuthorization();
         app.UseRateLimiter();
         app.MapControllers();
-        await app.StartAsync();
+        await app.StartAsync(TestContext.Current.CancellationToken);
         using var client = app.GetTestClient();
         client.BaseAddress = new Uri("https://localhost");
 
-        var anonymous = await client.GetAsync("/api/passkey");
-        Assert.True(anonymous.StatusCode == HttpStatusCode.Unauthorized, await anonymous.Content.ReadAsStringAsync());
-        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync("/api/passkey/options", null)).StatusCode);
-        var response = await client.GetAsync("/api/passkey/token");
+        var anonymous = await client.GetAsync("/api/passkey", TestContext.Current.CancellationToken);
+        Assert.True(anonymous.StatusCode == HttpStatusCode.Unauthorized, await anonymous.Content.ReadAsStringAsync(TestContext.Current.CancellationToken));
+        Assert.Equal(HttpStatusCode.BadRequest, (await client.PostAsync("/api/passkey/options", null, TestContext.Current.CancellationToken)).StatusCode);
+        var response = await client.GetAsync("/api/passkey/token", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        var csrf = await response.Content.ReadFromJsonAsync<PasskeyAntiforgeryModel>();
+        var csrf = await response.Content.ReadFromJsonAsync<PasskeyAntiforgeryModel>(cancellationToken: TestContext.Current.CancellationToken);
         client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", csrf!.Token);
         client.DefaultRequestHeaders.Add("Cookie", string.Join("; ",
             SetCookieHeaderValue.ParseList(response.Headers.GetValues("Set-Cookie").ToArray()).Select(c => $"{c.Name}={c.Value}")));
-        Assert.Equal(HttpStatusCode.OK, (await client.PostAsync("/api/passkey/options", null)).StatusCode);
-        Assert.Equal(HttpStatusCode.Unauthorized, (await client.DeleteAsync("/api/passkey/credential")).StatusCode);
+        Assert.Equal(HttpStatusCode.OK, (await client.PostAsync("/api/passkey/options", null, TestContext.Current.CancellationToken)).StatusCode);
+        Assert.Equal(HttpStatusCode.Unauthorized, (await client.DeleteAsync("/api/passkey/credential", TestContext.Current.CancellationToken)).StatusCode);
     }
 
     private async Task Register()

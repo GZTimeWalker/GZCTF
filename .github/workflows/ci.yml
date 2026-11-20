@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: latest
+          node-version: 26
 
       - uses: pnpm/action-setup@v6
         name: Install pnpm
@@ -62,7 +62,7 @@ jobs:
 
           # ignore arm64 for non-release tags
           if [ "${{ env.RELEASE }}" = "true" ]; then
-            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true /p:EFOptimizeContext=false
+            dotnet publish "GZCTF.csproj" -c Release -o publish/linux/arm64 -r linux-arm64 --no-self-contained /p:PublishReadyToRun=true /p:EFScaffoldModelStage=none
           fi
         env:
           VITE_APP_BUILD_TIMESTAMP: ${{ steps.datetime.outputs.time }}

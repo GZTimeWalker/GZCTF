@@ -23,11 +23,9 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     [Fact]
     public async Task MultipleTeams_ShouldCompete_InSameGame()
     {
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Multi-Team Competition");
-        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Challenge One", "flag{one}");
-        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Challenge Two", "flag{two}");
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Multi-Team Competition", token: TestContext.Current.CancellationToken);
+        var challenge1 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Challenge One", "flag{one}", token: TestContext.Current.CancellationToken);
+        var challenge2 = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Challenge Two", "flag{two}", token: TestContext.Current.CancellationToken);
 
         // Create 3 teams
         var password = "Multi@Team123";
@@ -36,72 +34,59 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         for (var i = 1; i <= 3; i++)
         {
             var userName = TestDataSeeder.RandomName();
-            var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                userName, password);
-            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Team {i}");
+            var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
+            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Team {i}", token: TestContext.Current.CancellationToken);
             teams.Add((user, team));
         }
 
         // Each team joins and solves different challenges
         // Team 1: solves both
         using var client1 = factory.CreateClient();
-        using (var loginResponse1 = await client1.PostAsJsonAsync("/api/Account/LogIn",
-                   new LoginModel { UserName = teams[0].user.UserName, Password = password }))
+        using (var loginResponse1 = await client1.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = teams[0].user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
         {
             loginResponse1.EnsureSuccessStatusCode();
         }
 
-        using (var joinResponse1 = await client1.PostAsJsonAsync($"/api/Game/{game.Id}",
-                   new GameJoinModel { TeamId = teams[0].team.Id }))
+        using (var joinResponse1 = await client1.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = teams[0].team.Id }, cancellationToken: TestContext.Current.CancellationToken))
         {
             joinResponse1.EnsureSuccessStatusCode();
         }
 
-        using (var submission1 = await client1.PostAsJsonAsync(
-                   $"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
-                   new FlagSubmitModel { Flag = "flag{one}" }))
+        using (var submission1 = await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}", new FlagSubmitModel { Flag = "flag{one}" }, cancellationToken: TestContext.Current.CancellationToken))
         {
             submission1.EnsureSuccessStatusCode();
         }
 
-        using (var submission2 = await client1.PostAsJsonAsync(
-                   $"/api/Game/{game.Id}/Challenges/{challenge2.Id}",
-                   new FlagSubmitModel { Flag = "flag{two}" }))
+        using (var submission2 = await client1.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge2.Id}", new FlagSubmitModel { Flag = "flag{two}" }, cancellationToken: TestContext.Current.CancellationToken))
         {
             submission2.EnsureSuccessStatusCode();
         }
 
         // Team 2: solves only challenge1
         using var client2 = factory.CreateClient();
-        using (var loginResponse2 = await client2.PostAsJsonAsync("/api/Account/LogIn",
-                   new LoginModel { UserName = teams[1].user.UserName, Password = password }))
+        using (var loginResponse2 = await client2.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = teams[1].user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
         {
             loginResponse2.EnsureSuccessStatusCode();
         }
 
-        using (var joinResponse2 = await client2.PostAsJsonAsync($"/api/Game/{game.Id}",
-                   new GameJoinModel { TeamId = teams[1].team.Id }))
+        using (var joinResponse2 = await client2.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = teams[1].team.Id }, cancellationToken: TestContext.Current.CancellationToken))
         {
             joinResponse2.EnsureSuccessStatusCode();
         }
 
-        using (var submission2 = await client2.PostAsJsonAsync(
-                   $"/api/Game/{game.Id}/Challenges/{challenge1.Id}",
-                   new FlagSubmitModel { Flag = "flag{one}" }))
+        using (var submission2 = await client2.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge1.Id}", new FlagSubmitModel { Flag = "flag{one}" }, cancellationToken: TestContext.Current.CancellationToken))
         {
             submission2.EnsureSuccessStatusCode();
         }
 
         // Team 3: doesn't solve any
         using var client3 = factory.CreateClient();
-        using (var loginResponse3 = await client3.PostAsJsonAsync("/api/Account/LogIn",
-                   new LoginModel { UserName = teams[2].user.UserName, Password = password }))
+        using (var loginResponse3 = await client3.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = teams[2].user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
         {
             loginResponse3.EnsureSuccessStatusCode();
         }
 
-        using (var joinResponse3 = await client3.PostAsJsonAsync($"/api/Game/{game.Id}",
-                   new GameJoinModel { TeamId = teams[2].team.Id }))
+        using (var joinResponse3 = await client3.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = teams[2].team.Id }, cancellationToken: TestContext.Current.CancellationToken))
         {
             joinResponse3.EnsureSuccessStatusCode();
         }
@@ -131,31 +116,27 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     {
         const string password = "Game@Details123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Details Team");
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Detailed Game");
-        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Test Challenge", "flag{test}");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Details Team", token: TestContext.Current.CancellationToken);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Detailed Game", token: TestContext.Current.CancellationToken);
+        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Test Challenge", "flag{test}", token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-                   new LoginModel { UserName = user.UserName, Password = password }))
+        using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
         {
             loginResponse.EnsureSuccessStatusCode();
         }
 
-        using (var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
-                   new GameJoinModel { TeamId = team.Id }))
+        using (var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id }, cancellationToken: TestContext.Current.CancellationToken))
         {
             joinResponse.EnsureSuccessStatusCode();
         }
 
         // Get game details
-        var detailsResponse = await client.GetAsync($"/api/Game/{game.Id}/Details");
+        var detailsResponse = await client.GetAsync($"/api/Game/{game.Id}/Details", TestContext.Current.CancellationToken);
         detailsResponse.EnsureSuccessStatusCode();
-        var details = await detailsResponse.Content.ReadFromJsonAsync<JsonElement>();
+        var details = await detailsResponse.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: TestContext.Current.CancellationToken);
 
         // Verify structure contains expected fields
         Assert.True(details.TryGetProperty("rank", out _), "Details should contain 'rank'");
@@ -177,22 +158,19 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     {
         var password = "Game@Access123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Restricted Game");
-        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Locked Challenge", "flag{locked}");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Restricted Game", token: TestContext.Current.CancellationToken);
+        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Locked Challenge", "flag{locked}", token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-                   new LoginModel { UserName = user.UserName, Password = password }))
+        using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
         {
             loginResponse.EnsureSuccessStatusCode();
         }
 
         // Try to access challenge without joining game
-        var challengeResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}");
+        var challengeResponse = await client.GetAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}", TestContext.Current.CancellationToken);
         // Should fail because user hasn't joined the game
         Assert.Equal(HttpStatusCode.BadRequest, challengeResponse.StatusCode);
     }
@@ -203,9 +181,8 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     [Fact]
     public async Task Scoreboard_ShouldHandle_MultipleParticipants()
     {
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Scoreboard Test");
-        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Scoreboard Challenge", "flag{scoreboard}");
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Scoreboard Test", token: TestContext.Current.CancellationToken);
+        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Scoreboard Challenge", "flag{scoreboard}", token: TestContext.Current.CancellationToken);
 
         const string password = "Scoreboard@Test123";
         var teams = new List<TestDataSeeder.SeededTeam>();
@@ -214,20 +191,17 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         for (var i = 1; i <= 5; i++)
         {
             var userName = TestDataSeeder.RandomName();
-            var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-                userName, password);
-            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Scoreboard Team {i}");
+            var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
+            var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, $"Scoreboard Team {i}", token: TestContext.Current.CancellationToken);
             teams.Add(team);
 
             using var client = factory.CreateClient();
-            using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-                       new LoginModel { UserName = user.UserName, Password = password }))
+            using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
             {
                 loginResponse.EnsureSuccessStatusCode();
             }
 
-            using (var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
-                       new GameJoinModel { TeamId = team.Id }))
+            using (var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id }, cancellationToken: TestContext.Current.CancellationToken))
             {
                 joinResponse.EnsureSuccessStatusCode();
             }
@@ -251,14 +225,14 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     public async Task RecentGames_ShouldReturn_GamesList()
     {
         // Create a recent game
-        await TestDataSeeder.CreateGameAsync(factory.Services, "Recent Game Test");
+        await TestDataSeeder.CreateGameAsync(factory.Services, "Recent Game Test", token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
         // Get recent games (no auth required)
-        var recentResponse = await client.GetAsync("/api/Game/Recent?limit=10");
+        var recentResponse = await client.GetAsync("/api/Game/Recent?limit=10", TestContext.Current.CancellationToken);
         recentResponse.EnsureSuccessStatusCode();
-        var games = await recentResponse.Content.ReadFromJsonAsync<JsonElement[]>();
+        var games = await recentResponse.Content.ReadFromJsonAsync<JsonElement[]>(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(games);
         Assert.NotEmpty(games);
@@ -315,9 +289,9 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
         using var client = factory.CreateClient();
 
         // Test pagination parameters
-        var response = await client.GetAsync("/api/Game?count=5&skip=0");
+        var response = await client.GetAsync("/api/Game?count=5&skip=0", TestContext.Current.CancellationToken);
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<JsonElement>();
+        var result = await response.Content.ReadFromJsonAsync<JsonElement>(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.True(result.TryGetProperty("data", out var data));
         Assert.True(result.TryGetProperty("total", out var total));
@@ -336,30 +310,25 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     {
         const string password = "Challenge@Detail123";
         var userName = TestDataSeeder.RandomName();
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            userName, password);
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Detail Team");
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Detail Game");
-        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Detailed Challenge", "flag{detailed}");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, userName, password, token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Detail Team", token: TestContext.Current.CancellationToken);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Challenge Detail Game", token: TestContext.Current.CancellationToken);
+        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Detailed Challenge", "flag{detailed}", token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
-        using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn",
-                   new LoginModel { UserName = user.UserName, Password = password }))
+        using (var loginResponse = await client.PostAsJsonAsync("/api/Account/LogIn", new LoginModel { UserName = user.UserName, Password = password }, cancellationToken: TestContext.Current.CancellationToken))
         {
             loginResponse.EnsureSuccessStatusCode();
         }
 
-        using (var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}",
-                   new GameJoinModel { TeamId = team.Id }))
+        using (var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = team.Id }, cancellationToken: TestContext.Current.CancellationToken))
         {
             joinResponse.EnsureSuccessStatusCode();
         }
 
         // Get challenge details
-        var detailResponse = await client.GetFromJsonAsync<ChallengeDetailModel>(
-            $"/api/Game/{game.Id}/Challenges/{challenge.Id}");
+        var detailResponse = await client.GetFromJsonAsync<ChallengeDetailModel>($"/api/Game/{game.Id}/Challenges/{challenge.Id}", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(detailResponse);
         Assert.Equal(challenge.Id, detailResponse.Id);
@@ -373,19 +342,17 @@ public class DetailedGameScoringTests(GZCTFApplicationFactory factory)
     [Fact]
     public async Task GameEndpoints_ShouldEnforce_Authentication()
     {
-        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Auth Test Game");
-        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id,
-            "Auth Challenge", "flag{auth}");
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Auth Test Game", token: TestContext.Current.CancellationToken);
+        var challenge = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Auth Challenge", "flag{auth}", token: TestContext.Current.CancellationToken);
 
         using var client = factory.CreateClient();
 
         // Unauthenticated access to join game should fail
-        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = 1 });
+        var joinResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}", new GameJoinModel { TeamId = 1 }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Unauthorized, joinResponse.StatusCode);
 
         // Unauthenticated access to submit flag should fail
-        var submitResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}",
-            new FlagSubmitModel { Flag = "flag{auth}" });
+        var submitResponse = await client.PostAsJsonAsync($"/api/Game/{game.Id}/Challenges/{challenge.Id}", new FlagSubmitModel { Flag = "flag{auth}" }, cancellationToken: TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.Unauthorized, submitResponse.StatusCode);
     }
 }

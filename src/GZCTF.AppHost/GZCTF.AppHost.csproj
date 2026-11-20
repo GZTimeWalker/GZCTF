@@ -1,7 +1,7 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.6.4">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>net11.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsAspireHost>true</IsAspireHost>
@@ -9,10 +9,9 @@
     <NoWarn>$(NoWarn);ASPIRE010</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Dotnet" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
     <PackageReference Include="Aspire.Hosting.Redis" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GZCTF\GZCTF.csproj" />
   </ItemGroup>
 </Project>

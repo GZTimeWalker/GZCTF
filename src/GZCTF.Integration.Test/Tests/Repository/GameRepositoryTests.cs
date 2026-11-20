@@ -6,7 +6,6 @@ using GZCTF.Repositories.Interface;
 using GZCTF.Utils;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace GZCTF.Integration.Test.Tests.Repository;
 
@@ -36,13 +35,12 @@ public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         await gameRepo.CreateGame(game, CancellationToken.None);
 
         // Create team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Token Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Token Team", token: TestContext.Current.CancellationToken);
 
         await using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-        var gameEntity = await context.Games.FindAsync(game.Id);
-        var teamEntity = await context.Teams.FindAsync(team.Id);
+        var gameEntity = await context.Games.FindAsync(new object?[] { game.Id }, TestContext.Current.CancellationToken);
+        var teamEntity = await context.Teams.FindAsync(new object?[] { team.Id }, TestContext.Current.CancellationToken);
 
         Assert.NotNull(gameEntity);
         Assert.NotNull(teamEntity);
@@ -163,9 +161,8 @@ public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
         }, CancellationToken.None);
 
         // Create user and team
-        var user = await TestDataSeeder.CreateUserAsync(factory.Services,
-            TestDataSeeder.RandomName(), "Test@123");
-        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Check Info Team");
+        var user = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), "Test@123", token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, user.Id, "Check Info Team", token: TestContext.Current.CancellationToken);
 
         // Create participation
         await using var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -177,11 +174,11 @@ public class GameRepositoryTests(GZCTFApplicationFactory factory, ITestOutputHel
             Status = ParticipationStatus.Accepted
         };
 
-        await context.Participations.AddAsync(participation);
-        await context.SaveChangesAsync();
+        await context.Participations.AddAsync(participation, TestContext.Current.CancellationToken);
+        await context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var userEntity = await context.Users.FindAsync(user.Id);
-        var gameEntity = await context.Games.FindAsync(game.Id);
+        var userEntity = await context.Users.FindAsync(new object?[] { user.Id }, TestContext.Current.CancellationToken);
+        var gameEntity = await context.Games.FindAsync(new object?[] { game.Id }, TestContext.Current.CancellationToken);
 
         Assert.NotNull(userEntity);
         Assert.NotNull(gameEntity);
