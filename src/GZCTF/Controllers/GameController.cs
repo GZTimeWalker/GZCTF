@@ -229,6 +229,10 @@ public class GameController(
         // Get existing participation for this team in this game
         var part = await participationRepository.GetParticipation(team, game, token);
 
+        if (part?.Status == ParticipationStatus.Suspended)
+            return BadRequest(
+                new RequestResponse(localizer[nameof(Resources.Program.Game_ParticipationNotAccepted)]));
+
         // Check if user is already in this game through a different team (exclude rejected participations)
         if (await participationRepository.CheckRepeatParticipation(user!, game, token))
             return BadRequest(new RequestResponse(localizer[nameof(Resources.Program.Game_InOtherTeam)]));
@@ -268,7 +272,9 @@ public class GameController(
         var shouldAcceptWithoutReview = div is null
             ? game.AcceptWithoutReview
             : !div.DefaultPermissions.HasFlag(GamePermission.RequireReview);
-        if (shouldAcceptWithoutReview)
+
+        // Defense in depth: auto-accept never changes a non-pending status.
+        if (shouldAcceptWithoutReview && part.Status == ParticipationStatus.Pending)
             await participationRepository.UpdateParticipationStatus(part, ParticipationStatus.Accepted, token);
 
         await transaction.CommitAsync(token);

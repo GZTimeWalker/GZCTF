@@ -4,6 +4,7 @@ using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
 using GZCTF.Models.Data;
 using GZCTF.Models.Request.Account;
+using GZCTF.Models.Request.Admin;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Request.Game;
 using GZCTF.Repositories.Interface;
@@ -1262,5 +1263,197 @@ public class GameJoinTests(GZCTFApplicationFactory factory)
         var participationRepoAfter = scopeAfter.ServiceProvider.GetRequiredService<IParticipationRepository>();
         var removedParticipation = await participationRepoAfter.GetParticipation(user.Id, game.Id, TestContext.Current.CancellationToken);
         Assert.Null(removedParticipation);
+    }
+
+    [Fact]
+    public async Task JoinGame_WhenParticipationSuspended_NewMemberCannotJoin()
+    {
+        var ownerPassword = "Owner@Pass123";
+        var owner = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), ownerPassword,
+            token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, owner.Id, $"Team {owner.UserName}",
+            token: TestContext.Current.CancellationToken);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Suspension Bypass Test Game",
+            acceptWithoutReview: true, token: TestContext.Current.CancellationToken);
+
+        using var ownerClient = factory.CreateClient();
+        var ownerLogin = await ownerClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = owner.UserName, Password = ownerPassword },
+            cancellationToken: TestContext.Current.CancellationToken);
+        ownerLogin.EnsureSuccessStatusCode();
+
+        var joinResponse = await ownerClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null },
+            cancellationToken: TestContext.Current.CancellationToken);
+        joinResponse.EnsureSuccessStatusCode();
+
+        var newcomerPassword = "Newcomer@Pass123";
+        var newcomer = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(),
+            newcomerPassword, token: TestContext.Current.CancellationToken);
+
+        using (var setupScope = factory.Services.CreateScope())
+        {
+            var context = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var teamEntity = await context.Teams.Include(t => t.Members)
+                .FirstAsync(t => t.Id == team.Id, cancellationToken: TestContext.Current.CancellationToken);
+            var newcomerEntity = await context.Users
+                .FirstAsync(u => u.Id == newcomer.Id, cancellationToken: TestContext.Current.CancellationToken);
+            teamEntity.Members.Add(newcomerEntity);
+            await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+        }
+
+        using (var scope = factory.Services.CreateScope())
+        {
+            var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+            var participation = await participationRepo.GetParticipation(owner.Id, game.Id,
+                TestContext.Current.CancellationToken);
+            Assert.NotNull(participation);
+            await participationRepo.UpdateParticipationStatus(participation, ParticipationStatus.Suspended,
+                TestContext.Current.CancellationToken);
+        }
+
+        using var newcomerClient = factory.CreateClient();
+        var newcomerLogin = await newcomerClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = newcomer.UserName, Password = newcomerPassword },
+            cancellationToken: TestContext.Current.CancellationToken);
+        newcomerLogin.EnsureSuccessStatusCode();
+
+        var rejoinResponse = await newcomerClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = null, InviteCode = null },
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, rejoinResponse.StatusCode);
+        var error = await rejoinResponse.Content.ReadFromJsonAsync<RequestResponse>(
+            cancellationToken: TestContext.Current.CancellationToken);
+        Assert.NotNull(error);
+        Assert.Contains("rejected or banned", error.Title, StringComparison.OrdinalIgnoreCase);
+
+        using var scopeAfter = factory.Services.CreateScope();
+        var participationRepoAfter = scopeAfter.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var updatedParticipation = await participationRepoAfter.GetParticipation(owner.Id, game.Id,
+            TestContext.Current.CancellationToken);
+        Assert.NotNull(updatedParticipation);
+        Assert.Equal(ParticipationStatus.Suspended, updatedParticipation.Status);
+        Assert.Single(updatedParticipation.Members);
+        Assert.Equal(owner.Id, updatedParticipation.Members.Single().UserId);
+
+        var detailsResponse = await ownerClient.GetAsync($"/api/Game/{game.Id}/Details",
+            TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.BadRequest, detailsResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task JoinGame_WhenDivisionParticipationSuspended_OnlyAdminCanRestore()
+    {
+        var adminPassword = "Admin@Pass123";
+        var admin = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), adminPassword,
+            role: Role.Admin, token: TestContext.Current.CancellationToken);
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Suspension Bypass Division Game",
+            acceptWithoutReview: true, token: TestContext.Current.CancellationToken);
+
+        using var adminClient = factory.CreateClient();
+        var adminLogin = await adminClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = admin.UserName, Password = adminPassword },
+            cancellationToken: TestContext.Current.CancellationToken);
+        adminLogin.EnsureSuccessStatusCode();
+
+        var divisionResponse = await adminClient.PostAsJsonAsync($"/api/Edit/Games/{game.Id}/Divisions",
+            new DivisionCreateModel
+            {
+                Name = "Suspended Division",
+                InviteCode = "SUSP_DIV",
+                DefaultPermissions = GamePermission.All & ~GamePermission.RequireReview
+            }, cancellationToken: TestContext.Current.CancellationToken);
+        divisionResponse.EnsureSuccessStatusCode();
+        var division = await divisionResponse.Content.ReadFromJsonAsync<Division>(
+            cancellationToken: TestContext.Current.CancellationToken);
+        Assert.NotNull(division);
+
+        var ownerPassword = "Owner@Pass123";
+        var owner = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(), ownerPassword,
+            token: TestContext.Current.CancellationToken);
+        var team = await TestDataSeeder.CreateTeamAsync(factory.Services, owner.Id, $"Team {owner.UserName}",
+            token: TestContext.Current.CancellationToken);
+
+        using var ownerClient = factory.CreateClient();
+        var ownerLogin = await ownerClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = owner.UserName, Password = ownerPassword },
+            cancellationToken: TestContext.Current.CancellationToken);
+        ownerLogin.EnsureSuccessStatusCode();
+
+        var joinResponse = await ownerClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division.Id, InviteCode = "SUSP_DIV" },
+            cancellationToken: TestContext.Current.CancellationToken);
+        joinResponse.EnsureSuccessStatusCode();
+
+        var newcomerPassword = "Newcomer@Pass123";
+        var newcomer = await TestDataSeeder.CreateUserAsync(factory.Services, TestDataSeeder.RandomName(),
+            newcomerPassword, token: TestContext.Current.CancellationToken);
+
+        using (var setupScope = factory.Services.CreateScope())
+        {
+            var context = setupScope.ServiceProvider.GetRequiredService<AppDbContext>();
+            var teamEntity = await context.Teams.Include(t => t.Members)
+                .FirstAsync(t => t.Id == team.Id, cancellationToken: TestContext.Current.CancellationToken);
+            var newcomerEntity = await context.Users
+                .FirstAsync(u => u.Id == newcomer.Id, cancellationToken: TestContext.Current.CancellationToken);
+            teamEntity.Members.Add(newcomerEntity);
+            await context.SaveChangesAsync(TestContext.Current.CancellationToken);
+        }
+
+        int participationId;
+        using (var scope = factory.Services.CreateScope())
+        {
+            var participationRepo = scope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+            var participation = await participationRepo.GetParticipation(owner.Id, game.Id,
+                TestContext.Current.CancellationToken);
+            Assert.NotNull(participation);
+            participationId = participation.Id;
+        }
+
+        var suspendResponse = await adminClient.PutAsJsonAsync($"/api/Admin/Participation/{participationId}",
+            new ParticipationEditModel { Status = ParticipationStatus.Suspended, DivisionId = division.Id },
+            cancellationToken: TestContext.Current.CancellationToken);
+        suspendResponse.EnsureSuccessStatusCode();
+
+        using var newcomerClient = factory.CreateClient();
+        var newcomerLogin = await newcomerClient.PostAsJsonAsync("/api/Account/LogIn",
+            new LoginModel { UserName = newcomer.UserName, Password = newcomerPassword },
+            cancellationToken: TestContext.Current.CancellationToken);
+        newcomerLogin.EnsureSuccessStatusCode();
+
+        var rejoinResponse = await newcomerClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division.Id, InviteCode = "SUSP_DIV" },
+            cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.BadRequest, rejoinResponse.StatusCode);
+
+        using (var scopeAfter = factory.Services.CreateScope())
+        {
+            var participationRepoAfter = scopeAfter.ServiceProvider.GetRequiredService<IParticipationRepository>();
+            var suspendedParticipation = await participationRepoAfter.GetParticipation(owner.Id, game.Id,
+                TestContext.Current.CancellationToken);
+            Assert.NotNull(suspendedParticipation);
+            Assert.Equal(ParticipationStatus.Suspended, suspendedParticipation.Status);
+            Assert.Single(suspendedParticipation.Members);
+        }
+
+        var restoreResponse = await adminClient.PutAsJsonAsync($"/api/Admin/Participation/{participationId}",
+            new ParticipationEditModel { Status = ParticipationStatus.Accepted, DivisionId = division.Id },
+            cancellationToken: TestContext.Current.CancellationToken);
+        restoreResponse.EnsureSuccessStatusCode();
+
+        var joinAfterRestoreResponse = await newcomerClient.PostAsJsonAsync($"/api/Game/{game.Id}",
+            new GameJoinModel { TeamId = team.Id, DivisionId = division.Id, InviteCode = "SUSP_DIV" },
+            cancellationToken: TestContext.Current.CancellationToken);
+        Assert.Equal(HttpStatusCode.OK, joinAfterRestoreResponse.StatusCode);
+
+        using var finalScope = factory.Services.CreateScope();
+        var finalParticipationRepo = finalScope.ServiceProvider.GetRequiredService<IParticipationRepository>();
+        var restoredParticipation = await finalParticipationRepo.GetParticipation(owner.Id, game.Id,
+            TestContext.Current.CancellationToken);
+        Assert.NotNull(restoredParticipation);
+        Assert.Equal(ParticipationStatus.Accepted, restoredParticipation.Status);
+        Assert.Equal(2, restoredParticipation.Members.Count);
     }
 }
