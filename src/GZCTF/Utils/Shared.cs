@@ -234,11 +234,26 @@ public readonly struct BloodBonus(long init = BloodBonus.DefaultValue)
     private const int Mask = 0x3ff;
     private const int Base = 1000;
 
+    /// <summary>
+    /// Largest valid value, with every slot at the 1000 permille cap
+    /// </summary>
+    public const long MaxValue = ((long)Base << 20) + ((long)Base << 10) + Base;
+
     public long Val { get; } = init;
+
+    /// <summary>
+    /// Check whether the value fits the three 10-bit slots without exceeding the permille cap
+    /// </summary>
+    public static bool IsValid(long value) =>
+        value >= 0 &&
+        value <= MaxValue &&
+        (value & Mask) <= Base &&
+        ((value >> 10) & Mask) <= Base &&
+        ((value >> 20) & Mask) <= Base;
 
     public static BloodBonus FromValue(long value)
     {
-        if ((value & Mask) > Base || ((value >> 10) & Mask) > Base || ((value >> 20) & Mask) > Base)
+        if (!IsValid(value))
             // `new()` would zero-initialize the struct and silently wipe every bonus,
             // so fall back to the documented default value explicitly
             return new(DefaultValue);

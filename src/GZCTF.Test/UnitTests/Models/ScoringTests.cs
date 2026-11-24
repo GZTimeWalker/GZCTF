@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using GZCTF.Models.Data;
+using GZCTF.Models.Request.Edit;
 using GZCTF.Services;
 using GZCTF.Utils;
 using Xunit;
@@ -174,6 +177,55 @@ public class ScoringTests
         Assert.Equal(custom.FirstBlood, game.BloodBonus.FirstBlood);
         Assert.Equal(custom.SecondBlood, game.BloodBonus.SecondBlood);
         Assert.Equal(custom.ThirdBlood, game.BloodBonus.ThirdBlood);
+    }
+
+    #endregion
+
+    #region Blood bonus validation
+
+    // IsValid backs both the read-path fallback and the write-path model check
+    [Theory]
+    [InlineData(0L, true)]
+    [InlineData(10L, true)] // third blood only
+    [InlineData(BloodBonus.DefaultValue, true)]
+    [InlineData((1000L << 20) | (1000L << 10) | 1000L, true)] // every slot at the cap
+    [InlineData(1001L << 20, false)] // first blood above the cap
+    [InlineData(1001L << 10, false)] // second blood above the cap
+    [InlineData(1001L, false)] // third blood above the cap
+    [InlineData(1023L, false)] // fits the 10-bit slot but exceeds the cap
+    [InlineData(1L << 30, false)] // bits outside the three slots
+    [InlineData(-1L, false)]
+    [InlineData(long.MinValue, false)]
+    public void IsValid_MatchesThePackedLayout(long value, bool expected) =>
+        Assert.Equal(expected, BloodBonus.IsValid(value));
+
+    [Theory]
+    [InlineData(0L)]
+    [InlineData(BloodBonus.DefaultValue)]
+    [InlineData((1000L << 20) | (1000L << 10) | 1000L)]
+    [InlineData(1023L)]
+    [InlineData(1001L << 20)]
+    [InlineData(-1L)]
+    [InlineData(1L << 30)]
+    public void IsValid_AgreesWithFromValue(long value) =>
+        Assert.Equal(BloodBonus.IsValid(value), BloodBonus.FromValue(value).Val == value);
+
+    [Theory]
+    [InlineData(BloodBonus.DefaultValue, true)]
+    [InlineData((1000L << 20) | (1000L << 10) | 1000L, true)]
+    [InlineData(1023L, false)]
+    [InlineData(1001L << 20, false)]
+    [InlineData(-1L, false)]
+    public void BloodBonusValueAttribute_RejectsUnpackableValue(long value, bool expected)
+    {
+        var model = new GameInfoModel { BloodBonusValue = value };
+        var context = new ValidationContext(model) { MemberName = nameof(GameInfoModel.BloodBonusValue) };
+        var results = new List<ValidationResult>();
+
+        var valid = Validator.TryValidateProperty(model.BloodBonusValue, context, results);
+
+        Assert.Equal(expected, valid);
+        Assert.Equal(expected ? 0 : 1, results.Count);
     }
 
     #endregion

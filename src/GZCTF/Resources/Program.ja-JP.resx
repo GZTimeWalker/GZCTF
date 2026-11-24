@@ -812,6 +812,9 @@
   <data name="Model_BioTooLong" xml:space="preserve">
     <value>説明が長すぎます</value>
   </data>
+  <data name="Model_BloodBonusOutOfRange" xml:space="preserve">
+    <value>Each blood bonus must be between 0 and 1000 permille</value>
+  </data>
   <data name="Model_ContentRequired" xml:space="preserve">
     <value>内容は必須です</value>
   </data>
