@@ -121,6 +121,8 @@ If you are interested in contributing to the translation, please refer to the [C
 
 ## Contributors 👋
 
+For backend changes, see [Running the backend tests](src/TESTING.md).
+
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=GZTimeWalker/GZCTF" />
 </a>

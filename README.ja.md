@@ -121,6 +121,8 @@ GZ::CTF は ASP.NET Core を基づいたオープンソース CTF プラット�
 
 ## 貢献者 👋
 
+バックエンドを変更する際は、[バックエンドのテストガイド（英語）](src/TESTING.md)を参照してください。
+
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=GZTimeWalker/GZCTF" />
 </a>

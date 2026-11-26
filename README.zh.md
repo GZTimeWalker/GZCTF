@@ -121,6 +121,8 @@ GZ::CTF 是一个基于 ASP.NET Core 的开源 CTF 平台。
 
 ## 贡献者 👋
 
+参与后端开发时，可参考[后端测试指南（英文）](src/TESTING.md)选择测试项目并配置本地环境。
+
 <a href="https://github.com/GZTimeWalker/GZCTF/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=GZTimeWalker/GZCTF" />
 </a>
