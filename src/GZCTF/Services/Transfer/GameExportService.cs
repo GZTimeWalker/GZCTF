@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using GZCTF.Models;
 using GZCTF.Models.Transfer;
 using GZCTF.Storage.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +40,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
             await WriteTransferFilesAsync(workDir, transferGame, transferChallenges, ct);
 
             // Copy attachment files (including game poster)
-            await CopyAttachmentsAsync(game, workDir, ct);
+            await CopyAttachmentsAsync(transferGame, transferChallenges, workDir, ct);
 
             // Calculate statistics and verify file integrity
             var statistics = await CalculateStatisticsAsync(workDir, transferGame, transferChallenges, ct);
@@ -173,7 +174,7 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
     /// <summary>
     /// Copy all attachment files to working directory
     /// </summary>
-    private async Task CopyAttachmentsAsync(Game game, string workDir,
+    private async Task CopyAttachmentsAsync(TransferGame game, List<TransferChallenge> challenges, string workDir,
         CancellationToken ct)
     {
         var filesDir = Path.Combine(workDir, "files");
@@ -185,56 +186,42 @@ public class GameExportService(AppDbContext dbContext, IBlobStorage blobStorage)
         if (!string.IsNullOrWhiteSpace(game.PosterHash))
             await CopyFileByHashAsync(game.PosterHash, filesDir, copiedHashes, ct);
 
-        foreach (var challenge in game.Challenges)
+        foreach (var challenge in challenges)
         {
-            // Copy challenge attachment
-            if (challenge.Attachment is not null)
-                await CopyAttachmentAsync(challenge.Attachment, filesDir, copiedHashes, ct);
+            if (challenge.Attachment?.Hash is { } attachmentHash)
+                await CopyFileByHashAsync(attachmentHash, filesDir, copiedHashes, ct);
 
             // Copy flag attachments
-            foreach (var flag in challenge.Flags)
+            foreach (var flag in challenge.Flags.Static ?? [])
             {
-                if (flag.Attachment is not null)
-                    await CopyAttachmentAsync(flag.Attachment, filesDir, copiedHashes, ct);
+                if (flag.Attachment?.Hash is { } flagHash)
+                    await CopyFileByHashAsync(flagHash, filesDir, copiedHashes, ct);
             }
         }
     }
 
     /// <summary>
-    /// Copy a single attachment file from blob storage
-    /// </summary>
-    private ValueTask<bool> CopyAttachmentAsync(Attachment attachment, string filesDir, HashSet<string> copiedHashes,
-        CancellationToken ct) =>
-        attachment.LocalFile is null
-            ? ValueTask.FromResult(true)
-            : CopyFileByHashAsync(attachment.LocalFile.Hash, filesDir, copiedHashes, ct);
-
-    /// <summary>
     /// Copy a file by hash from blob storage
     /// </summary>
-    private async ValueTask<bool> CopyFileByHashAsync(string hash, string filesDir, HashSet<string> copiedHashes,
+    private async ValueTask CopyFileByHashAsync(string hash, string filesDir, HashSet<string> copiedHashes,
         CancellationToken ct)
     {
         // Skip if already copied (handle duplicate attachments)
         if (!copiedHashes.Add(hash))
-            return true;
+            return;
 
-        // check if hash is valid
-        if (hash.Length != 64)
-            return false;
+        if (hash.Length != Limits.FileHashLength || !Codec.FileHashRegex().IsMatch(hash))
+            throw new InvalidOperationException($"Invalid file hash in game export: '{hash}'");
 
         var filePath = StoragePath.Combine(PathHelper.Uploads, hash[..2], hash[2..4], hash);
 
-        // check if blob exists
         if (!await blobStorage.ExistsAsync(filePath, ct))
-            return false;
+            throw new InvalidOperationException($"File '{hash}' is missing from blob storage");
 
         var targetPath = Path.Combine(filesDir, hash);
         await using var stream = await blobStorage.OpenReadAsync(filePath, ct);
         await using var fileStream = File.Create(targetPath);
         await stream.CopyToAsync(fileStream, ct);
-
-        return true;
     }
 
     /// <summary>

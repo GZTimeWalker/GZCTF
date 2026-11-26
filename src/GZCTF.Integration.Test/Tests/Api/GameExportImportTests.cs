@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
 using GZCTF.Integration.Test.Base;
 using GZCTF.Models;
@@ -11,6 +12,7 @@ using GZCTF.Models.Request.Account;
 using GZCTF.Models.Request.Edit;
 using GZCTF.Models.Transfer;
 using GZCTF.Repositories.Interface;
+using GZCTF.Services.Transfer;
 using GZCTF.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,6 +98,51 @@ public class GameExportImportTests(GZCTFApplicationFactory factory, ITestOutputH
             if (File.Exists(tempZipPath))
                 File.Delete(tempZipPath);
         }
+    }
+
+    [Theory]
+    [InlineData("invalid-hash", "Invalid file hash")]
+    [InlineData("a23456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0", "missing from blob storage")]
+    public async Task ExportGame_UnavailablePoster_RejectsIncompletePackage(string hash, string reason)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Incomplete backup", token: ct);
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        await db.Games.Where(g => g.Id == game.Id).ExecuteUpdateAsync(s => s.SetProperty(g => g.PosterHash, hash), ct);
+
+        var exporter = scope.ServiceProvider.GetRequiredService<GameExportService>();
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => exporter.ExportGameAsync(game.Id, ct));
+        Assert.Contains(reason, error.Message);
+        Assert.Contains(hash, error.Message);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ExportGame_MissingLocalAttachment_RejectsIncompletePackage(bool attachToFlag)
+    {
+        var ct = TestContext.Current.CancellationToken;
+        var game = await TestDataSeeder.CreateGameAsync(factory.Services, "Incomplete attachment", token: ct);
+        var seeded = await TestDataSeeder.CreateStaticChallengeAsync(factory.Services, game.Id, "Example", "sample", token: ct);
+        using var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var challenge = await db.GameChallenges.Include(c => c.Flags).SingleAsync(c => c.Id == seeded.Id, ct);
+        var hash = RandomNumberGenerator.GetHexString(Limits.FileHashLength, true);
+        var attachment = new Attachment
+        {
+            Type = FileType.Local,
+            LocalFile = new LocalFile { Hash = hash, Name = "notice.txt" }
+        };
+        if (attachToFlag)
+            challenge.Flags.Single().Attachment = attachment;
+        else
+            challenge.Attachment = attachment;
+        await db.SaveChangesAsync(ct);
+
+        var exporter = scope.ServiceProvider.GetRequiredService<GameExportService>();
+        var error = await Assert.ThrowsAsync<InvalidOperationException>(() => exporter.ExportGameAsync(game.Id, ct));
+        Assert.Contains(hash, error.Message);
     }
 
     /// <summary>
